@@ -1,0 +1,89 @@
+0 HEAD
+1 SOUR demo
+1 CHAR UTF-8
+
+0 @I1@ INDI
+1 NAME Timothy /Cruz/
+1 SEX M
+
+0 @I2@ INDI
+1 NAME Amy /Harolds/
+1 SEX F
+
+0 @I3@ INDI
+1 NAME Alexander /Cruz/
+1 SEX M
+
+0 @I4@ INDI
+1 NAME Jerry /Willow/
+1 SEX M
+
+0 @I5@ INDI
+1 NAME Jake /Cruz/
+1 SEX M
+
+0 @I6@ INDI
+1 NAME Olivia /Cruz/
+1 SEX F
+
+0 @I7@ INDI
+1 NAME Steve /Cruz/
+1 SEX M
+
+0 @I8@ INDI
+1 NAME Taylor /Humes/
+1 SEX F
+
+0 @I9@ INDI
+1 NAME Christina /Cruz/
+1 SEX F
+
+0 @I10@ INDI
+1 NAME Arjun /Patel/
+1 SEX M
+
+0 @I11@ INDI
+1 NAME Anna /Cruz/
+1 SEX F
+
+0 @I12@ INDI
+1 NAME Taylor /Cruz/
+1 SEX F
+
+0 @I13@ INDI
+1 NAME Sammie /Chang/
+1 SEX F
+
+0 @I14@ INDI
+1 NAME William /Cruz/
+1 SEX M
+
+0 @F1@ FAM
+1 HUSB @I1@
+1 WIFE @I2@
+1 CHIL @I3@
+
+0 @F2@ FAM
+1 HUSB @I3@
+1 WIFE @I4@
+1 CHIL @I5@
+1 CHIL @I6@
+1 CHIL @I7@
+
+0 @F3@ FAM
+1 HUSB @I5@
+1 WIFE @I8@
+1 CHIL @I9@
+
+0 @F4@ FAM
+1 HUSB @I10@
+1 WIFE @I6@
+1 CHIL @I11@
+1 CHIL @I12@
+
+0 @F5@ FAM
+1 HUSB @I7@
+1 WIFE @I13@
+1 CHIL @I14@
+
+0 TRLR

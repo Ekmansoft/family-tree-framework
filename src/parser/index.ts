@@ -1,0 +1,1 @@
+export { parseGedcom } from './gedcom/parser';

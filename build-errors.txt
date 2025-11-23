@@ -1,0 +1,932 @@
+kenneth@kenneth-Maximus-Ubuntu-24:~/Documents/family-tree-framework$ tsc
+src/components/Editor/PersonEditor.tsx:1:33 - error TS2307: Cannot find module 'react' or its corresponding type declarations.
+
+1 import React, { useState } from 'react';
+                                  ~~~~~~~
+
+src/components/Editor/PersonEditor.tsx:17:54 - error TS7031: Binding element 'person' implicitly has an 'any' type.
+
+17 const PersonEditor: React.FC<PersonEditorProps> = ({ person, onSave, onCancel }) => {
+                                                        ~~~~~~
+
+src/components/Editor/PersonEditor.tsx:17:62 - error TS7031: Binding element 'onSave' implicitly has an 'any' type.
+
+17 const PersonEditor: React.FC<PersonEditorProps> = ({ person, onSave, onCancel }) => {
+                                                                ~~~~~~
+
+src/components/Editor/PersonEditor.tsx:17:70 - error TS7031: Binding element 'onCancel' implicitly has an 'any' type.
+
+17 const PersonEditor: React.FC<PersonEditorProps> = ({ person, onSave, onCancel }) => {
+                                                                        ~~~~~~~~
+
+src/components/Editor/PersonEditor.tsx:35:9 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+35         <div className="person-editor">
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/components/Editor/PersonEditor.tsx:35:9 - error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+
+35         <div className="person-editor">
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/components/Editor/PersonEditor.tsx:36:13 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+36             <h2>Edit Person</h2>
+               ~~~~
+
+src/components/Editor/PersonEditor.tsx:36:13 - error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+
+36             <h2>Edit Person</h2>
+               ~~~~
+
+src/components/Editor/PersonEditor.tsx:36:28 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+36             <h2>Edit Person</h2>
+                              ~~~~~
+
+src/components/Editor/PersonEditor.tsx:37:13 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+37             <div>
+               ~~~~~
+
+src/components/Editor/PersonEditor.tsx:37:13 - error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+
+37             <div>
+               ~~~~~
+
+src/components/Editor/PersonEditor.tsx:38:17 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+38                 <label>Name:</label>
+                   ~~~~~~~
+
+src/components/Editor/PersonEditor.tsx:38:17 - error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+
+38                 <label>Name:</label>
+                   ~~~~~~~
+
+src/components/Editor/PersonEditor.tsx:38:29 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+38                 <label>Name:</label>
+                               ~~~~~~~~
+
+src/components/Editor/PersonEditor.tsx:39:17 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+39                 <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/components/Editor/PersonEditor.tsx:39:17 - error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+
+39                 <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/components/Editor/PersonEditor.tsx:39:60 - error TS7006: Parameter 'e' implicitly has an 'any' type.
+
+39                 <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
+                                                              ~
+
+src/components/Editor/PersonEditor.tsx:40:13 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+40             </div>
+               ~~~~~~
+
+src/components/Editor/PersonEditor.tsx:41:13 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+41             <div>
+               ~~~~~
+
+src/components/Editor/PersonEditor.tsx:41:13 - error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+
+41             <div>
+               ~~~~~
+
+src/components/Editor/PersonEditor.tsx:42:17 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+42                 <label>Birth Date:</label>
+                   ~~~~~~~
+
+src/components/Editor/PersonEditor.tsx:42:17 - error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+
+42                 <label>Birth Date:</label>
+                   ~~~~~~~
+
+src/components/Editor/PersonEditor.tsx:42:35 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+42                 <label>Birth Date:</label>
+                                     ~~~~~~~~
+
+src/components/Editor/PersonEditor.tsx:43:17 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+43                 <input type="date" value={birthDate} onChange={(e) => setBirthDate(e.target.value)} />
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/components/Editor/PersonEditor.tsx:43:17 - error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+
+43                 <input type="date" value={birthDate} onChange={(e) => setBirthDate(e.target.value)} />
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/components/Editor/PersonEditor.tsx:43:65 - error TS7006: Parameter 'e' implicitly has an 'any' type.
+
+43                 <input type="date" value={birthDate} onChange={(e) => setBirthDate(e.target.value)} />
+                                                                   ~
+
+src/components/Editor/PersonEditor.tsx:44:13 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+44             </div>
+               ~~~~~~
+
+src/components/Editor/PersonEditor.tsx:45:13 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+45             <div>
+               ~~~~~
+
+src/components/Editor/PersonEditor.tsx:45:13 - error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+
+45             <div>
+               ~~~~~
+
+src/components/Editor/PersonEditor.tsx:46:17 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+46                 <label>Death Date:</label>
+                   ~~~~~~~
+
+src/components/Editor/PersonEditor.tsx:46:17 - error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+
+46                 <label>Death Date:</label>
+                   ~~~~~~~
+
+src/components/Editor/PersonEditor.tsx:46:35 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+46                 <label>Death Date:</label>
+                                     ~~~~~~~~
+
+src/components/Editor/PersonEditor.tsx:47:17 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+47                 <input type="date" value={deathDate} onChange={(e) => setDeathDate(e.target.value)} />
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/components/Editor/PersonEditor.tsx:47:17 - error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+
+47                 <input type="date" value={deathDate} onChange={(e) => setDeathDate(e.target.value)} />
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/components/Editor/PersonEditor.tsx:47:65 - error TS7006: Parameter 'e' implicitly has an 'any' type.
+
+47                 <input type="date" value={deathDate} onChange={(e) => setDeathDate(e.target.value)} />
+                                                                   ~
+
+src/components/Editor/PersonEditor.tsx:48:13 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+48             </div>
+               ~~~~~~
+
+src/components/Editor/PersonEditor.tsx:49:13 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+49             <div>
+               ~~~~~
+
+src/components/Editor/PersonEditor.tsx:49:13 - error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+
+49             <div>
+               ~~~~~
+
+src/components/Editor/PersonEditor.tsx:50:17 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+50                 <label>Notes:</label>
+                   ~~~~~~~
+
+src/components/Editor/PersonEditor.tsx:50:17 - error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+
+50                 <label>Notes:</label>
+                   ~~~~~~~
+
+src/components/Editor/PersonEditor.tsx:50:30 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+50                 <label>Notes:</label>
+                                ~~~~~~~~
+
+src/components/Editor/PersonEditor.tsx:51:17 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+51                 <textarea value={notes} onChange={(e) => setNotes(e.target.value)} />
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/components/Editor/PersonEditor.tsx:51:17 - error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+
+51                 <textarea value={notes} onChange={(e) => setNotes(e.target.value)} />
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/components/Editor/PersonEditor.tsx:51:52 - error TS7006: Parameter 'e' implicitly has an 'any' type.
+
+51                 <textarea value={notes} onChange={(e) => setNotes(e.target.value)} />
+                                                      ~
+
+src/components/Editor/PersonEditor.tsx:52:13 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+52             </div>
+               ~~~~~~
+
+src/components/Editor/PersonEditor.tsx:53:13 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+53             <div className="editor-actions">
+               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/components/Editor/PersonEditor.tsx:53:13 - error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+
+53             <div className="editor-actions">
+               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/components/Editor/PersonEditor.tsx:54:17 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+54                 <button onClick={handleSave}>Save</button>
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/components/Editor/PersonEditor.tsx:54:17 - error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+
+54                 <button onClick={handleSave}>Save</button>
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/components/Editor/PersonEditor.tsx:54:50 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+54                 <button onClick={handleSave}>Save</button>
+                                                    ~~~~~~~~~
+
+src/components/Editor/PersonEditor.tsx:55:17 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+55                 <button onClick={onCancel}>Cancel</button>
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/components/Editor/PersonEditor.tsx:55:17 - error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+
+55                 <button onClick={onCancel}>Cancel</button>
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/components/Editor/PersonEditor.tsx:55:50 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+55                 <button onClick={onCancel}>Cancel</button>
+                                                    ~~~~~~~~~
+
+src/components/Editor/PersonEditor.tsx:56:13 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+56             </div>
+               ~~~~~~
+
+src/components/Editor/PersonEditor.tsx:57:9 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+57         </div>
+           ~~~~~~
+
+src/components/Editor/RelationshipEditor.tsx:1:33 - error TS2307: Cannot find module 'react' or its corresponding type declarations.
+
+1 import React, { useState } from 'react';
+                                  ~~~~~~~
+
+src/components/Editor/RelationshipEditor.tsx:15:66 - error TS7031: Binding element 'relationships' implicitly has an 'any' type.
+
+15 const RelationshipEditor: React.FC<RelationshipEditorProps> = ({ relationships, onUpdate }) => {
+                                                                    ~~~~~~~~~~~~~
+
+src/components/Editor/RelationshipEditor.tsx:15:81 - error TS7031: Binding element 'onUpdate' implicitly has an 'any' type.
+
+15 const RelationshipEditor: React.FC<RelationshipEditorProps> = ({ relationships, onUpdate }) => {
+                                                                                   ~~~~~~~~
+
+src/components/Editor/RelationshipEditor.tsx:19:58 - error TS7006: Parameter 'rel' implicitly has an 'any' type.
+
+19     const updatedRelationships = editedRelationships.map(rel =>
+                                                            ~~~
+
+src/components/Editor/RelationshipEditor.tsx:30:5 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+30     <div>
+       ~~~~~
+
+src/components/Editor/RelationshipEditor.tsx:30:5 - error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+
+30     <div>
+       ~~~~~
+
+src/components/Editor/RelationshipEditor.tsx:31:7 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+31       <h2>Edit Relationships</h2>
+         ~~~~
+
+src/components/Editor/RelationshipEditor.tsx:31:7 - error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+
+31       <h2>Edit Relationships</h2>
+         ~~~~
+
+src/components/Editor/RelationshipEditor.tsx:31:29 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+31       <h2>Edit Relationships</h2>
+                               ~~~~~
+
+src/components/Editor/RelationshipEditor.tsx:32:32 - error TS7006: Parameter 'rel' implicitly has an 'any' type.
+
+32       {editedRelationships.map(rel => (
+                                  ~~~
+
+src/components/Editor/RelationshipEditor.tsx:33:9 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+33         <div key={rel.id}>
+           ~~~~~~~~~~~~~~~~~~
+
+src/components/Editor/RelationshipEditor.tsx:33:9 - error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+
+33         <div key={rel.id}>
+           ~~~~~~~~~~~~~~~~~~
+
+src/components/Editor/RelationshipEditor.tsx:34:11 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+34           <label>
+             ~~~~~~~
+
+src/components/Editor/RelationshipEditor.tsx:34:11 - error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+
+34           <label>
+             ~~~~~~~
+
+src/components/Editor/RelationshipEditor.tsx:36:13 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+ 36             <input
+                ~~~~~~
+ 37               type="text"
+    ~~~~~~~~~~~~~~~~~~~~~~~~~
+... 
+ 39               onChange={(e) => handleChange(rel.id, 'type', e.target.value)}
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 40             />
+    ~~~~~~~~~~~~~~
+
+src/components/Editor/RelationshipEditor.tsx:36:13 - error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+
+ 36             <input
+                ~~~~~~
+ 37               type="text"
+    ~~~~~~~~~~~~~~~~~~~~~~~~~
+... 
+ 39               onChange={(e) => handleChange(rel.id, 'type', e.target.value)}
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 40             />
+    ~~~~~~~~~~~~~~
+
+src/components/Editor/RelationshipEditor.tsx:39:26 - error TS7006: Parameter 'e' implicitly has an 'any' type.
+
+39               onChange={(e) => handleChange(rel.id, 'type', e.target.value)}
+                            ~
+
+src/components/Editor/RelationshipEditor.tsx:41:11 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+41           </label>
+             ~~~~~~~~
+
+src/components/Editor/RelationshipEditor.tsx:42:11 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+42           <label>
+             ~~~~~~~
+
+src/components/Editor/RelationshipEditor.tsx:42:11 - error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+
+42           <label>
+             ~~~~~~~
+
+src/components/Editor/RelationshipEditor.tsx:44:13 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+ 44             <input
+                ~~~~~~
+ 45               type="text"
+    ~~~~~~~~~~~~~~~~~~~~~~~~~
+... 
+ 47               onChange={(e) => handleChange(rel.id, 'personA', e.target.value)}
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 48             />
+    ~~~~~~~~~~~~~~
+
+src/components/Editor/RelationshipEditor.tsx:44:13 - error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+
+ 44             <input
+                ~~~~~~
+ 45               type="text"
+    ~~~~~~~~~~~~~~~~~~~~~~~~~
+... 
+ 47               onChange={(e) => handleChange(rel.id, 'personA', e.target.value)}
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 48             />
+    ~~~~~~~~~~~~~~
+
+src/components/Editor/RelationshipEditor.tsx:47:26 - error TS7006: Parameter 'e' implicitly has an 'any' type.
+
+47               onChange={(e) => handleChange(rel.id, 'personA', e.target.value)}
+                            ~
+
+src/components/Editor/RelationshipEditor.tsx:49:11 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+49           </label>
+             ~~~~~~~~
+
+src/components/Editor/RelationshipEditor.tsx:50:11 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+50           <label>
+             ~~~~~~~
+
+src/components/Editor/RelationshipEditor.tsx:50:11 - error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+
+50           <label>
+             ~~~~~~~
+
+src/components/Editor/RelationshipEditor.tsx:52:13 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+ 52             <input
+                ~~~~~~
+ 53               type="text"
+    ~~~~~~~~~~~~~~~~~~~~~~~~~
+... 
+ 55               onChange={(e) => handleChange(rel.id, 'personB', e.target.value)}
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 56             />
+    ~~~~~~~~~~~~~~
+
+src/components/Editor/RelationshipEditor.tsx:52:13 - error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+
+ 52             <input
+                ~~~~~~
+ 53               type="text"
+    ~~~~~~~~~~~~~~~~~~~~~~~~~
+... 
+ 55               onChange={(e) => handleChange(rel.id, 'personB', e.target.value)}
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 56             />
+    ~~~~~~~~~~~~~~
+
+src/components/Editor/RelationshipEditor.tsx:55:26 - error TS7006: Parameter 'e' implicitly has an 'any' type.
+
+55               onChange={(e) => handleChange(rel.id, 'personB', e.target.value)}
+                            ~
+
+src/components/Editor/RelationshipEditor.tsx:57:11 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+57           </label>
+             ~~~~~~~~
+
+src/components/Editor/RelationshipEditor.tsx:58:9 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+58         </div>
+           ~~~~~~
+
+src/components/Editor/RelationshipEditor.tsx:60:7 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+60       <button onClick={handleSave}>Save Changes</button>
+         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/components/Editor/RelationshipEditor.tsx:60:7 - error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+
+60       <button onClick={handleSave}>Save Changes</button>
+         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/components/Editor/RelationshipEditor.tsx:60:48 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+60       <button onClick={handleSave}>Save Changes</button>
+                                                  ~~~~~~~~~
+
+src/components/Editor/RelationshipEditor.tsx:61:5 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+61     </div>
+       ~~~~~~
+
+src/components/Shared/Toolbar.tsx:1:19 - error TS2307: Cannot find module 'react' or its corresponding type declarations.
+
+1 import React from 'react';
+                    ~~~~~~~
+
+src/components/Shared/Toolbar.tsx:3:95 - error TS7031: Binding element 'onSave' implicitly has an 'any' type.
+
+3 const Toolbar: React.FC<{ onSave: () => void; onUndo: () => void; onRedo: () => void; }> = ({ onSave, onUndo, onRedo }) => {
+                                                                                                ~~~~~~
+
+src/components/Shared/Toolbar.tsx:3:103 - error TS7031: Binding element 'onUndo' implicitly has an 'any' type.
+
+3 const Toolbar: React.FC<{ onSave: () => void; onUndo: () => void; onRedo: () => void; }> = ({ onSave, onUndo, onRedo }) => {
+                                                                                                        ~~~~~~
+
+src/components/Shared/Toolbar.tsx:3:111 - error TS7031: Binding element 'onRedo' implicitly has an 'any' type.
+
+3 const Toolbar: React.FC<{ onSave: () => void; onUndo: () => void; onRedo: () => void; }> = ({ onSave, onUndo, onRedo }) => {
+                                                                                                                ~~~~~~
+
+src/components/Shared/Toolbar.tsx:5:9 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+5         <div className="toolbar">
+          ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/components/Shared/Toolbar.tsx:5:9 - error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+
+5         <div className="toolbar">
+          ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/components/Shared/Toolbar.tsx:6:13 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+6             <button onClick={onSave}>Save</button>
+              ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/components/Shared/Toolbar.tsx:6:13 - error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+
+6             <button onClick={onSave}>Save</button>
+              ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/components/Shared/Toolbar.tsx:6:42 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+6             <button onClick={onSave}>Save</button>
+                                           ~~~~~~~~~
+
+src/components/Shared/Toolbar.tsx:7:13 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+7             <button onClick={onUndo}>Undo</button>
+              ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/components/Shared/Toolbar.tsx:7:13 - error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+
+7             <button onClick={onUndo}>Undo</button>
+              ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/components/Shared/Toolbar.tsx:7:42 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+7             <button onClick={onUndo}>Undo</button>
+                                           ~~~~~~~~~
+
+src/components/Shared/Toolbar.tsx:8:13 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+8             <button onClick={onRedo}>Redo</button>
+              ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/components/Shared/Toolbar.tsx:8:13 - error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+
+8             <button onClick={onRedo}>Redo</button>
+              ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/components/Shared/Toolbar.tsx:8:42 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+8             <button onClick={onRedo}>Redo</button>
+                                           ~~~~~~~~~
+
+src/components/Shared/Toolbar.tsx:9:9 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+9         </div>
+          ~~~~~~
+
+src/components/TreeView/TreeNode.tsx:1:19 - error TS2307: Cannot find module 'react' or its corresponding type declarations.
+
+1 import React from 'react';
+                    ~~~~~~~
+
+src/components/TreeView/TreeNode.tsx:9:46 - error TS7031: Binding element 'name' implicitly has an 'any' type.
+
+9 const TreeNode: React.FC<TreeNodeProps> = ({ name, children, onEdit }) => {
+                                               ~~~~
+
+src/components/TreeView/TreeNode.tsx:9:52 - error TS7031: Binding element 'children' implicitly has an 'any' type.
+
+9 const TreeNode: React.FC<TreeNodeProps> = ({ name, children, onEdit }) => {
+                                                     ~~~~~~~~
+
+src/components/TreeView/TreeNode.tsx:9:62 - error TS7031: Binding element 'onEdit' implicitly has an 'any' type.
+
+9 const TreeNode: React.FC<TreeNodeProps> = ({ name, children, onEdit }) => {
+                                                               ~~~~~~
+
+src/components/TreeView/TreeNode.tsx:11:9 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+11         <div className="tree-node">
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/components/TreeView/TreeNode.tsx:11:9 - error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+
+11         <div className="tree-node">
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/components/TreeView/TreeNode.tsx:12:13 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+12             <span onClick={onEdit} className="tree-node-name">{name}</span>
+               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/components/TreeView/TreeNode.tsx:12:13 - error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+
+12             <span onClick={onEdit} className="tree-node-name">{name}</span>
+               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/components/TreeView/TreeNode.tsx:12:69 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+12             <span onClick={onEdit} className="tree-node-name">{name}</span>
+                                                                       ~~~~~~~
+
+src/components/TreeView/TreeNode.tsx:14:17 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+14                 <div className="tree-node-children">
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/components/TreeView/TreeNode.tsx:14:17 - error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+
+14                 <div className="tree-node-children">
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/components/TreeView/TreeNode.tsx:15:36 - error TS7006: Parameter 'child' implicitly has an 'any' type.
+
+15                     {children.map((child, index) => (
+                                      ~~~~~
+
+src/components/TreeView/TreeNode.tsx:15:43 - error TS7006: Parameter 'index' implicitly has an 'any' type.
+
+15                     {children.map((child, index) => (
+                                             ~~~~~
+
+src/components/TreeView/TreeNode.tsx:16:25 - error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+
+16                         <TreeNode key={index} {...child} onEdit={onEdit} />
+                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/components/TreeView/TreeNode.tsx:18:17 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+18                 </div>
+                   ~~~~~~
+
+src/components/TreeView/TreeNode.tsx:20:9 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+20         </div>
+           ~~~~~~
+
+src/components/TreeView/TreeView.tsx:1:19 - error TS2307: Cannot find module 'react' or its corresponding type declarations.
+
+1 import React from 'react';
+                    ~~~~~~~
+
+src/components/TreeView/TreeView.tsx:2:10 - error TS2614: Module '"./TreeNode"' has no exported member 'TreeNode'. Did you mean to use 'import TreeNode from "./TreeNode"' instead?
+
+2 import { TreeNode } from './TreeNode';
+           ~~~~~~~~
+
+src/components/TreeView/TreeView.tsx:2:26 - error TS6142: Module './TreeNode' was resolved to '/home/kenneth/Documents/family-tree-framework/src/components/TreeView/TreeNode.tsx', but '--jsx' is not set.
+
+2 import { TreeNode } from './TreeNode';
+                           ~~~~~~~~~~~~
+
+src/components/TreeView/TreeView.tsx:9:53 - error TS7031: Binding element 'individuals' implicitly has an 'any' type.
+
+9 export const TreeView: React.FC<TreeViewProps> = ({ individuals }) => {
+                                                      ~~~~~~~~~~~
+
+src/components/TreeView/TreeView.tsx:11:9 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+11         <div className="tree-view">
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/components/TreeView/TreeView.tsx:11:9 - error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+
+11         <div className="tree-view">
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/components/TreeView/TreeView.tsx:12:30 - error TS7006: Parameter 'individual' implicitly has an 'any' type.
+
+12             {individuals.map(individual => (
+                                ~~~~~~~~~~
+
+src/components/TreeView/TreeView.tsx:13:17 - error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+
+13                 <TreeNode key={individual.id} individual={individual} />
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/components/TreeView/TreeView.tsx:15:9 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+15         </div>
+           ~~~~~~
+
+src/core/renderer.tsx:1:19 - error TS2307: Cannot find module 'react' or its corresponding type declarations.
+
+1 import React from 'react';
+                    ~~~~~~~
+
+src/core/renderer.tsx:2:10 - error TS2614: Module '"../core/engine"' has no exported member 'Engine'. Did you mean to use 'import Engine from "../core/engine"' instead?
+
+2 import { Engine } from '../core/engine';
+           ~~~~~~
+
+src/core/renderer.tsx:3:26 - error TS6142: Module '../components/TreeView/TreeView' was resolved to '/home/kenneth/Documents/family-tree-framework/src/components/TreeView/TreeView.tsx', but '--jsx' is not set.
+
+3 import { TreeView } from '../components/TreeView/TreeView';
+                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/core/renderer.tsx:4:10 - error TS2614: Module '"../components/Shared/Toolbar"' has no exported member 'Toolbar'. Did you mean to use 'import Toolbar from "../components/Shared/Toolbar"' instead?
+
+4 import { Toolbar } from '../components/Shared/Toolbar';
+           ~~~~~~~
+
+src/core/renderer.tsx:4:25 - error TS6142: Module '../components/Shared/Toolbar' was resolved to '/home/kenneth/Documents/family-tree-framework/src/components/Shared/Toolbar.tsx', but '--jsx' is not set.
+
+4 import { Toolbar } from '../components/Shared/Toolbar';
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/core/renderer.tsx:7:17 - error TS7006: Parameter 'props' implicitly has an 'any' type.
+
+7     constructor(props) {
+                  ~~~~~
+
+src/core/renderer.tsx:9:14 - error TS2339: Property 'state' does not exist on type 'Renderer'.
+
+9         this.state = {
+               ~~~~~
+
+src/core/renderer.tsx:13:14 - error TS2339: Property 'engine' does not exist on type 'Renderer'.
+
+13         this.engine = new Engine();
+                ~~~~~~
+
+src/core/renderer.tsx:18:14 - error TS2339: Property 'engine' does not exist on type 'Renderer'.
+
+18         this.engine.on('update', this.handleUpdate);
+                ~~~~~~
+
+src/core/renderer.tsx:22:14 - error TS2339: Property 'engine' does not exist on type 'Renderer'.
+
+22         this.engine.off('update', this.handleUpdate);
+                ~~~~~~
+
+src/core/renderer.tsx:26:39 - error TS2339: Property 'engine' does not exist on type 'Renderer'.
+
+26         const familyTree = await this.engine.loadGedcom('path/to/gedcom/file.ged');
+                                         ~~~~~~
+
+src/core/renderer.tsx:27:14 - error TS2339: Property 'setState' does not exist on type 'Renderer'.
+
+27         this.setState({ familyTree });
+                ~~~~~~~~
+
+src/core/renderer.tsx:31:14 - error TS2339: Property 'setState' does not exist on type 'Renderer'.
+
+31         this.setState({ familyTree: this.engine.getFamilyTree() });
+                ~~~~~~~~
+
+src/core/renderer.tsx:31:42 - error TS2339: Property 'engine' does not exist on type 'Renderer'.
+
+31         this.setState({ familyTree: this.engine.getFamilyTree() });
+                                            ~~~~~~
+
+src/core/renderer.tsx:34:21 - error TS7006: Parameter 'person' implicitly has an 'any' type.
+
+34     selectPerson = (person) => {
+                       ~~~~~~
+
+src/core/renderer.tsx:35:14 - error TS2339: Property 'setState' does not exist on type 'Renderer'.
+
+35         this.setState({ selectedPerson: person });
+                ~~~~~~~~
+
+src/core/renderer.tsx:39:53 - error TS2339: Property 'state' does not exist on type 'Renderer'.
+
+39         const { familyTree, selectedPerson } = this.state;
+                                                       ~~~~~
+
+src/core/renderer.tsx:42:13 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+42             <div className="family-tree-renderer">
+               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/core/renderer.tsx:42:13 - error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+
+42             <div className="family-tree-renderer">
+               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/core/renderer.tsx:43:17 - error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+
+43                 <Toolbar />
+                   ~~~~~~~~~~~
+
+src/core/renderer.tsx:45:21 - error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+
+45                     <TreeView tree={familyTree} onSelectPerson={this.selectPerson} />
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/core/renderer.tsx:47:21 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+47                     <div>Loading family tree...</div>
+                       ~~~~~
+
+src/core/renderer.tsx:47:21 - error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+
+47                     <div>Loading family tree...</div>
+                       ~~~~~
+
+src/core/renderer.tsx:47:48 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+47                     <div>Loading family tree...</div>
+                                                  ~~~~~~
+
+src/core/renderer.tsx:50:13 - error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
+
+50             </div>
+               ~~~~~~
+
+src/hooks/useUndoRedo.ts:1:26 - error TS2307: Cannot find module 'react' or its corresponding type declarations.
+
+1 import { useState } from 'react';
+                           ~~~~~~~
+
+src/hooks/useUndoRedo.ts:3:22 - error TS7006: Parameter 'initialState' implicitly has an 'any' type.
+
+3 const useUndoRedo = (initialState) => {
+                       ~~~~~~~~~~~~
+
+src/hooks/useUndoRedo.ts:7:23 - error TS7006: Parameter 'newState' implicitly has an 'any' type.
+
+7     const setState = (newState) => {
+                        ~~~~~~~~
+
+src/index.ts:1:10 - error TS2614: Module '"./core/engine"' has no exported member 'Engine'. Did you mean to use 'import Engine from "./core/engine"' instead?
+
+1 import { Engine } from './core/engine';
+           ~~~~~~
+
+src/index.ts:2:26 - error TS6142: Module './core/renderer' was resolved to '/home/kenneth/Documents/family-tree-framework/src/core/renderer.tsx', but '--jsx' is not set.
+
+2 import { Renderer } from './core/renderer';
+                           ~~~~~~~~~~~~~~~~~
+
+src/index.ts:3:10 - error TS2614: Module '"./core/events"' has no exported member 'EventManager'. Did you mean to use 'import EventManager from "./core/events"' instead?
+
+3 import { EventManager } from './core/events';
+           ~~~~~~~~~~~~
+
+src/index.ts:17:21 - error TS2554: Expected 0 arguments, but got 1.
+
+17     renderer.render(engine.getState());
+                       ~~~~~~~~~~~~~~~~~
+
+src/index.ts:21:25 - error TS2554: Expected 0 arguments, but got 1.
+
+21         renderer.render(engine.getState());
+                           ~~~~~~~~~~~~~~~~~
+
+src/parser/gedcom/parser.ts:3:11 - error TS7034: Variable 'individuals' implicitly has type 'any[]' in some locations where its type cannot be determined.
+
+3     const individuals = [];
+            ~~~~~~~~~~~
+
+src/parser/gedcom/parser.ts:4:11 - error TS7034: Variable 'families' implicitly has type 'any[]' in some locations where its type cannot be determined.
+
+4     const families = [];
+            ~~~~~~~~
+
+src/parser/gedcom/parser.ts:5:9 - error TS7034: Variable 'currentIndividual' implicitly has type 'any' in some locations where its type cannot be determined.
+
+5     let currentIndividual = null;
+          ~~~~~~~~~~~~~~~~~
+
+src/parser/gedcom/parser.ts:6:9 - error TS7034: Variable 'currentFamily' implicitly has type 'any' in some locations where its type cannot be determined.
+
+6     let currentFamily = null;
+          ~~~~~~~~~~~~~
+
+src/parser/gedcom/parser.ts:16:21 - error TS7005: Variable 'currentIndividual' implicitly has an 'any' type.
+
+16                 if (currentIndividual) {
+                       ~~~~~~~~~~~~~~~~~
+
+src/parser/gedcom/parser.ts:21:21 - error TS7005: Variable 'currentFamily' implicitly has an 'any' type.
+
+21                 if (currentFamily) {
+                       ~~~~~~~~~~~~~
+
+src/parser/gedcom/parser.ts:27:35 - error TS7005: Variable 'currentIndividual' implicitly has an 'any' type.
+
+27             if (tag === 'NAME' && currentIndividual) {
+                                     ~~~~~~~~~~~~~~~~~
+
+src/parser/gedcom/parser.ts:29:42 - error TS7005: Variable 'currentIndividual' implicitly has an 'any' type.
+
+29             } else if (tag === 'FAMS' && currentIndividual) {
+                                            ~~~~~~~~~~~~~~~~~
+
+src/parser/gedcom/parser.ts:31:42 - error TS7005: Variable 'currentFamily' implicitly has an 'any' type.
+
+31             } else if (tag === 'CHIL' && currentFamily) {
+                                            ~~~~~~~~~~~~~
+
+src/parser/gedcom/parser.ts:44:14 - error TS7005: Variable 'individuals' implicitly has an 'any[]' type.
+
+44     return { individuals, families };
+                ~~~~~~~~~~~
+
+src/parser/gedcom/parser.ts:44:27 - error TS7005: Variable 'families' implicitly has an 'any[]' type.
+
+44     return { individuals, families };
+                             ~~~~~~~~
+
+
+Found 175 errors in 9 files.
+
+Errors  Files
+    55  src/components/Editor/PersonEditor.tsx:1
+    35  src/components/Editor/RelationshipEditor.tsx:1
+    16  src/components/Shared/Toolbar.tsx:1
+    16  src/components/TreeView/TreeNode.tsx:1
+     9  src/components/TreeView/TreeView.tsx:1
+    25  src/core/renderer.tsx:1
+     3  src/hooks/useUndoRedo.ts:1
+     5  src/index.ts:1
+    11  src/parser/gedcom/parser.ts:3
+kenneth@kenneth-Maximus-Ubuntu-24:~/Documents/family-tree-framework$ 

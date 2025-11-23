@@ -1,0 +1,42 @@
+{
+  "name": "family-tree-framework",
+  "version": "1.0.0",
+  "description": "A modern web framework for visualizing and editing genealogy family trees from GEDCOM files.",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "tsc && vite build",
+    "dev": "vite",
+    "test": "jest"
+  },
+  "dependencies": {
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "typescript": "^4.4.4"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^12.1.5",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^27.0.1",
+    "@types/react": "^17.0.52",
+    "@types/react-dom": "^17.0.17",
+    "@vitejs/plugin-react": "^1.0.0",
+    "jest": "^27.0.6",
+    "rollup": "^2.56.3",
+    "ts-jest": "^27.0.6",
+    "ts-node": "^10.9.2",
+    "vite": "^2.6.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/family-tree-framework.git"
+  },
+  "keywords": [
+    "genealogy",
+    "family tree",
+    "GEDCOM",
+    "web framework"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}

@@ -1,0 +1,33 @@
+{
+  "individuals": [
+    { "id": "I1", "name": "Timothy Cruz", "gender": "M", "families": ["F1"] },
+    { "id": "I2", "name": "Amy Harolds", "gender": "F", "families": ["F1"] },
+
+    { "id": "I3", "name": "Alexander Cruz", "gender": "M", "families": ["F1", "F2"] },
+    { "id": "I4", "name": "Jerry Willow", "gender": "M", "families": ["F2"] },
+
+    { "id": "I5", "name": "Jake Cruz", "gender": "M", "families": ["F2", "F3"] },
+    { "id": "I6", "name": "Olivia Cruz", "gender": "F", "families": ["F2", "F4"] },
+    { "id": "I7", "name": "Steve Cruz", "gender": "M", "families": ["F2", "F5"] },
+
+    { "id": "I8", "name": "Taylor Humes", "gender": "F", "families": ["F3"] },
+    { "id": "I9", "name": "Christina Cruz", "gender": "F", "families": [] },
+
+    { "id": "I10", "name": "Arjun Patel", "gender": "M", "families": ["F4"] },
+    { "id": "I11", "name": "Anna Cruz", "gender": "F", "families": [] },
+    { "id": "I12", "name": "Taylor Cruz", "gender": "F", "families": [] },
+
+    { "id": "I13", "name": "Sammie Chang", "gender": "F", "families": ["F5"] },
+    { "id": "I14", "name": "William Cruz", "gender": "M", "families": [] }
+  ],
+
+  "families": [
+    { "id": "F1", "parents": ["I1", "I2"], "children": ["I3"] },
+    { "id": "F2", "parents": ["I3", "I4"], "children": ["I5", "I6", "I7"] },
+
+    { "id": "F3", "parents": ["I5", "I8"], "children": ["I9"] },
+    { "id": "F4", "parents": ["I6", "I10"], "children": ["I11", "I12"] },
+
+    { "id": "F5", "parents": ["I7", "I13"], "children": ["I14"] }
+  ]
+}
