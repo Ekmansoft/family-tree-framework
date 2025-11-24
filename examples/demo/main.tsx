@@ -293,13 +293,22 @@ const App: React.FC = () => {
                                               const allowedFams = new Set<string>();
                                               const stack: string[] = [];
                                               
-                                              // Find starting families
-                                              familyTree.families.forEach((f) => {
-                                                  if ((f.parents || []).includes(focusItem) || (f.children || []).includes(focusItem)) {
-                                                      allowedFams.add(f.id);
-                                                      stack.push(f.id);
-                                                  }
-                                              });
+                                              // Check if focusItem is a family ID
+                                              const focusFamily = famMap.get(focusItem);
+                                              
+                                              if (focusFamily) {
+                                                  // focusItem is a family - start from this family
+                                                  allowedFams.add(focusItem);
+                                                  stack.push(focusItem);
+                                              } else {
+                                                  // focusItem is an individual - find families containing this person
+                                                  familyTree.families.forEach((f) => {
+                                                      if ((f.parents || []).includes(focusItem) || (f.children || []).includes(focusItem)) {
+                                                          allowedFams.add(f.id);
+                                                          stack.push(f.id);
+                                                      }
+                                                  });
+                                              }
                                               
                                               // Build person->families indexes for fast lookup
                                               // personAsParent: families where person is a parent
@@ -334,15 +343,30 @@ const App: React.FC = () => {
                                                   });
                                               }                                              // BFS backward to find parent families (ancestors)
                                               const backStack: string[] = [];
-                                              // Start with families where focusItem is a child
-                                              familyTree.families.forEach((f) => {
-                                                  if ((f.children || []).includes(focusItem)) {
-                                                      if (!allowedFams.has(f.id)) {
-                                                          allowedFams.add(f.id);
-                                                          backStack.push(f.id);
+                                              
+                                              if (focusFamily) {
+                                                  // focusItem is a family - start backward from its parents
+                                                  (focusFamily.parents || []).forEach((parentId: string) => {
+                                                      familyTree.families.forEach((pf) => {
+                                                          if ((pf.children || []).includes(parentId)) {
+                                                              if (!allowedFams.has(pf.id)) {
+                                                                  allowedFams.add(pf.id);
+                                                                  backStack.push(pf.id);
+                                                              }
+                                                          }
+                                                      });
+                                                  });
+                                              } else {
+                                                  // focusItem is an individual - start with families where focusItem is a child
+                                                  familyTree.families.forEach((f) => {
+                                                      if ((f.children || []).includes(focusItem)) {
+                                                          if (!allowedFams.has(f.id)) {
+                                                              allowedFams.add(f.id);
+                                                              backStack.push(f.id);
+                                                          }
                                                       }
-                                                  }
-                                              });
+                                                  });
+                                              }
                                               
                                               while (backStack.length) {
                                                   const fid = backStack.pop()!;
@@ -380,12 +404,22 @@ const App: React.FC = () => {
                                               const allowedFams = new Set<string>();
                                               const stack: string[] = [];
                                               
-                                              familyTree.families.forEach((f) => {
-                                                  if ((f.parents || []).includes(focusItem) || (f.children || []).includes(focusItem)) {
-                                                      allowedFams.add(f.id);
-                                                      stack.push(f.id);
-                                                  }
-                                              });
+                                              // Check if focusItem is a family ID
+                                              const focusFamily = famMap.get(focusItem);
+                                              
+                                              if (focusFamily) {
+                                                  // focusItem is a family - start from this family
+                                                  allowedFams.add(focusItem);
+                                                  stack.push(focusItem);
+                                              } else {
+                                                  // focusItem is an individual - find families containing this person
+                                                  familyTree.families.forEach((f) => {
+                                                      if ((f.parents || []).includes(focusItem) || (f.children || []).includes(focusItem)) {
+                                                          allowedFams.add(f.id);
+                                                          stack.push(f.id);
+                                                      }
+                                                  });
+                                              }
                                               
                                               const personToFamilies = new Map<string, string[]>();
                                               familyTree.families.forEach((f) => {
@@ -413,14 +447,30 @@ const App: React.FC = () => {
                                               
                                               // BFS backward to find parent families (ancestors)
                                               const backStack: string[] = [];
-                                              familyTree.families.forEach((f) => {
-                                                  if ((f.children || []).includes(focusItem)) {
-                                                      if (!allowedFams.has(f.id)) {
-                                                          allowedFams.add(f.id);
-                                                          backStack.push(f.id);
+                                              
+                                              if (focusFamily) {
+                                                  // focusItem is a family - start backward from its parents
+                                                  (focusFamily.parents || []).forEach((parentId: string) => {
+                                                      familyTree.families.forEach((pf) => {
+                                                          if ((pf.children || []).includes(parentId)) {
+                                                              if (!allowedFams.has(pf.id)) {
+                                                                  allowedFams.add(pf.id);
+                                                                  backStack.push(pf.id);
+                                                              }
+                                                          }
+                                                      });
+                                                  });
+                                              } else {
+                                                  // focusItem is an individual - start with families where focusItem is a child
+                                                  familyTree.families.forEach((f) => {
+                                                      if ((f.children || []).includes(focusItem)) {
+                                                          if (!allowedFams.has(f.id)) {
+                                                              allowedFams.add(f.id);
+                                                              backStack.push(f.id);
+                                                          }
                                                       }
-                                                  }
-                                              });
+                                                  });
+                                              }
                                               
                                               while (backStack.length) {
                                                   const fid = backStack.pop()!;

@@ -108,13 +108,15 @@ export const TreeView: React.FC<TreeViewProps> = ({ individuals, families = [], 
             if (individualsById.has(focusItem)) return [focusItem];
             const fam = familiesLocal.find((f) => f.id === focusItem);
             if (fam) {
-                const parents = (fam.parents || []).slice();
+                const parents = (fam.parents || []).slice().filter((p: string) => individualsById.has(p));
                 if (parents.length > 0) return parents;
-                const kids = (fam.children || []).slice();
+                const kids = (fam.children || []).slice().filter((k: string) => individualsById.has(k));
                 if (kids.length > 0) return kids;
             }
         }
-        return individuals.filter((i) => !parentsOf.has(i.id)).map((i) => i.id);
+        const roots = individualsLocal.filter((i) => !parentsOf.has(i.id)).map((i) => i.id);
+        // If no roots found, use all available individuals (failsafe)
+        return roots.length > 0 ? roots : individualsLocal.slice(0, 1).map(i => i.id);
     })();
 
     // BFS to assign generation levels starting from `startingIndividuals`
@@ -282,8 +284,12 @@ export const TreeView: React.FC<TreeViewProps> = ({ individuals, families = [], 
     // (reuse childParentFamily map from above)
 
     // Find root families (families where parents are not children in another family)
-    // When focusItem is set, also include families where the focused person is a child
+    // When focusItem is set, also include families where the focused person is a child, or if focusItem IS the family
     const rootFamilies = familiesLocal.filter((f) => {
+        // If focusItem is this family itself, treat it as a root
+        if (focusItem && f.id === focusItem) {
+            return true;
+        }
         // If focusItem is a child in this family, treat it as a root
         if (focusItem && (f.children || []).includes(focusItem)) {
             return true;
