@@ -318,8 +318,26 @@ export function parseGedcom(gedcomText: string): { individuals: any[]; families:
     // Validation pass: Remove references to non-existent individuals from families
     // This handles corrupt GEDCOM files that reference individuals that don't exist
     const validIndividualIds = new Set(individuals.map(i => i.id));
+    const validFamilyIds = new Set(families.map(f => f.id));
     let invalidRefsRemoved = 0;
     
+    // Validate family references in individuals
+    individuals.forEach(ind => {
+        const originalFamilies = ind.families || [];
+        ind.families = originalFamilies.filter((fid: string) => {
+            if (!validFamilyIds.has(fid)) {
+                invalidRefsRemoved++;
+                try {
+                    // eslint-disable-next-line no-console
+                    console.warn(`parseGedcom: Removed invalid family reference "${fid}" from individual ${ind.id}`);
+                } catch (e) {}
+                return false;
+            }
+            return true;
+        });
+    });
+    
+    // Validate individual references in families
     families.forEach(fam => {
         const originalParents = fam.parents || [];
         const originalChildren = fam.children || [];
@@ -354,7 +372,7 @@ export function parseGedcom(gedcomText: string): { individuals: any[]; families:
     if (invalidRefsRemoved > 0) {
         try {
             // eslint-disable-next-line no-console
-            console.warn(`parseGedcom: Removed ${invalidRefsRemoved} invalid individual references from families`);
+            console.warn(`parseGedcom: Removed ${invalidRefsRemoved} invalid references total`);
         } catch (e) {}
     }
 
