@@ -11,6 +11,52 @@ describe('TreeView Component', () => {
         const { container } = render(<TreeView individuals={[]} />);
         expect(container.querySelector('.tree-view')).toBeInTheDocument();
     });
+
+    test('renders TreeView with individuals', () => {
+        const individuals = [
+            { id: 'I1', name: 'John Doe', families: [] },
+            { id: 'I2', name: 'Jane Doe', families: [] }
+        ];
+        const { container } = render(<TreeView individuals={individuals} />);
+        expect(container.querySelector('.tree-view')).toBeInTheDocument();
+    });
+
+    test('renders TreeView with families', () => {
+        const individuals = [
+            { id: 'I1', name: 'John Doe', families: ['F1'] },
+            { id: 'I2', name: 'Jane Doe', families: ['F1'] },
+            { id: 'I3', name: 'Child Doe', families: [] }
+        ];
+        const families = [
+            { id: 'F1', parents: ['I1', 'I2'], children: ['I3'] }
+        ];
+        const { container } = render(<TreeView individuals={individuals} families={families} />);
+        expect(container.querySelector('.tree-view')).toBeInTheDocument();
+    });
+
+    test('accepts maxGenerationsForward prop', () => {
+        const individuals = [{ id: 'I1', name: 'John Doe', families: [] }];
+        const { container } = render(<TreeView individuals={individuals} maxGenerationsForward={5} />);
+        expect(container.querySelector('.tree-view')).toBeInTheDocument();
+    });
+
+    test('accepts maxGenerationsBackward prop', () => {
+        const individuals = [{ id: 'I1', name: 'John Doe', families: [] }];
+        const { container } = render(<TreeView individuals={individuals} maxGenerationsBackward={10} />);
+        expect(container.querySelector('.tree-view')).toBeInTheDocument();
+    });
+
+    test('accepts focusItem prop', () => {
+        const individuals = [{ id: 'I1', name: 'John Doe', families: [] }];
+        const { container } = render(<TreeView individuals={individuals} focusItem="I1" />);
+        expect(container.querySelector('.tree-view')).toBeInTheDocument();
+    });
+
+    test('accepts maxNumberOfTrees prop', () => {
+        const individuals = [{ id: 'I1', name: 'John Doe', families: [] }];
+        const { container } = render(<TreeView individuals={individuals} maxNumberOfTrees={3} />);
+        expect(container.querySelector('.tree-view')).toBeInTheDocument();
+    });
 });
 
 describe('TreeNode Component', () => {

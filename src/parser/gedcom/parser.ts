@@ -1,3 +1,70 @@
+// Parse GEDCOM date strings into a structured form useful for age calculations.
+// Examples of GEDCOM date formats: "12 JAN 1900", "JAN 1900", "1900".
+// Exported for testing purposes.
+export const parseGedcomDate = (raw: string | null | undefined) => {
+    const result: any = { original: raw || null, year: null, month: null, day: null, precision: 'unknown', iso: null, approxIso: null };
+    if (!raw) return result;
+    const s = String(raw).trim();
+    if (!s) return result;
+
+    // normalize separators and collapse spaces
+    const toks = s.replace(/\s+/g, ' ').split(' ');
+    // month mapping
+    const months: Record<string, number> = {
+        JAN: 1, FEB: 2, MAR: 3, APR: 4, MAY: 5, JUN: 6,
+        JUL: 7, AUG: 8, SEP: 9, OCT: 10, NOV: 11, DEC: 12
+    };
+
+    // Try patterns: D MON YYYY | MON YYYY | YYYY
+    if (toks.length === 3) {
+        const [a, b, c] = toks;
+        const day = parseInt(a, 10);
+        const mon = months[b.toUpperCase()];
+        const year = parseInt(c, 10);
+        if (!Number.isNaN(day) && mon && !Number.isNaN(year)) {
+            result.day = day;
+            result.month = mon;
+            result.year = year;
+            result.precision = 'day';
+        }
+    }
+    if (result.precision === 'unknown' && toks.length === 2) {
+        const [a, b] = toks;
+        const mon = months[a.toUpperCase()];
+        const year = parseInt(b, 10);
+        if (mon && !Number.isNaN(year)) {
+            result.month = mon;
+            result.year = year;
+            result.precision = 'month';
+        }
+    }
+    if (result.precision === 'unknown' && toks.length === 1) {
+        const y = parseInt(toks[0], 10);
+        if (!Number.isNaN(y)) {
+            result.year = y;
+            result.precision = 'year';
+        }
+    }
+
+    // Build ISO-ish strings for convenience: iso when fully specified; approxIso uses defaults
+    if (result.year !== null) {
+        const mm = result.month ? String(result.month).padStart(2, '0') : '01';
+        const dd = result.day ? String(result.day).padStart(2, '0') : '01';
+        try {
+            result.approxIso = `${String(result.year).padStart(4, '0')}-${mm}-${dd}`;
+            if (result.precision === 'day') {
+                result.iso = result.approxIso;
+            } else {
+                result.iso = null;
+            }
+        } catch (e) {
+            result.iso = null;
+            result.approxIso = null;
+        }
+    }
+    return result;
+};
+
 export function parseGedcom(gedcomText: string): { individuals: any[]; families: any[] } {
     const lines: string[] = gedcomText.split('\n');
     const individuals: any[] = [];
@@ -93,6 +160,41 @@ export function parseGedcom(gedcomText: string): { individuals: any[]; families:
                         // eslint-disable-next-line no-console
                         console.debug('parseGedcom: set SEX for', currentIndividual.id, '=>', currentIndividual.gender);
                     } catch (e) {}
+                } else if ((tag === 'BIRT' || tag === 'DEAT') && currentIndividual) {
+                    // Birth/Death event: the actual date is commonly on a level-2 DATE line
+                    // but there can be intervening level-2 metadata (e.g. _UID, RIN, PLAC).
+                    // Scan forward for the first level-2 DATE until we hit the next level-1/0 record.
+                    let dateVal = value && value.trim() ? value.trim() : null;
+                    if (!dateVal) {
+                        for (let k = index + 1; k < lines.length; k++) {
+                            const nl = lines[k].trim();
+                            if (!nl) continue;
+                            const np = nl.split(' ');
+                            const nlevel = np[0];
+                            // stop scanning if we hit a sibling or parent record
+                            if (nlevel === '0' || nlevel === '1') break;
+                            if (nlevel === '2' && np[1] === 'DATE') {
+                                dateVal = np.slice(2).join(' ').trim();
+                                break;
+                            }
+                        }
+                    }
+                    if (dateVal) {
+                        const parsed = parseGedcomDate(dateVal);
+                        if (tag === 'BIRT') {
+                            currentIndividual.birthDate = parsed;
+                            try {
+                                // eslint-disable-next-line no-console
+                                console.debug('parseGedcom: set BIRT for', currentIndividual.id, '=>', parsed);
+                            } catch (e) {}
+                        } else {
+                            currentIndividual.deathDate = parsed;
+                            try {
+                                // eslint-disable-next-line no-console
+                                console.debug('parseGedcom: set DEAT for', currentIndividual.id, '=>', parsed);
+                            } catch (e) {}
+                        }
+                    }
                 } else if (tag === 'FAMS' && currentIndividual) {
                 currentIndividual.families.push(normalizeId(value));
             } else if (tag === 'CHIL' && currentFamily) {
@@ -211,6 +313,49 @@ export function parseGedcom(gedcomText: string): { individuals: any[]; families:
         console.debug('parseGedcom: families =>', families.map(f => ({ id: f.id, children: f.children, parents: f.parents })));
     } catch (e) {
         // ignore logging errors in non-browser environments
+    }
+
+    // Validation pass: Remove references to non-existent individuals from families
+    // This handles corrupt GEDCOM files that reference individuals that don't exist
+    const validIndividualIds = new Set(individuals.map(i => i.id));
+    let invalidRefsRemoved = 0;
+    
+    families.forEach(fam => {
+        const originalParents = fam.parents || [];
+        const originalChildren = fam.children || [];
+        
+        // Filter out invalid parent references
+        fam.parents = originalParents.filter((pid: string) => {
+            if (!validIndividualIds.has(pid)) {
+                invalidRefsRemoved++;
+                try {
+                    // eslint-disable-next-line no-console
+                    console.warn(`parseGedcom: Removed invalid parent reference "${pid}" from family ${fam.id}`);
+                } catch (e) {}
+                return false;
+            }
+            return true;
+        });
+        
+        // Filter out invalid child references
+        fam.children = originalChildren.filter((cid: string) => {
+            if (!validIndividualIds.has(cid)) {
+                invalidRefsRemoved++;
+                try {
+                    // eslint-disable-next-line no-console
+                    console.warn(`parseGedcom: Removed invalid child reference "${cid}" from family ${fam.id}`);
+                } catch (e) {}
+                return false;
+            }
+            return true;
+        });
+    });
+    
+    if (invalidRefsRemoved > 0) {
+        try {
+            // eslint-disable-next-line no-console
+            console.warn(`parseGedcom: Removed ${invalidRefsRemoved} invalid individual references from families`);
+        } catch (e) {}
     }
 
     return { individuals, families };

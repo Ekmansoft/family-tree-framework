@@ -67,32 +67,56 @@ const FamilyUnit: React.FC<FamilyUnitProps> = ({ parents, children, selectedId, 
 
       {/* Parents row */}
       <div className="parents-row">
-        {parents.map((p, i) => (
-          <div
-            key={p.id || i}
-            className={`person-box parent ${selectedId === p.id ? 'selected' : ''}`}
-            style={{ left: `${parentPositions[i]}%`, transform: 'translateX(-50%)' }}
-            onClick={() => onSelectPerson?.(p.id || '')}
-            title={p.name || 'Unknown'}
-          >
-            <div className="person-name">{p.name || 'Unknown'}</div>
-          </div>
-        ))}
+        {parents.map((p, i) => {
+          // transient debug: log individual's id and parsed dates when rendered
+          try {
+            if (typeof window !== 'undefined' && (window as any).SHOW_PERSON_RENDER_LOGS) {
+              // eslint-disable-next-line no-console
+              console.log('render person (parent):', p.id, { birthDate: (p as any).birthDate, deathDate: (p as any).deathDate });
+            }
+          } catch {}
+          return (
+            <div
+              key={p.id || i}
+              className={`person-box parent ${selectedId === p.id ? 'selected' : ''}`}
+              style={{ left: `${parentPositions[i]}%`, transform: 'translateX(-50%)' }}
+              onClick={() => onSelectPerson?.(p.id || '')}
+              title={p.name || 'Unknown'}
+            >
+              <div className="person-name">{p.name || 'Unknown'}</div>
+              {/* show birth/death if present on the person object */}
+              {(p as any).birthDate || (p as any).deathDate ? (
+                <div className="person-dates">{(p as any).birthDate?.iso || (p as any).birthDate?.approxIso || (p as any).birthDate?.original ? `b. ${((p as any).birthDate?.iso || (p as any).birthDate?.approxIso || (p as any).birthDate?.original)}` : ''}{(p as any).birthDate && (p as any).deathDate ? ' — ' : ''}{(p as any).deathDate?.iso || (p as any).deathDate?.approxIso || (p as any).deathDate?.original ? `d. ${((p as any).deathDate?.iso || (p as any).deathDate?.approxIso || (p as any).deathDate?.original)}` : ''}</div>
+              ) : null}
+            </div>
+          );
+        })}
       </div>
 
       {/* Children row */}
       <div className="children-row">
-        {children.map((c, i) => (
-          <div
-            key={c.id || i}
-            className={`person-box child ${selectedId === c.id ? 'selected' : ''}`}
-            style={{ left: `${childPositions[i]}%`, transform: 'translateX(-50%)' }}
-            onClick={() => onSelectPerson?.(c.id || '')}
-            title={c.name || 'Unknown'}
-          >
-            <div className="person-name">{c.name || 'Unknown'}</div>
-          </div>
-        ))}
+        {children.map((c, i) => {
+          try {
+            if (typeof window !== 'undefined' && (window as any).SHOW_PERSON_RENDER_LOGS) {
+              // eslint-disable-next-line no-console
+              console.log('render person (child):', c.id, { birthDate: (c as any).birthDate, deathDate: (c as any).deathDate });
+            }
+          } catch {}
+          return (
+            <div
+              key={c.id || i}
+              className={`person-box child ${selectedId === c.id ? 'selected' : ''}`}
+              style={{ left: `${childPositions[i]}%`, transform: 'translateX(-50%)' }}
+              onClick={() => onSelectPerson?.(c.id || '')}
+              title={c.name || 'Unknown'}
+            >
+              <div className="person-name">{c.name || 'Unknown'}</div>
+              {(c as any).birthDate || (c as any).deathDate ? (
+                <div className="person-dates">{(c as any).birthDate?.iso || (c as any).birthDate?.approxIso || (c as any).birthDate?.original ? `b. ${((c as any).birthDate?.iso || (c as any).birthDate?.approxIso || (c as any).birthDate?.original)}` : ''}{(c as any).birthDate && (c as any).deathDate ? ' — ' : ''}{(c as any).deathDate?.iso || (c as any).deathDate?.approxIso || (c as any).deathDate?.original ? `d. ${((c as any).deathDate?.iso || (c as any).deathDate?.approxIso || (c as any).deathDate?.original)}` : ''}</div>
+              ) : null}
+            </div>
+          );
+        })}
       </div>
 
       {/* Family box in between parents and children */}

@@ -78,6 +78,13 @@ h1, h2, h3 {
     overflow: visible;
 }
 
+.person-dates {
+    font-size: 11px;
+    color: #666;
+    margin-top: 2px;
+    line-height: 1;
+}
+
 .person-box.standalone {
     cursor: pointer;
 }
