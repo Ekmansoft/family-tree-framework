@@ -164,3 +164,72 @@ describe('Date Parser', () => {
         expect(date.precision).toBe('unknown');
     });
 });
+describe('GEDCOM Validation', () => {
+    it('should remove invalid individual references from families', () => {
+        const gedcomData = `
+            0 @I1@ INDI
+            1 NAME John /Doe/
+            0 @F1@ FAM
+            1 HUSB @I1@
+            1 WIFE @I999@
+            1 CHIL @I888@
+        `;
+        
+        const result = parseGedcom(gedcomData);
+        expect(result.families[0].parents).toHaveLength(1);
+        expect(result.families[0].parents).toContain('I1');
+        expect(result.families[0].parents).not.toContain('I999');
+        expect(result.families[0].children).toHaveLength(0);
+    });
+
+    it('should remove invalid family references from individuals', () => {
+        const gedcomData = `
+            0 @I1@ INDI
+            1 NAME John /Doe/
+            1 FAMS @F999@
+            0 @F1@ FAM
+            1 HUSB @I1@
+        `;
+        
+        const result = parseGedcom(gedcomData);
+        expect(result.individuals[0].families).not.toContain('F999');
+        expect(result.individuals[0].families).toContain('F1');
+    });
+
+    it('should handle completely invalid family with no valid members', () => {
+        const gedcomData = `
+            0 @I1@ INDI
+            1 NAME Valid /Person/
+            0 @F1@ FAM
+            1 HUSB @INVALID1@
+            1 WIFE @INVALID2@
+            1 CHIL @INVALID3@
+        `;
+        
+        const result = parseGedcom(gedcomData);
+        expect(result.families[0].parents).toHaveLength(0);
+        expect(result.families[0].children).toHaveLength(0);
+    });
+
+    it('should preserve valid references while removing invalid ones', () => {
+        const gedcomData = `
+            0 @I1@ INDI
+            1 NAME Parent1 /Doe/
+            0 @I2@ INDI
+            1 NAME Parent2 /Doe/
+            0 @I3@ INDI
+            1 NAME Child /Doe/
+            0 @F1@ FAM
+            1 HUSB @I1@
+            1 WIFE @I2@
+            1 CHIL @I3@
+            1 CHIL @I999@
+        `;
+        
+        const result = parseGedcom(gedcomData);
+        expect(result.families[0].parents).toHaveLength(2);
+        expect(result.families[0].children).toHaveLength(1);
+        expect(result.families[0].children).toContain('I3');
+        expect(result.families[0].children).not.toContain('I999');
+    });
+});

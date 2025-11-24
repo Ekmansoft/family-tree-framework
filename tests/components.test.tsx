@@ -57,6 +57,42 @@ describe('TreeView Component', () => {
         const { container } = render(<TreeView individuals={individuals} maxNumberOfTrees={3} />);
         expect(container.querySelector('.tree-view')).toBeInTheDocument();
     });
+
+    test('handles focusItem as family ID', () => {
+        const individuals = [
+            { id: 'I1', name: 'Parent1', families: ['F1'] },
+            { id: 'I2', name: 'Parent2', families: ['F1'] },
+            { id: 'I3', name: 'Child', families: [] }
+        ];
+        const families = [
+            { id: 'F1', parents: ['I1', 'I2'], children: ['I3'] }
+        ];
+        const { container } = render(<TreeView individuals={individuals} families={families} focusItem="F1" />);
+        expect(container.querySelector('.tree-view')).toBeInTheDocument();
+        // Should render the family and its members
+        expect(container.textContent).toContain('Parent1');
+    });
+
+    test('filters invalid individual references from families', () => {
+        const individuals = [
+            { id: 'I1', name: 'Valid Person', families: [] }
+        ];
+        const families = [
+            { id: 'F1', parents: ['I1', 'INVALID'], children: ['I3'] } // I3 doesn't exist
+        ];
+        // TreeView should handle this gracefully without crashing
+        const { container } = render(<TreeView individuals={individuals} families={families} />);
+        expect(container.querySelector('.tree-view')).toBeInTheDocument();
+    });
+
+    test('renders empty tree when all starting individuals filtered out', () => {
+        const individuals = [
+            { id: 'I1', name: 'Person', families: [] }
+        ];
+        // focusItem doesn't exist, should fall back gracefully
+        const { container } = render(<TreeView individuals={individuals} focusItem="NONEXISTENT" />);
+        expect(container.querySelector('.tree-view')).toBeInTheDocument();
+    });
 });
 
 describe('TreeNode Component', () => {
