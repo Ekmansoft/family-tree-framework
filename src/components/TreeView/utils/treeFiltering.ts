@@ -14,6 +14,7 @@ export interface TreeFilterParams {
     individuals: any[];
     families: any[];
     selectedTreeIndex?: number; // Which tree to show (0 = largest, 1 = second largest, etc.)
+    focusItemId?: string | null; // Person or family ID - will auto-detect which tree it belongs to
 }
 
 export interface TreeFilterResult {
@@ -96,10 +97,10 @@ export function discoverTreeComponents(individuals: any[], families: any[]): Tre
 }
 
 /**
- * Filters to a specific tree component (defaults to largest if not specified)
+ * Filters to a specific tree component by person/family ID or by index
  */
 export function filterByMaxTrees(params: TreeFilterParams): TreeFilterResult {
-    const { individuals, families, selectedTreeIndex = 0 } = params;
+    const { individuals, families, selectedTreeIndex, focusItemId } = params;
     
     if (families.length === 0) {
         return { individualsLocal: individuals, familiesLocal: families };
@@ -111,10 +112,36 @@ export function filterByMaxTrees(params: TreeFilterParams): TreeFilterResult {
         return { individualsLocal: individuals, familiesLocal: families };
     }
     
-    // Select the component at the specified index (default to largest)
-    const selectedComponent = components[Math.min(selectedTreeIndex, components.length - 1)];
+    let selectedComponent: TreeComponent | undefined;
     
-    const familiesLocal = families.filter((f: any) => selectedComponent.familyIds.has(f.id));
+    // If focusItemId is provided, find which tree component it belongs to
+    if (focusItemId) {
+        selectedComponent = components.find(comp => {
+            // Check if it's a family ID
+            if (comp.familyIds.has(focusItemId)) {
+                return true;
+            }
+            // Check if it's an individual ID - search in families
+            for (const fid of comp.familyIds) {
+                const fam = families.find((f: any) => f.id === fid);
+                if (fam) {
+                    if ((fam.parents || []).includes(focusItemId) || 
+                        (fam.children || []).includes(focusItemId)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        });
+    }
+    
+    // If no focusItemId or not found, use selectedTreeIndex
+    if (!selectedComponent) {
+        const index = selectedTreeIndex !== undefined ? selectedTreeIndex : 0;
+        selectedComponent = components[Math.min(index, components.length - 1)];
+    }
+    
+    const familiesLocal = families.filter((f: any) => selectedComponent!.familyIds.has(f.id));
     
     const allowedIndividuals = new Set<string>();
     familiesLocal.forEach((f: any) => { 

@@ -23,8 +23,13 @@ interface TreeViewProps {
 
 // Render a single tree: each person is one node placed by generation (distance from root)
 export const TreeView: React.FC<TreeViewProps> = ({ individuals, families = [], selectedId, onSelectPerson, onSelectFamily, siblingGap = 28, parentGap = 40, familyPadding = 16, focusItem = null, maxGenerationsForward = 100, maxGenerationsBackward = 10, selectedTreeIndex }) => {
-    // Filter to selected tree component (defaults to largest if not specified)
-    const { individualsLocal, familiesLocal } = filterByMaxTrees({ individuals, families, selectedTreeIndex });
+    // Filter to tree component - auto-detects from focusItem if provided, otherwise uses selectedTreeIndex
+    const { individualsLocal, familiesLocal } = filterByMaxTrees({ 
+        individuals, 
+        families, 
+        selectedTreeIndex,
+        focusItemId: focusItem 
+    });
     
     // Build parent -> children edges from families
     const { childrenOf, parentsOf } = buildRelationshipMaps(familiesLocal);
