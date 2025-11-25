@@ -65,10 +65,18 @@ export const parseGedcomDate = (raw: string | null | undefined) => {
     return result;
 };
 
-export function parseGedcom(gedcomText: string): { individuals: any[]; families: any[] } {
+export interface ValidationError {
+    type: 'invalid_family_reference' | 'invalid_parent_reference' | 'invalid_child_reference';
+    message: string;
+    entityId: string; // ID of the individual or family with the error
+    referenceId: string; // ID that was invalid
+}
+
+export function parseGedcom(gedcomText: string): { individuals: any[]; families: any[]; validationErrors: ValidationError[] } {
     const lines: string[] = gedcomText.split('\n');
     const individuals: any[] = [];
     const families: any[] = [];
+    const validationErrors: ValidationError[] = [];
     let currentIndividual: any = null;
     let currentFamily: any = null;
 
@@ -327,6 +335,12 @@ export function parseGedcom(gedcomText: string): { individuals: any[]; families:
         ind.families = originalFamilies.filter((fid: string) => {
             if (!validFamilyIds.has(fid)) {
                 invalidRefsRemoved++;
+                validationErrors.push({
+                    type: 'invalid_family_reference',
+                    message: `Individual ${ind.id} references non-existent family ${fid}`,
+                    entityId: ind.id,
+                    referenceId: fid
+                });
                 try {
                     // eslint-disable-next-line no-console
                     console.warn(`parseGedcom: Removed invalid family reference "${fid}" from individual ${ind.id}`);
@@ -346,6 +360,12 @@ export function parseGedcom(gedcomText: string): { individuals: any[]; families:
         fam.parents = originalParents.filter((pid: string) => {
             if (!validIndividualIds.has(pid)) {
                 invalidRefsRemoved++;
+                validationErrors.push({
+                    type: 'invalid_parent_reference',
+                    message: `Family ${fam.id} references non-existent parent ${pid}`,
+                    entityId: fam.id,
+                    referenceId: pid
+                });
                 try {
                     // eslint-disable-next-line no-console
                     console.warn(`parseGedcom: Removed invalid parent reference "${pid}" from family ${fam.id}`);
@@ -359,6 +379,12 @@ export function parseGedcom(gedcomText: string): { individuals: any[]; families:
         fam.children = originalChildren.filter((cid: string) => {
             if (!validIndividualIds.has(cid)) {
                 invalidRefsRemoved++;
+                validationErrors.push({
+                    type: 'invalid_child_reference',
+                    message: `Family ${fam.id} references non-existent child ${cid}`,
+                    entityId: fam.id,
+                    referenceId: cid
+                });
                 try {
                     // eslint-disable-next-line no-console
                     console.warn(`parseGedcom: Removed invalid child reference "${cid}" from family ${fam.id}`);
@@ -376,5 +402,5 @@ export function parseGedcom(gedcomText: string): { individuals: any[]; families:
         } catch (e) {}
     }
 
-    return { individuals, families };
+    return { individuals, families, validationErrors };
 }

@@ -43,7 +43,7 @@ describe('GEDCOM Parser', () => {
     it('should handle empty GEDCOM files gracefully', () => {
         const gedcomData = '';
         const result = parseGedcom(gedcomData);
-        expect(result).toEqual({ individuals: [], families: [] });
+        expect(result).toEqual({ individuals: [], families: [], validationErrors: [] });
     });
 
     it('should throw an error for invalid GEDCOM format', () => {
@@ -231,5 +231,29 @@ describe('GEDCOM Validation', () => {
         expect(result.families[0].children).toHaveLength(1);
         expect(result.families[0].children).toContain('I3');
         expect(result.families[0].children).not.toContain('I999');
+        expect(result.validationErrors).toHaveLength(1);
+        expect(result.validationErrors[0].type).toBe('invalid_child_reference');
+        expect(result.validationErrors[0].entityId).toBe('F1');
+        expect(result.validationErrors[0].referenceId).toBe('I999');
+    });
+
+    it('should collect validation errors for multiple invalid references', () => {
+        const gedcomData = `
+            0 @I1@ INDI
+            1 NAME Valid /Person/
+            0 @F1@ FAM
+            1 HUSB @INVALID1@
+            1 WIFE @INVALID2@
+            1 CHIL @INVALID3@
+        `;
+        
+        const result = parseGedcom(gedcomData);
+        expect(result.validationErrors).toHaveLength(3);
+        expect(result.validationErrors.map(e => e.type)).toEqual([
+            'invalid_parent_reference',
+            'invalid_parent_reference',
+            'invalid_child_reference'
+        ]);
+        expect(result.validationErrors.map(e => e.referenceId)).toEqual(['INVALID1', 'INVALID2', 'INVALID3']);
     });
 });

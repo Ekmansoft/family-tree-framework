@@ -12,6 +12,7 @@ import { filterTreeByFocus } from './utils/filterTree';
 
 const App: React.FC = () => {
     const [familyTree, setFamilyTree] = useState<{ individuals: any[]; families: any[] } | null>(null);
+    const [validationErrors, setValidationErrors] = useState<any[]>([]);
     const [demoFile, setDemoFile] = useState<string>('demo-family.ged');
     const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
     const [focusItem, setFocusItem] = useState<string | null>(null);
@@ -33,16 +34,17 @@ const App: React.FC = () => {
         reader.onload = (e) => {
             try {
                 const text = e.target?.result as string;
-                const parsed = parseGedcom(text);
-                console.log('Parsed uploaded GEDCOM:', parsed);
-                setFamilyTree(parsed);
+                const { individuals, families, validationErrors } = parseGedcom(text);
+                console.log('Parsed uploaded GEDCOM:', { individuals, families, validationErrors });
+                setFamilyTree({ individuals, families });
+                setValidationErrors(validationErrors || []);
                 setUploadedFileName(file.name);
                 setDemoFile(''); // Clear demo file selection
                 setSelectedId(null);
                 setSelectedFamilyId(null);
                 setFocusItem(null);
                 // Auto-configure for large files
-                if (parsed.individuals.length > 500) {
+                if (individuals.length > 500) {
                     setShowDebugPanel(false);
                     setMaxNumberOfTrees(1);
                 } else {
@@ -71,16 +73,17 @@ const App: React.FC = () => {
                 setIsLoading(true);
                 const res = await fetch(`./${demoFile}`);
                 const text = await res.text();
-                const parsed = parseGedcom(text);
-                console.log('Parsed GEDCOM:', parsed);
-                setFamilyTree(parsed);
+                const { individuals, families, validationErrors } = parseGedcom(text);
+                console.log('Parsed GEDCOM:', { individuals, families, validationErrors });
+                setFamilyTree({ individuals, families });
+                setValidationErrors(validationErrors || []);
                 setUploadedFileName(null); // Clear uploaded file name when loading demo
                 // clear selections when switching demos
                 setSelectedId(null);
                 setSelectedFamilyId(null);
                 setFocusItem(null);
                 // Auto-hide debug panel for large files and set max trees to 1
-                if (parsed.individuals.length > 500) {
+                if (individuals.length > 500) {
                     setShowDebugPanel(false);
                     setMaxNumberOfTrees(1);
                 } else {
@@ -124,6 +127,22 @@ const App: React.FC = () => {
                         showDebugPanel={showDebugPanel}
                         onToggle={() => setShowDebugPanel(!showDebugPanel)}
                     />
+                    {validationErrors.length > 0 && (
+                        <div style={{ margin: '12px 0', padding: '12px', background: '#fff3cd', border: '1px solid #ffc107', borderRadius: 4 }}>
+                            <details>
+                                <summary style={{ cursor: 'pointer', fontWeight: 'bold', color: '#856404' }}>
+                                    ⚠️ GEDCOM Validation Warnings ({validationErrors.length})
+                                </summary>
+                                <div style={{ marginTop: 8, maxHeight: 200, overflow: 'auto' }}>
+                                    {validationErrors.map((err, idx) => (
+                                        <div key={idx} style={{ fontSize: 12, padding: '4px 0', borderBottom: '1px solid #f0e5d8' }}>
+                                            <strong>{err.type.replace(/_/g, ' ')}:</strong> {err.message}
+                                        </div>
+                                    ))}
+                                </div>
+                            </details>
+                        </div>
+                    )}
                     <div style={{ marginBottom: 8, display: 'flex', gap: 8, alignItems: 'center' }}>
                         <div>
                             <button onClick={() => setScale((s) => Math.min(2, +(s + 0.1).toFixed(2)))}>Zoom +</button>
