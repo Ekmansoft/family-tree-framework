@@ -541,9 +541,9 @@ const App: React.FC = () => {
                                                       });
                                                   });
                                               } else {
-                                                  // focusItem is an individual - start with families where focusItem is a child
+                                                  // focusItem is an individual - start with families where focusItem is a child OR parent
                                                   familyTree.families.forEach((f) => {
-                                                      if ((f.children || []).includes(focusItem)) {
+                                                      if ((f.children || []).includes(focusItem) || (f.parents || []).includes(focusItem)) {
                                                           if (!allowedFams.has(f.id)) {
                                                               allowedFams.add(f.id);
                                                               backStack.push(f.id);
