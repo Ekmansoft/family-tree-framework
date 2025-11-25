@@ -69,9 +69,10 @@ import { parseGedcomLine, debugLog } from './utils/lineParsing';
 import { handleIndividualTag, startIndividualRecord } from './utils/individualHandlers';
 import { handleFamilyTag, startFamilyRecord } from './utils/familyHandlers';
 import { linkFamilyReferences, scanForMissingFamilies } from './utils/familyLinking';
-import { validateReferences, ValidationError } from './utils/validation';
+import { validateReferences } from './utils/validation';
+import type { ValidationError } from './utils/validation';
 
-export { ValidationError } from './utils/validation';
+export type { ValidationError } from './utils/validation';
 
 export function parseGedcom(gedcomText: string): { individuals: any[]; families: any[]; validationErrors: ValidationError[] } {
     const lines: string[] = gedcomText.split('\n');
