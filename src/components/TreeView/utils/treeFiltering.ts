@@ -1,11 +1,19 @@
 /**
  * Tree filtering utilities
- * Filters families and individuals to the largest connected tree component
+ * Discovers all connected tree components and allows filtering by selected tree index
  */
+
+export interface TreeComponent {
+    rootFamilyId: string;
+    familyIds: Set<string>;
+    individualCount: number;
+    familyCount: number;
+}
 
 export interface TreeFilterParams {
     individuals: any[];
     families: any[];
+    selectedTreeIndex?: number; // Which tree to show (0 = largest, 1 = second largest, etc.)
 }
 
 export interface TreeFilterResult {
@@ -14,14 +22,11 @@ export interface TreeFilterResult {
 }
 
 /**
- * Filters trees by selecting the largest connected component (by family count)
- * Root families are those whose parents are not children in any other family
+ * Discovers all connected tree components in the dataset
  */
-export function filterByMaxTrees(params: TreeFilterParams): TreeFilterResult {
-    const { individuals, families } = params;
-    
+export function discoverTreeComponents(individuals: any[], families: any[]): TreeComponent[] {
     if (families.length === 0) {
-        return { individualsLocal: individuals, familiesLocal: families };
+        return [];
     }
     
     // Find root families: families whose parents are not children in any family
@@ -36,14 +41,16 @@ export function filterByMaxTrees(params: TreeFilterParams): TreeFilterResult {
     });
 
     if (rootFamiliesOrdered.length === 0) {
-        return { individualsLocal: individuals, familiesLocal: families };
+        return [];
     }
 
-    // Find the largest connected component by exploring from each root
-    let largestComponent: Set<string> = new Set();
-    let largestSize = 0;
+    // Find all connected components
+    const components: TreeComponent[] = [];
+    const processedFamilies = new Set<string>();
 
     rootFamiliesOrdered.forEach((rootFamily: any) => {
+        if (processedFamilies.has(rootFamily.id)) return;
+        
         const componentFamilies = new Set<string>();
         const stack: string[] = [rootFamily.id];
         
@@ -51,6 +58,7 @@ export function filterByMaxTrees(params: TreeFilterParams): TreeFilterResult {
             const fid = stack.pop()!;
             if (componentFamilies.has(fid)) continue;
             componentFamilies.add(fid);
+            processedFamilies.add(fid);
             
             const fam = families.find((f: any) => f.id === fid);
             if (!fam) continue;
@@ -63,17 +71,50 @@ export function filterByMaxTrees(params: TreeFilterParams): TreeFilterResult {
             });
         }
         
-        if (componentFamilies.size > largestSize) {
-            largestSize = componentFamilies.size;
-            largestComponent = componentFamilies;
-        }
+        // Count unique individuals in this component
+        const individualIds = new Set<string>();
+        componentFamilies.forEach(fid => {
+            const fam = families.find((f: any) => f.id === fid);
+            if (fam) {
+                (fam.parents || []).forEach((p: string) => individualIds.add(p));
+                (fam.children || []).forEach((c: string) => individualIds.add(c));
+            }
+        });
+        
+        components.push({
+            rootFamilyId: rootFamily.id,
+            familyIds: componentFamilies,
+            familyCount: componentFamilies.size,
+            individualCount: individualIds.size
+        });
     });
 
-    if (largestComponent.size === 0) {
+    // Sort by size (largest first)
+    components.sort((a, b) => b.familyCount - a.familyCount);
+    
+    return components;
+}
+
+/**
+ * Filters to a specific tree component (defaults to largest if not specified)
+ */
+export function filterByMaxTrees(params: TreeFilterParams): TreeFilterResult {
+    const { individuals, families, selectedTreeIndex = 0 } = params;
+    
+    if (families.length === 0) {
         return { individualsLocal: individuals, familiesLocal: families };
     }
     
-    const familiesLocal = families.filter((f: any) => largestComponent.has(f.id));
+    const components = discoverTreeComponents(individuals, families);
+    
+    if (components.length === 0) {
+        return { individualsLocal: individuals, familiesLocal: families };
+    }
+    
+    // Select the component at the specified index (default to largest)
+    const selectedComponent = components[Math.min(selectedTreeIndex, components.length - 1)];
+    
+    const familiesLocal = families.filter((f: any) => selectedComponent.familyIds.has(f.id));
     
     const allowedIndividuals = new Set<string>();
     familiesLocal.forEach((f: any) => { 

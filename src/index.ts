@@ -23,3 +23,8 @@ const init = () => {
 };
 
 document.addEventListener('DOMContentLoaded', init);
+
+export { TreeView } from './components/TreeView/TreeView';
+export { parseGedcom } from './parser';
+export { discoverTreeComponents } from './components/TreeView/utils/treeFiltering';
+export type { TreeComponent } from './components/TreeView/utils/treeFiltering';
