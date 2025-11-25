@@ -21,7 +21,6 @@ const App: React.FC = () => {
     const [personQuery, setPersonQuery] = useState<string>('');
     const [maxGenerationsForward, setMaxGenerationsForward] = useState<number>(100);
     const [maxGenerationsBackward, setMaxGenerationsBackward] = useState<number>(10);
-    const [maxNumberOfTrees, setMaxNumberOfTrees] = useState<number>(5);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [showDebugPanel, setShowDebugPanel] = useState<boolean>(false);
 
@@ -46,7 +45,6 @@ const App: React.FC = () => {
                 // Auto-configure for large files
                 if (individuals.length > 500) {
                     setShowDebugPanel(false);
-                    setMaxNumberOfTrees(1);
                 } else {
                     setShowDebugPanel(true);
                 }
@@ -82,10 +80,9 @@ const App: React.FC = () => {
                 setSelectedId(null);
                 setSelectedFamilyId(null);
                 setFocusItem(null);
-                // Auto-hide debug panel for large files and set max trees to 1
+                // Auto-hide debug panel for large files
                 if (individuals.length > 500) {
                     setShowDebugPanel(false);
-                    setMaxNumberOfTrees(1);
                 } else {
                     setShowDebugPanel(true);
                 }
@@ -153,11 +150,9 @@ const App: React.FC = () => {
                     <ControlPanel
                         maxGenerationsForward={maxGenerationsForward}
                         maxGenerationsBackward={maxGenerationsBackward}
-                        maxNumberOfTrees={maxNumberOfTrees}
                         scale={scale}
                         onMaxGenerationsForwardChange={setMaxGenerationsForward}
                         onMaxGenerationsBackwardChange={setMaxGenerationsBackward}
-                        onMaxNumberOfTreesChange={setMaxNumberOfTrees}
                         onScaleChange={setScale}
                     />
 
@@ -283,12 +278,12 @@ const App: React.FC = () => {
                         <div style={{ transform: `translate(${offset.x}px, ${offset.y}px) scale(${scale})`, transformOrigin: '0 0', minWidth: 2000, minHeight: 2000, padding: '500px' }}>
                             <TreeView
                                 individuals={
-                                    focusItem && maxNumberOfTrees === 1
+                                    focusItem
                                         ? filterTreeByFocus(focusItem, familyTree.individuals, familyTree.families).individuals
                                         : familyTree.individuals
                                 }
                                 families={
-                                    focusItem && maxNumberOfTrees === 1
+                                    focusItem
                                         ? filterTreeByFocus(focusItem, familyTree.individuals, familyTree.families).families
                                         : familyTree.families
                                 }
@@ -296,7 +291,6 @@ const App: React.FC = () => {
                                 focusItem={focusItem}
                                 maxGenerationsForward={maxGenerationsForward}
                                 maxGenerationsBackward={maxGenerationsBackward}
-                                maxNumberOfTrees={maxNumberOfTrees}
                                 onSelectPerson={(id: string) => {
                                     setSelectedId(id);
                                     setFocusItem(id);

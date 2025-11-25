@@ -15,7 +15,7 @@ The Family Tree Framework is a modern TypeScript/React library for visualizing a
 - **Advanced Navigation**:
   - Focus on specific individuals or families
   - Generation limiting (forward and backward)
-  - Tree truncation (limit number of displayed trees)
+  - Automatic largest tree selection
   - Click-to-focus from searchable person list
   - Automatic scroll centering
 - **Performance Optimized**:
@@ -92,7 +92,6 @@ const { individuals, families } = parseGedcom(gedcomText);
   focusItem="I1"
   maxGenerationsForward={10}
   maxGenerationsBackward={5}
-  maxNumberOfTrees={1}
   onSelectPerson={(id) => console.log('Selected:', id)}
 />
 ```
@@ -103,11 +102,12 @@ const { individuals, families } = parseGedcom(gedcomText);
 - `focusItem`: Individual or family ID to center the tree on
 - `maxGenerationsForward`: Limit descendant generations (default: 100)
 - `maxGenerationsBackward`: Limit ancestor generations (default: 10)
-- `maxNumberOfTrees`: Limit number of separate family trees displayed
 - `selectedId`: Currently selected person ID
 - `onSelectPerson`: Callback when person box clicked
 - `onSelectFamily`: Callback when family box clicked
 - `siblingGap`: Horizontal spacing between siblings (default: 28px)
+
+Note: The framework automatically displays the largest connected tree component.
 
 ### Date Parsing
 The parser exports `parseGedcomDate` for structured date handling:

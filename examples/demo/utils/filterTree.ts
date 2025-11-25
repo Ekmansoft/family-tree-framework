@@ -1,5 +1,5 @@
 /**
- * Filter individuals and families based on focusItem when maxNumberOfTrees is 1.
+ * Filter individuals and families based on focusItem.
  * Performs BFS forward (descendants) and backward (ancestors) to find all connected families.
  */
 export function filterTreeByFocus(

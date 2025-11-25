@@ -18,13 +18,12 @@ interface TreeViewProps {
     focusItem?: string | null; // id of person or family where decoding starts
     maxGenerationsForward?: number; // how many younger generations to render (forward)
     maxGenerationsBackward?: number; // how many older generations to render (backward)
-    maxNumberOfTrees?: number; // how many separate tree components to draw
 }
 
 // Render a single tree: each person is one node placed by generation (distance from root)
-export const TreeView: React.FC<TreeViewProps> = ({ individuals, families = [], selectedId, onSelectPerson, onSelectFamily, siblingGap = 28, parentGap = 40, familyPadding = 16, focusItem = null, maxGenerationsForward = 100, maxGenerationsBackward = 10, maxNumberOfTrees = 5 }) => {
-    // Filter trees by maxNumberOfTrees setting
-    const { individualsLocal, familiesLocal } = filterByMaxTrees({ individuals, families, maxNumberOfTrees });
+export const TreeView: React.FC<TreeViewProps> = ({ individuals, families = [], selectedId, onSelectPerson, onSelectFamily, siblingGap = 28, parentGap = 40, familyPadding = 16, focusItem = null, maxGenerationsForward = 100, maxGenerationsBackward = 10 }) => {
+    // Filter to largest connected tree component
+    const { individualsLocal, familiesLocal } = filterByMaxTrees({ individuals, families });
     
     // Build parent -> children edges from families
     const { childrenOf, parentsOf } = buildRelationshipMaps(familiesLocal);

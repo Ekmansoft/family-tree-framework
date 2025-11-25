@@ -52,12 +52,6 @@ describe('TreeView Component', () => {
         expect(container.querySelector('.tree-view')).toBeInTheDocument();
     });
 
-    test('accepts maxNumberOfTrees prop', () => {
-        const individuals = [{ id: 'I1', name: 'John Doe', families: [] }];
-        const { container } = render(<TreeView individuals={individuals} maxNumberOfTrees={3} />);
-        expect(container.querySelector('.tree-view')).toBeInTheDocument();
-    });
-
     test('handles focusItem as family ID', () => {
         const individuals = [
             { id: 'I1', name: 'Parent1', families: ['F1'] },
