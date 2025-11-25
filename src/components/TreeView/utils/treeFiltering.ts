@@ -1,3 +1,4 @@
+
 /**
  * Tree filtering utilities
  * Discovers all connected tree components and allows filtering by selected tree index
@@ -64,10 +65,19 @@ export function discoverTreeComponents(individuals: any[], families: any[]): Tre
             const fam = families.find((f: any) => f.id === fid);
             if (!fam) continue;
             
+            // Traverse DOWN: find families where this family's children are parents
             (fam.children || []).forEach((childId: string) => {
                 const childFam = families.find((f: any) => (f.parents || []).includes(childId));
                 if (childFam && !componentFamilies.has(childFam.id)) {
                     stack.push(childFam.id);
+                }
+            });
+            
+            // Traverse UP: find families where this family's parents are children
+            (fam.parents || []).forEach((parentId: string) => {
+                const parentFam = families.find((f: any) => (f.children || []).includes(parentId));
+                if (parentFam && !componentFamilies.has(parentFam.id)) {
+                    stack.push(parentFam.id);
                 }
             });
         }
@@ -81,6 +91,14 @@ export function discoverTreeComponents(individuals: any[], families: any[]): Tre
                 (fam.children || []).forEach((c: string) => individualIds.add(c));
             }
         });
+        
+        // Debug logging
+        if (typeof window !== 'undefined' && (window as any).DEBUG_TREE_DISCOVERY) {
+            console.log(`Tree component starting from root family ${rootFamily.id}:`);
+            console.log(`  Families: ${componentFamilies.size}`);
+            console.log(`  Individuals: ${individualIds.size}`);
+            console.log(`  Family IDs:`, Array.from(componentFamilies));
+        }
         
         components.push({
             rootFamilyId: rootFamily.id,

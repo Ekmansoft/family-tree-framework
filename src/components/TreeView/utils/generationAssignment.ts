@@ -102,11 +102,27 @@ export function assignGenerations(params: GenerationAssignmentParams): Generatio
             const parents: string[] = (fam.parents || []).slice();
             const kids: string[] = (fam.children || []).slice();
 
-            // If any parent has a level, set all parents to the maximum level (deepest generation)
-            // This ensures spouses who marry into the family adopt the correct generation
+            // If any parent has a level, set all parents to the same level
+            // Priority: if a parent is a child in another family, use their level (more authoritative)
             const parentLevels = parents.map((p) => levelOf.get(p)).filter((v): v is number => typeof v === 'number');
             if (parentLevels.length > 0) {
-                const target = Math.max(...parentLevels);
+                // Check if any parent is a child in another family (more authoritative level)
+                const parentsWhoAreChildren = parents.filter((p) => {
+                    return familiesLocal.some((f: any) => (f.children || []).includes(p));
+                });
+                
+                let target: number;
+                if (parentsWhoAreChildren.length > 0) {
+                    // Use the level of parent(s) who are children elsewhere (they have proper lineage)
+                    const authoritativeLevels = parentsWhoAreChildren
+                        .map(p => levelOf.get(p))
+                        .filter((v): v is number => typeof v === 'number');
+                    target = authoritativeLevels.length > 0 ? Math.max(...authoritativeLevels) : Math.max(...parentLevels);
+                } else {
+                    // No authoritative parent, use max of all parents
+                    target = Math.max(...parentLevels);
+                }
+                
                 parents.forEach((p) => {
                     const cur = levelOf.get(p);
                     if (cur === undefined || cur !== target) {
@@ -114,12 +130,12 @@ export function assignGenerations(params: GenerationAssignmentParams): Generatio
                         changed = true;
                     }
                 });
-                // Ensure children are at target+1
+                // Ensure ALL children are at exactly target+1 (align siblings)
+                const wantChildLevel = target + 1;
                 kids.forEach((c) => {
                     const cur = levelOf.get(c);
-                    const want = target + 1;
-                    if (cur === undefined || cur < want) {
-                        levelOf.set(c, want);
+                    if (cur === undefined || cur !== wantChildLevel) {
+                        levelOf.set(c, wantChildLevel);
                         changed = true;
                     }
                 });
@@ -161,15 +177,6 @@ export function assignGenerations(params: GenerationAssignmentParams): Generatio
             }
         }
     });
-
-    // Debug: log level assignments
-    if (typeof window !== 'undefined' && (window as any).DEBUG_TREE) {
-        console.log('Level assignments:');
-        levelOf.forEach((lvl, id) => {
-            const ind = individualsById.get(id);
-            console.log(`  ${id} (${ind?.name || '?'}): level ${lvl}`);
-        });
-    }
 
     // Group by level
     const levels = new Map<number, string[]>();

@@ -8,19 +8,18 @@ import { FileSelector } from './components/FileSelector';
 import { DebugPanel } from './components/DebugPanel';
 import { ControlPanel } from './components/ControlPanel';
 import { PersonList } from './components/PersonList';
-import { filterTreeByFocus } from './utils/filterTree';
 
 const App: React.FC = () => {
     const [familyTree, setFamilyTree] = useState<{ individuals: any[]; families: any[] } | null>(null);
     const [validationErrors, setValidationErrors] = useState<any[]>([]);
     const [demoFile, setDemoFile] = useState<string>('demo-family.ged');
     const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
-    const [focusItem, setFocusItem] = useState<string | null>(null);
+
     const [selectedId, setSelectedId] = useState<string | null>(null);
     const [selectedFamilyId, setSelectedFamilyId] = useState<string | null>(null);
     const [personQuery, setPersonQuery] = useState<string>('');
-    const [maxGenerationsForward, setMaxGenerationsForward] = useState<number>(100);
-    const [maxGenerationsBackward, setMaxGenerationsBackward] = useState<number>(10);
+    const [maxGenerationsForward, setMaxGenerationsForward] = useState<number>(2);
+    const [maxGenerationsBackward, setMaxGenerationsBackward] = useState<number>(2);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [showDebugPanel, setShowDebugPanel] = useState<boolean>(false);
 
@@ -41,7 +40,6 @@ const App: React.FC = () => {
                 setDemoFile(''); // Clear demo file selection
                 setSelectedId(null);
                 setSelectedFamilyId(null);
-                setFocusItem(null);
                 // Auto-configure for large files
                 if (individuals.length > 500) {
                     setShowDebugPanel(false);
@@ -79,7 +77,6 @@ const App: React.FC = () => {
                 // clear selections when switching demos
                 setSelectedId(null);
                 setSelectedFamilyId(null);
-                setFocusItem(null);
                 // Auto-hide debug panel for large files
                 if (individuals.length > 500) {
                     setShowDebugPanel(false);
@@ -94,6 +91,7 @@ const App: React.FC = () => {
         };
         loadGedcom();
     }, [demoFile]);
+    
     // zoom & pan state
     const [scale, setScale] = useState<number>(1);
     const [offset, setOffset] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
@@ -103,6 +101,101 @@ const App: React.FC = () => {
     const lastPan = React.useRef<{ x: number; y: number } | null>(null);
     const pinchRef = React.useRef<{ initialDist: number; initialScale: number } | null>(null);
 
+    // Center on selected person when it changes
+    useEffect(() => {
+        if (!selectedId || !panRef.current) return;
+        
+        // Wait for tree to render/re-render with new selection
+        let attempts = 0;
+        const maxAttempts = 5;
+        
+        const attemptCenter = () => {
+            if (!panRef.current) return;
+            
+            const container = panRef.current;
+            const personBox = container.querySelector(`[data-person-id="${selectedId}"]`) as HTMLElement;
+            
+            if (personBox) {
+                // TreeView uses left/top with transform: translate(-50%, -50%)
+                // So the center of the person is at exactly (left, top)
+                const style = personBox.style;
+                const leftStr = style.left;
+                const topStr = style.top;
+                
+                // Parse with better error handling
+                const contentX = leftStr ? parseFloat(leftStr) : 0;
+                const contentY = topStr ? parseFloat(topStr) : 0;
+                
+                if (isNaN(contentX) || isNaN(contentY)) {
+                    console.warn('Could not parse position:', { leftStr, topStr });
+                    attempts++;
+                    if (attempts < maxAttempts) {
+                        setTimeout(attemptCenter, 200);
+                    }
+                    return;
+                }
+                
+                // Calculate viewport center
+                const containerRect = container.getBoundingClientRect();
+                const viewportCenterX = containerRect.width / 2;
+                const viewportCenterY = containerRect.height / 2;
+                
+                // Calculate offset needed to center this person in viewport
+                // Account for current scale: scaled content position = offset + contentX * scale
+                // We want: offset + contentX * scale = viewportCenter
+                // Therefore: offset = viewportCenter - contentX * scale
+                const newOffsetX = viewportCenterX - contentX * scale;
+                const newOffsetY = viewportCenterY - contentY * scale;
+                
+                setOffset({
+                    x: newOffsetX,
+                    y: newOffsetY
+                });
+                
+
+            } else {
+                // Person not found yet, retry
+                attempts++;
+                if (attempts < maxAttempts) {
+                    setTimeout(attemptCenter, 200);
+                } else {
+                    console.warn('Could not find person box for centering:', selectedId);
+                }
+            }
+        };
+        
+        const timeoutId = setTimeout(attemptCenter, 100);
+        
+        return () => clearTimeout(timeoutId);
+    }, [selectedId, familyTree, scale]);
+    
+    // Re-center when scale changes
+    useEffect(() => {
+        if (!selectedId || !panRef.current) return;
+        
+        const container = panRef.current;
+        const personBox = container.querySelector(`[data-person-id="${selectedId}"]`) as HTMLElement;
+        
+        if (personBox) {
+            const style = personBox.style;
+            const contentX = parseFloat(style.left || '0');
+            const contentY = parseFloat(style.top || '0');
+            
+            const containerRect = container.getBoundingClientRect();
+            const viewportCenterX = containerRect.width / 2;
+            const viewportCenterY = containerRect.height / 2;
+            
+            // Maintain centering at new scale
+            const newOffsetX = viewportCenterX - contentX * scale;
+            const newOffsetY = viewportCenterY - contentY * scale;
+            
+            setOffset({
+                x: newOffsetX,
+                y: newOffsetY
+            });
+        }
+    }, [scale]);
+    
     return (
         <div>
             <h1>Family Tree Demo</h1>
@@ -163,28 +256,6 @@ const App: React.FC = () => {
                             onPersonQueryChange={setPersonQuery}
                             onPersonClick={(ind) => {
                                 setSelectedId(ind.id);
-                                setFocusItem(ind.id);
-                                // Center the tree view on the selected person
-                                setTimeout(() => {
-                                    if (panRef.current) {
-                                        const container = panRef.current;
-                                        const containerRect = container.getBoundingClientRect();
-                                        const centerX = containerRect.width / 2;
-                                        const centerY = containerRect.height / 2;
-                                        
-                                        // Find the person box element
-                                        const personBox = container.querySelector(`[data-person-id="${ind.id}"]`) as HTMLElement;
-                                        if (personBox) {
-                                            const boxRect = personBox.getBoundingClientRect();
-                                            const boxCenterX = boxRect.left + boxRect.width / 2 - containerRect.left;
-                                            const boxCenterY = boxRect.top + boxRect.height / 2 - containerRect.top;
-                                            
-                                            // Scroll to center the person
-                                            container.scrollLeft += boxCenterX - centerX;
-                                            container.scrollTop += boxCenterY - centerY;
-                                        }
-                                    }
-                                }, 100);
                             }}
                         />
 
@@ -273,31 +344,20 @@ const App: React.FC = () => {
                                 lastPan.current = null;
                             }
                         }}
-                        style={{ border: '1px solid #ddd', background: '#fafafa', overflow: 'scroll', cursor: isPanning ? 'grabbing' : 'grab', height: 600, width: '100%', touchAction: 'none' as const }}
+                        style={{ border: '1px solid #ddd', background: '#fafafa', overflow: 'hidden', cursor: isPanning ? 'grabbing' : 'grab', height: 600, width: '100%', touchAction: 'none' as const }}
                     >
-                        <div style={{ transform: `translate(${offset.x}px, ${offset.y}px) scale(${scale})`, transformOrigin: '0 0', minWidth: 2000, minHeight: 2000, padding: '500px' }}>
+                        <div style={{ transform: `translate(${offset.x}px, ${offset.y}px) scale(${scale})`, transformOrigin: '0 0', position: 'relative' }}>
                             <TreeView
-                                individuals={
-                                    focusItem
-                                        ? filterTreeByFocus(focusItem, familyTree.individuals, familyTree.families).individuals
-                                        : familyTree.individuals
-                                }
-                                families={
-                                    focusItem
-                                        ? filterTreeByFocus(focusItem, familyTree.individuals, familyTree.families).families
-                                        : familyTree.families
-                                }
+                                individuals={familyTree.individuals}
+                                families={familyTree.families}
                                 selectedId={selectedId}
-                                focusItem={focusItem}
                                 maxGenerationsForward={maxGenerationsForward}
                                 maxGenerationsBackward={maxGenerationsBackward}
                                 onSelectPerson={(id: string) => {
                                     setSelectedId(id);
-                                    setFocusItem(id);
                                 }}
                                 onSelectFamily={(fid: string) => {
                                     setSelectedFamilyId(fid);
-                                    setFocusItem(fid);
                                 }}
                             />
                         </div>

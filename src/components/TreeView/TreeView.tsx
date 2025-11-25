@@ -22,14 +22,127 @@ interface TreeViewProps {
 }
 
 // Render a single tree: each person is one node placed by generation (distance from root)
-export const TreeView: React.FC<TreeViewProps> = ({ individuals, families = [], selectedId, onSelectPerson, onSelectFamily, siblingGap = 28, parentGap = 40, familyPadding = 16, focusItem = null, maxGenerationsForward = 100, maxGenerationsBackward = 10, selectedTreeIndex }) => {
-    // Filter to tree component - auto-detects from focusItem if provided, otherwise uses selectedTreeIndex
-    const { individualsLocal, familiesLocal } = filterByMaxTrees({ 
-        individuals, 
-        families, 
-        selectedTreeIndex,
-        focusItemId: focusItem 
-    });
+export const TreeView: React.FC<TreeViewProps> = ({ individuals, families = [], selectedId, onSelectPerson, onSelectFamily, siblingGap = 28, parentGap = 40, familyPadding = 16, maxGenerationsForward = 2, maxGenerationsBackward = 2, selectedTreeIndex }) => {
+    
+    // If selectedId is provided, traverse from that person within generation limits
+    // Otherwise, use tree component filtering
+    let individualsLocal = individuals;
+    let familiesLocal = families;
+    
+    if (selectedId) {
+        // Build relationship maps from all data
+        const individualById = new Map(individuals.map(i => [i.id, i]));
+        const familyById = new Map(families.map((f: any) => [f.id, f]));
+        
+        // Build maps: person -> families where they are a child
+        const personToChildFamilies = new Map<string, string[]>();
+        families.forEach((fam: any) => {
+            (fam.children || []).forEach((childId: string) => {
+                if (!personToChildFamilies.has(childId)) personToChildFamilies.set(childId, []);
+                personToChildFamilies.get(childId)!.push(fam.id);
+            });
+        });
+        
+        // Build maps: person -> families where they are a parent
+        const personToParentFamilies = new Map<string, string[]>();
+        families.forEach((fam: any) => {
+            (fam.parents || []).forEach((parentId: string) => {
+                if (!personToParentFamilies.has(parentId)) personToParentFamilies.set(parentId, []);
+                personToParentFamilies.get(parentId)!.push(fam.id);
+            });
+        });
+        
+        const reachableIndividuals = new Set<string>();
+        const reachableFamilies = new Set<string>();
+        
+        // Start from selected person (generation 0)
+        reachableIndividuals.add(selectedId);
+        
+        // Traverse BACKWARD (ancestors)
+        let currentGeneration = new Set([selectedId]);
+        for (let gen = 0; gen < maxGenerationsBackward; gen++) {
+            const nextGeneration = new Set<string>();
+            
+            currentGeneration.forEach(personId => {
+                // Find families where this person is a child
+                const parentFamilies = personToChildFamilies.get(personId) || [];
+                parentFamilies.forEach(famId => {
+                    reachableFamilies.add(famId);
+                    const fam = familyById.get(famId);
+                    if (fam) {
+                        // Add all parents
+                        (fam.parents || []).forEach((parentId: string) => {
+                            reachableIndividuals.add(parentId);
+                            nextGeneration.add(parentId);
+                            // Also add families where these parents are parents (their spouse families)
+                            (personToParentFamilies.get(parentId) || []).forEach(spouseFamId => {
+                                reachableFamilies.add(spouseFamId);
+                            });
+                        });
+                        // Add ALL children (siblings) and their spouse families
+                        (fam.children || []).forEach((childId: string) => {
+                            reachableIndividuals.add(childId);
+                            // Add families where siblings are parents (their spouse families)
+                            (personToParentFamilies.get(childId) || []).forEach(spouseFamId => {
+                                reachableFamilies.add(spouseFamId);
+                                // Also add the spouses themselves
+                                const spouseFam = familyById.get(spouseFamId);
+                                if (spouseFam) {
+                                    (spouseFam.parents || []).forEach((spouseId: string) => {
+                                        reachableIndividuals.add(spouseId);
+                                    });
+                                }
+                            });
+                        });
+                    }
+                });
+            });
+            
+            currentGeneration = nextGeneration;
+        }
+        
+        // Traverse FORWARD (descendants)
+        currentGeneration = new Set([selectedId]);
+        for (let gen = 0; gen < maxGenerationsForward; gen++) {
+            const nextGeneration = new Set<string>();
+            
+            currentGeneration.forEach(personId => {
+                // Find families where this person is a parent
+                const childFamilies = personToParentFamilies.get(personId) || [];
+                childFamilies.forEach(famId => {
+                    reachableFamilies.add(famId);
+                    const fam = familyById.get(famId);
+                    if (fam) {
+                        // Add all parents (spouses)
+                        (fam.parents || []).forEach((parentId: string) => {
+                            reachableIndividuals.add(parentId);
+                        });
+                        // Add ALL children
+                        (fam.children || []).forEach((childId: string) => {
+                            reachableIndividuals.add(childId);
+                            nextGeneration.add(childId);
+                        });
+                    }
+                });
+            });
+            
+            currentGeneration = nextGeneration;
+        }
+        
+        // Filter to reachable individuals and families
+        individualsLocal = individuals.filter(i => reachableIndividuals.has(i.id));
+        familiesLocal = families.filter((f: any) => reachableFamilies.has(f.id));
+    } else {
+        // No selection - use tree component filtering
+        const result = filterByMaxTrees({ 
+            individuals, 
+            families, 
+            selectedTreeIndex,
+            focusItemId: null 
+        });
+        individualsLocal = result.individualsLocal;
+        familiesLocal = result.familiesLocal;
+    }
     
     // Build parent -> children edges from families
     const { childrenOf, parentsOf } = buildRelationshipMaps(familiesLocal);
@@ -43,9 +156,9 @@ export const TreeView: React.FC<TreeViewProps> = ({ individuals, families = [], 
         childrenOf,
         parentsOf,
         individualsById,
-        focusItem
+        focusItem: selectedId ?? null
     });
-
+    
     // Refs to DOM elements so we can measure box heights and compute dynamic offsets
     const personEls = useRef(new Map<string, HTMLDivElement>());
     const familyEls = useRef(new Map<string, HTMLDivElement>());
@@ -65,18 +178,23 @@ export const TreeView: React.FC<TreeViewProps> = ({ individuals, families = [], 
     const singleWidth = 100;
     
     // Find root families (families where parents are not children in another family)
-    // When focusItem is set, also include families where the focused person is a child, or if focusItem IS the family
     const childParentFamily = new Map<string, string>();
     familiesLocal.forEach((f) => {
         (f.children || []).forEach((c: string) => childParentFamily.set(c, f.id));
     });
     
     const rootFamilies = familiesLocal.filter((f) => {
-        if (focusItem && f.id === focusItem) return true;
-        if (focusItem && (f.children || []).includes(focusItem)) return true;
         const parents: string[] = (f.parents || []).slice();
         return !parents.some((p) => childParentFamily.has(p));
     });
+    
+    // Debug logging for root families
+    if (typeof window !== 'undefined' && (window as any).DEBUG_TREE) {
+        console.log(`Found ${rootFamilies.length} root families:`, rootFamilies.map(f => f.id));
+        rootFamilies.forEach(f => {
+            console.log(`  Root family ${f.id}: parents=[${(f.parents || []).join(', ')}], children=[${(f.children || []).join(', ')}]`);
+        });
+    }
 
     // Estimate tree width for dynamic sibling gap
     const estimatedTreeWidth = rootFamilies.reduce((sum, f) => {
@@ -115,8 +233,13 @@ export const TreeView: React.FC<TreeViewProps> = ({ individuals, families = [], 
     // Layout all root families side by side
     const familiesProcessed = new Set<string>();
     const rootWidths = rootFamilies.map((f) => computeFamilyWidth(f.id));
+    
+    // Calculate total width needed
     const totalTreeWidth = rootWidths.reduce((s, w) => s + w, 0) || 200;
-    let cursor = 0;
+    
+    // Start from negative half-width to center the layout around x=0
+    // This ensures balanced space usage when families have uneven descendant distributions
+    let cursor = -totalTreeWidth / 2;
     rootFamilies.forEach((fam, idx) => {
         const w = rootWidths[idx] || 200;
         const famCenter = cursor + w / 2;
@@ -357,7 +480,7 @@ export const TreeView: React.FC<TreeViewProps> = ({ individuals, families = [], 
     }
 
     return (
-        <div className="tree-view" style={{ position: 'relative', width: '100%', minHeight: totalHeight, display: 'flex', justifyContent: 'center' }}>
+        <div className="tree-view" style={{ position: 'relative', width: '100%', minHeight: totalHeight, display: 'block' }}>
             <div ref={innerRef} style={{ position: 'relative', width: actualTreeWidth, height: totalHeight }}>
             <ConnectionLines
                 familyPositions={familyPositions}

@@ -113,15 +113,20 @@ export function createFamilyLayouter(params: LayoutParams) {
 }
 
 /**
- * Applies X offset to ensure all content is in positive space with padding
+ * Applies X and Y offsets to ensure all content is in positive space with padding
  */
-export function applyXOffset(pos: Record<string, { x: number; y: number }>, targetMinX: number = 100): LayoutResult {
-    // Find min and max X coordinates from all laid-out positions
+export function applyXOffset(pos: Record<string, { x: number; y: number }>, targetMinX: number = 100, targetMinY: number = 100): LayoutResult {
+    // Find min and max X and Y coordinates from all laid-out positions
     let minX = Infinity;
     let maxX = -Infinity;
+    let minY = Infinity;
+    let maxY = -Infinity;
+    
     Object.values(pos).forEach((p) => {
         if (p.x < minX) minX = p.x;
         if (p.x > maxX) maxX = p.x;
+        if (p.y < minY) minY = p.y;
+        if (p.y > maxY) maxY = p.y;
     });
     
     // Handle edge case where no positions exist
@@ -129,13 +134,19 @@ export function applyXOffset(pos: Record<string, { x: number; y: number }>, targ
         minX = 0;
         maxX = 1000;
     }
+    if (minY === Infinity || maxY === -Infinity) {
+        minY = 0;
+        maxY = 1000;
+    }
     
-    // Apply X offset to ensure ALL content is in positive space with padding
+    // Apply offsets to ensure ALL content is in positive space with padding
     const xOffset = targetMinX - minX;
+    const yOffset = targetMinY - minY;
     
     // Apply offset to all person positions
     Object.keys(pos).forEach((id) => {
         pos[id].x += xOffset;
+        pos[id].y += yOffset;
     });
     
     // Update min/max after offset
