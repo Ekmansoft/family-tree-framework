@@ -8,6 +8,7 @@ import { parseGedcom } from '../../src/parser';
 const App: React.FC = () => {
     const [familyTree, setFamilyTree] = useState<{ individuals: any[]; families: any[] } | null>(null);
     const [demoFile, setDemoFile] = useState<string>('demo-family.ged');
+    const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
     const [focusItem, setFocusItem] = useState<string | null>(null);
     const [selectedId, setSelectedId] = useState<string | null>(null);
     const [selectedFamilyId, setSelectedFamilyId] = useState<string | null>(null);
@@ -18,7 +19,48 @@ const App: React.FC = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [showDebugPanel, setShowDebugPanel] = useState<boolean>(false);
 
+    const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        setIsLoading(true);
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                const text = e.target?.result as string;
+                const parsed = parseGedcom(text);
+                console.log('Parsed uploaded GEDCOM:', parsed);
+                setFamilyTree(parsed);
+                setUploadedFileName(file.name);
+                setDemoFile(''); // Clear demo file selection
+                setSelectedId(null);
+                setSelectedFamilyId(null);
+                setFocusItem(null);
+                // Auto-configure for large files
+                if (parsed.individuals.length > 500) {
+                    setShowDebugPanel(false);
+                    setMaxNumberOfTrees(1);
+                } else {
+                    setShowDebugPanel(true);
+                }
+            } catch (err) {
+                console.error('Failed to parse uploaded GEDCOM:', err);
+                alert('Failed to parse GEDCOM file. Please check the console for details.');
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        reader.onerror = () => {
+            console.error('Failed to read file');
+            alert('Failed to read file');
+            setIsLoading(false);
+        };
+        reader.readAsText(file);
+    };
+
     useEffect(() => {
+        if (!demoFile) return; // Skip if using uploaded file
+        
         const loadGedcom = async () => {
             try {
                 setIsLoading(true);
@@ -27,6 +69,7 @@ const App: React.FC = () => {
                 const parsed = parseGedcom(text);
                 console.log('Parsed GEDCOM:', parsed);
                 setFamilyTree(parsed);
+                setUploadedFileName(null); // Clear uploaded file name when loading demo
                 // clear selections when switching demos
                 setSelectedId(null);
                 setSelectedFamilyId(null);
@@ -58,14 +101,51 @@ const App: React.FC = () => {
     return (
         <div>
             <h1>Family Tree Demo</h1>
-            <div style={{ marginBottom: 8 }}>
-                <label htmlFor="demo-select" style={{ marginRight: 8 }}>Demo file:</label>
-                <select id="demo-select" value={demoFile} onChange={(e) => setDemoFile(e.target.value)}>
-                    <option value="demo-family.ged">Simple demo (2 parents, 3 children)</option>
-                    <option value="demo-family-3gen.ged">3-generation demo</option>
-                    <option value="sample-from-image.ged">Sample from image (Cruz / Willow branch)</option>
-                    <option value="Queen.ged">Queen (sample)</option>
-                </select>
+            <div style={{ marginBottom: 8, display: 'flex', alignItems: 'center', gap: 12 }}>
+                <div>
+                    <label htmlFor="demo-select" style={{ marginRight: 8 }}>Demo file:</label>
+                    <select 
+                        id="demo-select" 
+                        value={demoFile} 
+                        onChange={(e) => {
+                            setDemoFile(e.target.value);
+                            setUploadedFileName(null);
+                        }}
+                    >
+                        <option value="demo-family.ged">Simple demo (2 parents, 3 children)</option>
+                        <option value="demo-family-3gen.ged">3-generation demo</option>
+                        <option value="sample-from-image.ged">Sample from image (Cruz / Willow branch)</option>
+                        <option value="Queen.ged">Queen (sample)</option>
+                    </select>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <span style={{ color: '#666' }}>or</span>
+                    <label 
+                        htmlFor="file-upload" 
+                        style={{ 
+                            padding: '6px 12px', 
+                            background: '#007acc', 
+                            color: 'white', 
+                            borderRadius: 4, 
+                            cursor: 'pointer',
+                            fontSize: 14
+                        }}
+                    >
+                        Upload GEDCOM
+                    </label>
+                    <input 
+                        id="file-upload" 
+                        type="file" 
+                        accept=".ged,.gedcom" 
+                        onChange={handleFileUpload}
+                        style={{ display: 'none' }}
+                    />
+                    {uploadedFileName && (
+                        <span style={{ fontSize: 13, color: '#666' }}>
+                            ({uploadedFileName})
+                        </span>
+                    )}
+                </div>
             </div>
             {isLoading && <div style={{ padding: 20, textAlign: 'center' }}>Loading GEDCOM file...</div>}
             {familyTree ? (
