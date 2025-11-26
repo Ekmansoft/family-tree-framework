@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef, useState } from 'react';
+import React, { useLayoutEffect, useRef, useState, useMemo, useCallback } from 'react';
 import { assignGenerations } from './utils/generationAssignment';
 import { createFamilyWidthCalculator } from './utils/familyWidthCalculation';
 import { createFamilyLayouter, applyXOffset } from './utils/familyLayout';
@@ -6,6 +6,7 @@ import { filterByMaxTrees, buildRelationshipMaps as buildPersonRelationshipMaps 
 import { buildRelationshipMaps as buildFamilyRelationshipMaps } from './utils/relationshipMaps';
 import { ConnectionLines } from './ConnectionLines';
 import type { Individual, Family } from './types';
+import { debounce } from '../../utils/helpers';
 
 interface TreeViewProps {
     individuals: Individual[];
@@ -23,6 +24,8 @@ interface TreeViewProps {
     maxGenerationsForward?: number; // how many younger generations to render (forward)
     maxGenerationsBackward?: number; // how many older generations to render (backward)
     selectedTreeIndex?: number; // which tree component to display (0 = largest, default)
+    onPerformanceMetric?: (metricName: string, durationMs: number) => void; // optional performance callback
+    enableVirtualRendering?: boolean; // enable viewport-based rendering for large trees
 }
 
 // Render a single tree: each person is one node placed by generation (distance from root)
@@ -39,8 +42,16 @@ export const TreeView: React.FC<TreeViewProps> = ({
     familyPadding = 16,
     maxGenerationsForward = 2,
     maxGenerationsBackward = 2,
-    selectedTreeIndex
+    selectedTreeIndex,
+    onPerformanceMetric,
+    enableVirtualRendering = false
 }) => {
+    const perfStart = (label: string) => onPerformanceMetric ? performance.now() : 0;
+    const perfEnd = (label: string, start: number) => {
+        if (onPerformanceMetric && start > 0) {
+            onPerformanceMetric(label, performance.now() - start);
+        }
+    };
     
     // If selectedId is provided, traverse from that person within generation limits
     // Otherwise, use tree component filtering
@@ -48,6 +59,7 @@ export const TreeView: React.FC<TreeViewProps> = ({
     let familiesLocal = families;
     
     if (selectedId) {
+        const traversalStart = perfStart('traversal');
         // Build relationship maps from all data
         const individualById = new Map(individuals.map(i => [i.id, i]));
         const familyById = new Map(families.map(f => [f.id, f]));
@@ -125,6 +137,8 @@ export const TreeView: React.FC<TreeViewProps> = ({
         individualsLocal = individuals.filter(i => reachableIndividuals.has(i.id));
         familiesLocal = families.filter((f: any) => reachableFamilies.has(f.id));
         
+        perfEnd('traversal', traversalStart);
+        
         if (typeof window !== 'undefined' && (window as any).DEBUG_LAYOUT) {
             console.log(`Filtered to ${individualsLocal.length} individuals and ${familiesLocal.length} families`);
             console.log(`Reachable families:`, Array.from(reachableFamilies).sort());
@@ -147,6 +161,7 @@ export const TreeView: React.FC<TreeViewProps> = ({
     const individualsById = new Map<string, any>(individualsLocal.map((i) => [i.id, i]));
 
     // Assign generation levels using BFS
+    const genStart = perfStart('generation-assignment');
     const { levelOf, minLevel, maxLevel, levels } = assignGenerations({
         individualsLocal,
         familiesLocal,
@@ -155,6 +170,7 @@ export const TreeView: React.FC<TreeViewProps> = ({
         individualsById,
         focusItem: selectedId ?? null
     });
+    perfEnd('generation-assignment', genStart);
     
     // Refs to DOM elements so we can measure box heights and compute dynamic offsets
     const personEls = useRef(new Map<string, HTMLDivElement>());
@@ -193,21 +209,27 @@ export const TreeView: React.FC<TreeViewProps> = ({
         });
     }
 
-    // Create family width calculator
-    const computeFamilyWidth = createFamilyWidthCalculator({
-        familiesLocal,
-        levelOf,
-        personWidthMap: personWidthMap.current,
-        maxGenerationsForward,
-        maxGenerationsBackward,
-        singleWidth,
-        siblingGap,
-        parentGap,
-        familyPadding
-    });
+    // Create family width calculator - memoized to avoid recalculation
+    const computeFamilyWidth = useMemo(() => {
+        const widthStart = perfStart('width-calculation');
+        const calculator = createFamilyWidthCalculator({
+            familiesLocal,
+            levelOf,
+            personWidthMap: personWidthMap.current,
+            maxGenerationsForward,
+            maxGenerationsBackward,
+            singleWidth,
+            siblingGap,
+            parentGap,
+            familyPadding
+        });
+        perfEnd('width-calculation', widthStart);
+        return calculator;
+    }, [familiesLocal, levelOf, maxGenerationsForward, maxGenerationsBackward, singleWidth, siblingGap, parentGap, familyPadding]);
     
-    // Create layout function
-    const { layoutFamily, pos } = createFamilyLayouter({
+    // Create layout function - memoized
+    const layoutStart = perfStart('layout-creation');
+    const { layoutFamily, pos } = useMemo(() => createFamilyLayouter({
         individualsLocal,
         familiesLocal,
         levelOf,
@@ -223,7 +245,8 @@ export const TreeView: React.FC<TreeViewProps> = ({
         parentGap,
         ancestorFamilyGap,
         descendantFamilyGap
-    });
+    }), [individualsLocal, familiesLocal, levelOf, computeFamilyWidth, maxGenerationsForward, maxGenerationsBackward, rowHeight, yOffset, singleWidth, siblingGap, selectedId, parentGap, ancestorFamilyGap, descendantFamilyGap]);
+    perfEnd('layout-creation', layoutStart);
     
     // Layout strategy: if selectedId exists, start from their lineage; otherwise use root families
     const familiesProcessed = new Set<string>();
