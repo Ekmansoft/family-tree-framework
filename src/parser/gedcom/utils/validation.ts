@@ -34,10 +34,6 @@ export const validateReferences = (
                     entityId: ind.id,
                     referenceId: fid
                 });
-                try {
-                    // eslint-disable-next-line no-console
-                    console.warn(`parseGedcom: Removed invalid family reference "${fid}" from individual ${ind.id}`);
-                } catch (e) {}
                 return false;
             }
             return true;
@@ -59,10 +55,6 @@ export const validateReferences = (
                     entityId: fam.id,
                     referenceId: pid
                 });
-                try {
-                    // eslint-disable-next-line no-console
-                    console.warn(`parseGedcom: Removed invalid parent reference "${pid}" from family ${fam.id}`);
-                } catch (e) {}
                 return false;
             }
             return true;
@@ -78,22 +70,11 @@ export const validateReferences = (
                     entityId: fam.id,
                     referenceId: cid
                 });
-                try {
-                    // eslint-disable-next-line no-console
-                    console.warn(`parseGedcom: Removed invalid child reference "${cid}" from family ${fam.id}`);
-                } catch (e) {}
                 return false;
             }
             return true;
         });
     });
-    
-    if (invalidRefsRemoved > 0) {
-        try {
-            // eslint-disable-next-line no-console
-            console.warn(`parseGedcom: Removed ${invalidRefsRemoved} invalid references total`);
-        } catch (e) {}
-    }
     
     return validationErrors;
 };

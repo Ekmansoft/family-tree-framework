@@ -51,6 +51,11 @@ h1, h2, h3 {
     cursor: pointer;
 }
 
+.family-box:focus {
+    outline: 2px solid #007bff;
+    outline-offset: 2px;
+}
+
 .person-box {
     position: absolute;
     width: 100px;
@@ -64,6 +69,11 @@ h1, h2, h3 {
     z-index: 3;
     overflow: visible;
     font-size: 11px;
+}
+
+.person-box:focus {
+    outline: 2px solid #007bff;
+    outline-offset: 2px;
 }
 
 .person-box.selected {

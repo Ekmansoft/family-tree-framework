@@ -1,0 +1,775 @@
+main.tsx:73 Parsed GEDCOM: Object
+main.tsx:120 Attaching wheel event listener
+client.ts:354 [vite] hot updated: /@fs/home/kenneth/Documents/family-tree-framework/src/components/TreeView/TreeView.tsx
+window.DEBUG_LAYOUT=true
+true
+TreeView.tsx:126 Filtered to 18 individuals and 8 families
+TreeView.tsx:127 Reachable families: (8) ['F156', 'F187', 'F214', 'F215', 'F75', 'F76', 'F77', 'F81']
+familyLayout.ts:49 Layout family F76 at centerX=0, parents=[I170, I171], children=[I168]
+familyLayout.ts:72   F76 has 2 parents with ancestor family widths: I170(F77)=420, I171(F214)=280
+familyLayout.ts:98   Parent I170 at x=-140, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:98   Parent I171 at x=210, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:49 Layout family F77 at centerX=-140, parents=[I172, I173], children=[I170, I6456]
+familyLayout.ts:72   F77 has 2 parents with ancestor family widths: I172(F81)=420, I173(F156)=420
+familyLayout.ts:98   Parent I172 at x=-350, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:98   Parent I173 at x=70, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:49 Layout family F81 at centerX=-350, parents=[I179, I180], children=[I172]
+familyLayout.ts:72   F81 has 2 parents with ancestor family widths: I179(none)=112, I180(none)=112
+familyLayout.ts:98   Parent I179 at x=-416, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I180 at x=-284, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:49 Layout family F156 at centerX=70, parents=[I329, I330], children=[I173]
+familyLayout.ts:72   F156 has 2 parents with ancestor family widths: I329(none)=112, I330(none)=112
+familyLayout.ts:98   Parent I329 at x=4, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I330 at x=136, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:129   F77 children widths: I170(F76)=280, I6456(undefined)=100
+familyLayout.ts:49 Layout family F214 at centerX=210, parents=[I439, I440], children=[I171]
+familyLayout.ts:72   F214 has 2 parents with ancestor family widths: I439(F215)=280, I440(none)=112
+familyLayout.ts:98   Parent I439 at x=154, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I440 at x=350, parentFamilyWidth=112, allocatedWidth=112
+familyLayout.ts:49 Layout family F215 at centerX=154, parents=[I441, I442], children=[I439]
+familyLayout.ts:72   F215 has 2 parents with ancestor family widths: I441(none)=112, I442(none)=112
+familyLayout.ts:98   Parent I441 at x=88, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I442 at x=220, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:49 Layout family F75 at centerX=0, parents=[I168, I169], children=[I386]
+familyLayout.ts:72   F75 has 2 parents with ancestor family widths: I168(F76)=280, I169(none)=112
+familyLayout.ts:98   Parent I168 at x=-56, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I169 at x=140, parentFamilyWidth=112, allocatedWidth=112
+familyLayout.ts:49 Layout family F187 at centerX=0, parents=[I386, I387], children=[I390]
+familyLayout.ts:72   F187 has 2 parents with ancestor family widths: I386(F75)=280, I387(none)=112
+familyLayout.ts:98   Parent I386 at x=-56, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I387 at x=140, parentFamilyWidth=112, allocatedWidth=112
+TreeView.tsx:126 Filtered to 18 individuals and 8 families
+TreeView.tsx:127 Reachable families: (8) ['F156', 'F187', 'F214', 'F215', 'F75', 'F76', 'F77', 'F81']
+familyLayout.ts:49 Layout family F76 at centerX=0, parents=[I170, I171], children=[I168]
+familyLayout.ts:72   F76 has 2 parents with ancestor family widths: I170(F77)=420, I171(F214)=280
+familyLayout.ts:98   Parent I170 at x=-140, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:98   Parent I171 at x=210, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:49 Layout family F77 at centerX=-140, parents=[I172, I173], children=[I170, I6456]
+familyLayout.ts:72   F77 has 2 parents with ancestor family widths: I172(F81)=420, I173(F156)=420
+familyLayout.ts:98   Parent I172 at x=-350, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:98   Parent I173 at x=70, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:49 Layout family F81 at centerX=-350, parents=[I179, I180], children=[I172]
+familyLayout.ts:72   F81 has 2 parents with ancestor family widths: I179(none)=112, I180(none)=112
+familyLayout.ts:98   Parent I179 at x=-416, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I180 at x=-284, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:49 Layout family F156 at centerX=70, parents=[I329, I330], children=[I173]
+familyLayout.ts:72   F156 has 2 parents with ancestor family widths: I329(none)=112, I330(none)=112
+familyLayout.ts:98   Parent I329 at x=4, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I330 at x=136, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:129   F77 children widths: I170(F76)=280, I6456(undefined)=100
+familyLayout.ts:49 Layout family F214 at centerX=210, parents=[I439, I440], children=[I171]
+familyLayout.ts:72   F214 has 2 parents with ancestor family widths: I439(F215)=280, I440(none)=112
+familyLayout.ts:98   Parent I439 at x=154, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I440 at x=350, parentFamilyWidth=112, allocatedWidth=112
+familyLayout.ts:49 Layout family F215 at centerX=154, parents=[I441, I442], children=[I439]
+familyLayout.ts:72   F215 has 2 parents with ancestor family widths: I441(none)=112, I442(none)=112
+familyLayout.ts:98   Parent I441 at x=88, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I442 at x=220, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:49 Layout family F75 at centerX=0, parents=[I168, I169], children=[I386]
+familyLayout.ts:72   F75 has 2 parents with ancestor family widths: I168(F76)=280, I169(none)=112
+familyLayout.ts:98   Parent I168 at x=-56, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I169 at x=140, parentFamilyWidth=112, allocatedWidth=112
+familyLayout.ts:49 Layout family F187 at centerX=0, parents=[I386, I387], children=[I390]
+familyLayout.ts:72   F187 has 2 parents with ancestor family widths: I386(F75)=280, I387(none)=112
+familyLayout.ts:98   Parent I386 at x=-56, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I387 at x=140, parentFamilyWidth=112, allocatedWidth=112
+ Filtered to 18 individuals and 8 families
+ Reachable families: (8) ['F156', 'F187', 'F214', 'F215', 'F75', 'F76', 'F77', 'F81']
+ Layout family F76 at centerX=0, parents=[I170, I171], children=[I168]
+   F76 has 2 parents with ancestor family widths: I170(F77)=420, I171(F214)=280
+   Parent I170 at x=-140, parentFamilyWidth=420, allocatedWidth=420
+   Parent I171 at x=210, parentFamilyWidth=280, allocatedWidth=280
+ Layout family F77 at centerX=-140, parents=[I172, I173], children=[I170, I6456]
+   F77 has 2 parents with ancestor family widths: I172(F81)=420, I173(F156)=420
+   Parent I172 at x=-350, parentFamilyWidth=420, allocatedWidth=420
+   Parent I173 at x=70, parentFamilyWidth=420, allocatedWidth=420
+ Layout family F81 at centerX=-350, parents=[I179, I180], children=[I172]
+   F81 has 2 parents with ancestor family widths: I179(none)=112, I180(none)=112
+   Parent I179 at x=-416, parentFamilyWidth=112, allocatedWidth=132
+   Parent I180 at x=-284, parentFamilyWidth=112, allocatedWidth=132
+ Layout family F156 at centerX=70, parents=[I329, I330], children=[I173]
+   F156 has 2 parents with ancestor family widths: I329(none)=112, I330(none)=112
+familyLayout.ts:98   Parent I329 at x=4, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I330 at x=136, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:129   F77 children widths: I170(F76)=280, I6456(undefined)=100
+familyLayout.ts:49 Layout family F214 at centerX=210, parents=[I439, I440], children=[I171]
+familyLayout.ts:72   F214 has 2 parents with ancestor family widths: I439(F215)=280, I440(none)=112
+familyLayout.ts:98   Parent I439 at x=154, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I440 at x=350, parentFamilyWidth=112, allocatedWidth=112
+familyLayout.ts:49 Layout family F215 at centerX=154, parents=[I441, I442], children=[I439]
+familyLayout.ts:72   F215 has 2 parents with ancestor family widths: I441(none)=112, I442(none)=112
+familyLayout.ts:98   Parent I441 at x=88, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I442 at x=220, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:49 Layout family F75 at centerX=0, parents=[I168, I169], children=[I386]
+familyLayout.ts:72   F75 has 2 parents with ancestor family widths: I168(F76)=280, I169(none)=112
+familyLayout.ts:98   Parent I168 at x=-56, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I169 at x=140, parentFamilyWidth=112, allocatedWidth=112
+familyLayout.ts:49 Layout family F187 at centerX=0, parents=[I386, I387], children=[I390]
+familyLayout.ts:72   F187 has 2 parents with ancestor family widths: I386(F75)=280, I387(none)=112
+familyLayout.ts:98   Parent I386 at x=-56, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I387 at x=140, parentFamilyWidth=112, allocatedWidth=112
+TreeView.tsx:126 Filtered to 18 individuals and 8 families
+TreeView.tsx:127 Reachable families: (8) ['F156', 'F187', 'F214', 'F215', 'F75', 'F76', 'F77', 'F81']
+familyLayout.ts:49 Layout family F76 at centerX=0, parents=[I170, I171], children=[I168]
+familyLayout.ts:72   F76 has 2 parents with ancestor family widths: I170(F77)=420, I171(F214)=280
+familyLayout.ts:98   Parent I170 at x=-140, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:98   Parent I171 at x=210, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:49 Layout family F77 at centerX=-140, parents=[I172, I173], children=[I170, I6456]
+familyLayout.ts:72   F77 has 2 parents with ancestor family widths: I172(F81)=420, I173(F156)=420
+familyLayout.ts:98   Parent I172 at x=-350, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:98   Parent I173 at x=70, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:49 Layout family F81 at centerX=-350, parents=[I179, I180], children=[I172]
+familyLayout.ts:72   F81 has 2 parents with ancestor family widths: I179(none)=112, I180(none)=112
+familyLayout.ts:98   Parent I179 at x=-416, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I180 at x=-284, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:49 Layout family F156 at centerX=70, parents=[I329, I330], children=[I173]
+familyLayout.ts:72   F156 has 2 parents with ancestor family widths: I329(none)=112, I330(none)=112
+familyLayout.ts:98   Parent I329 at x=4, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I330 at x=136, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:129   F77 children widths: I170(F76)=280, I6456(undefined)=100
+familyLayout.ts:49 Layout family F214 at centerX=210, parents=[I439, I440], children=[I171]
+familyLayout.ts:72   F214 has 2 parents with ancestor family widths: I439(F215)=280, I440(none)=112
+familyLayout.ts:98   Parent I439 at x=154, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I440 at x=350, parentFamilyWidth=112, allocatedWidth=112
+familyLayout.ts:49 Layout family F215 at centerX=154, parents=[I441, I442], children=[I439]
+familyLayout.ts:72   F215 has 2 parents with ancestor family widths: I441(none)=112, I442(none)=112
+familyLayout.ts:98   Parent I441 at x=88, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I442 at x=220, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:49 Layout family F75 at centerX=0, parents=[I168, I169], children=[I386]
+familyLayout.ts:72   F75 has 2 parents with ancestor family widths: I168(F76)=280, I169(none)=112
+familyLayout.ts:98   Parent I168 at x=-56, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I169 at x=140, parentFamilyWidth=112, allocatedWidth=112
+familyLayout.ts:49 Layout family F187 at centerX=0, parents=[I386, I387], children=[I390]
+familyLayout.ts:72   F187 has 2 parents with ancestor family widths: I386(F75)=280, I387(none)=112
+familyLayout.ts:98   Parent I386 at x=-56, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I387 at x=140, parentFamilyWidth=112, allocatedWidth=112
+TreeView.tsx:126 Filtered to 18 individuals and 8 families
+TreeView.tsx:127 Reachable families: (8) ['F156', 'F187', 'F214', 'F215', 'F75', 'F76', 'F77', 'F81']
+familyLayout.ts:49 Layout family F76 at centerX=0, parents=[I170, I171], children=[I168]
+familyLayout.ts:72   F76 has 2 parents with ancestor family widths: I170(F77)=420, I171(F214)=280
+familyLayout.ts:98   Parent I170 at x=-140, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:98   Parent I171 at x=210, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:49 Layout family F77 at centerX=-140, parents=[I172, I173], children=[I170, I6456]
+familyLayout.ts:72   F77 has 2 parents with ancestor family widths: I172(F81)=420, I173(F156)=420
+familyLayout.ts:98   Parent I172 at x=-350, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:98   Parent I173 at x=70, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:49 Layout family F81 at centerX=-350, parents=[I179, I180], children=[I172]
+familyLayout.ts:72   F81 has 2 parents with ancestor family widths: I179(none)=112, I180(none)=112
+familyLayout.ts:98   Parent I179 at x=-416, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I180 at x=-284, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:49 Layout family F156 at centerX=70, parents=[I329, I330], children=[I173]
+familyLayout.ts:72   F156 has 2 parents with ancestor family widths: I329(none)=112, I330(none)=112
+familyLayout.ts:98   Parent I329 at x=4, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I330 at x=136, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:129   F77 children widths: I170(F76)=280, I6456(undefined)=100
+familyLayout.ts:49 Layout family F214 at centerX=210, parents=[I439, I440], children=[I171]
+familyLayout.ts:72   F214 has 2 parents with ancestor family widths: I439(F215)=280, I440(none)=112
+familyLayout.ts:98   Parent I439 at x=154, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I440 at x=350, parentFamilyWidth=112, allocatedWidth=112
+familyLayout.ts:49 Layout family F215 at centerX=154, parents=[I441, I442], children=[I439]
+familyLayout.ts:72   F215 has 2 parents with ancestor family widths: I441(none)=112, I442(none)=112
+familyLayout.ts:98   Parent I441 at x=88, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I442 at x=220, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:49 Layout family F75 at centerX=0, parents=[I168, I169], children=[I386]
+familyLayout.ts:72   F75 has 2 parents with ancestor family widths: I168(F76)=280, I169(none)=112
+familyLayout.ts:98   Parent I168 at x=-56, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I169 at x=140, parentFamilyWidth=112, allocatedWidth=112
+familyLayout.ts:49 Layout family F187 at centerX=0, parents=[I386, I387], children=[I390]
+familyLayout.ts:72   F187 has 2 parents with ancestor family widths: I386(F75)=280, I387(none)=112
+familyLayout.ts:98   Parent I386 at x=-56, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I387 at x=140, parentFamilyWidth=112, allocatedWidth=112
+TreeView.tsx:126 Filtered to 18 individuals and 8 families
+TreeView.tsx:127 Reachable families: (8) ['F156', 'F187', 'F214', 'F215', 'F75', 'F76', 'F77', 'F81']
+familyLayout.ts:49 Layout family F76 at centerX=0, parents=[I170, I171], children=[I168]
+familyLayout.ts:72   F76 has 2 parents with ancestor family widths: I170(F77)=420, I171(F214)=280
+familyLayout.ts:98   Parent I170 at x=-140, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:98   Parent I171 at x=210, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:49 Layout family F77 at centerX=-140, parents=[I172, I173], children=[I170, I6456]
+familyLayout.ts:72   F77 has 2 parents with ancestor family widths: I172(F81)=420, I173(F156)=420
+familyLayout.ts:98   Parent I172 at x=-350, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:98   Parent I173 at x=70, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:49 Layout family F81 at centerX=-350, parents=[I179, I180], children=[I172]
+familyLayout.ts:72   F81 has 2 parents with ancestor family widths: I179(none)=112, I180(none)=112
+familyLayout.ts:98   Parent I179 at x=-416, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I180 at x=-284, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:49 Layout family F156 at centerX=70, parents=[I329, I330], children=[I173]
+familyLayout.ts:72   F156 has 2 parents with ancestor family widths: I329(none)=112, I330(none)=112
+familyLayout.ts:98   Parent I329 at x=4, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I330 at x=136, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:129   F77 children widths: I170(F76)=280, I6456(undefined)=100
+familyLayout.ts:49 Layout family F214 at centerX=210, parents=[I439, I440], children=[I171]
+familyLayout.ts:72   F214 has 2 parents with ancestor family widths: I439(F215)=280, I440(none)=112
+familyLayout.ts:98   Parent I439 at x=154, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I440 at x=350, parentFamilyWidth=112, allocatedWidth=112
+familyLayout.ts:49 Layout family F215 at centerX=154, parents=[I441, I442], children=[I439]
+familyLayout.ts:72   F215 has 2 parents with ancestor family widths: I441(none)=112, I442(none)=112
+familyLayout.ts:98   Parent I441 at x=88, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I442 at x=220, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:49 Layout family F75 at centerX=0, parents=[I168, I169], children=[I386]
+familyLayout.ts:72   F75 has 2 parents with ancestor family widths: I168(F76)=280, I169(none)=112
+familyLayout.ts:98   Parent I168 at x=-56, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I169 at x=140, parentFamilyWidth=112, allocatedWidth=112
+familyLayout.ts:49 Layout family F187 at centerX=0, parents=[I386, I387], children=[I390]
+familyLayout.ts:72   F187 has 2 parents with ancestor family widths: I386(F75)=280, I387(none)=112
+familyLayout.ts:98   Parent I386 at x=-56, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I387 at x=140, parentFamilyWidth=112, allocatedWidth=112
+TreeView.tsx:126 Filtered to 18 individuals and 8 families
+TreeView.tsx:127 Reachable families: (8) ['F156', 'F187', 'F214', 'F215', 'F75', 'F76', 'F77', 'F81']
+familyLayout.ts:49 Layout family F76 at centerX=0, parents=[I170, I171], children=[I168]
+familyLayout.ts:72   F76 has 2 parents with ancestor family widths: I170(F77)=420, I171(F214)=280
+familyLayout.ts:98   Parent I170 at x=-140, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:98   Parent I171 at x=210, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:49 Layout family F77 at centerX=-140, parents=[I172, I173], children=[I170, I6456]
+familyLayout.ts:72   F77 has 2 parents with ancestor family widths: I172(F81)=420, I173(F156)=420
+familyLayout.ts:98   Parent I172 at x=-350, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:98   Parent I173 at x=70, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:49 Layout family F81 at centerX=-350, parents=[I179, I180], children=[I172]
+familyLayout.ts:72   F81 has 2 parents with ancestor family widths: I179(none)=112, I180(none)=112
+familyLayout.ts:98   Parent I179 at x=-416, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I180 at x=-284, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:49 Layout family F156 at centerX=70, parents=[I329, I330], children=[I173]
+familyLayout.ts:72   F156 has 2 parents with ancestor family widths: I329(none)=112, I330(none)=112
+familyLayout.ts:98   Parent I329 at x=4, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I330 at x=136, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:129   F77 children widths: I170(F76)=280, I6456(undefined)=100
+familyLayout.ts:49 Layout family F214 at centerX=210, parents=[I439, I440], children=[I171]
+familyLayout.ts:72   F214 has 2 parents with ancestor family widths: I439(F215)=280, I440(none)=112
+familyLayout.ts:98   Parent I439 at x=154, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I440 at x=350, parentFamilyWidth=112, allocatedWidth=112
+familyLayout.ts:49 Layout family F215 at centerX=154, parents=[I441, I442], children=[I439]
+familyLayout.ts:72   F215 has 2 parents with ancestor family widths: I441(none)=112, I442(none)=112
+familyLayout.ts:98   Parent I441 at x=88, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I442 at x=220, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:49 Layout family F75 at centerX=0, parents=[I168, I169], children=[I386]
+familyLayout.ts:72   F75 has 2 parents with ancestor family widths: I168(F76)=280, I169(none)=112
+familyLayout.ts:98   Parent I168 at x=-56, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I169 at x=140, parentFamilyWidth=112, allocatedWidth=112
+familyLayout.ts:49 Layout family F187 at centerX=0, parents=[I386, I387], children=[I390]
+familyLayout.ts:72   F187 has 2 parents with ancestor family widths: I386(F75)=280, I387(none)=112
+familyLayout.ts:98   Parent I386 at x=-56, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I387 at x=140, parentFamilyWidth=112, allocatedWidth=112
+ Filtered to 18 individuals and 8 families
+ Reachable families: (8) ['F156', 'F187', 'F214', 'F215', 'F75', 'F76', 'F77', 'F81']
+ Layout family F76 at centerX=0, parents=[I170, I171], children=[I168]
+   F76 has 2 parents with ancestor family widths: I170(F77)=420, I171(F214)=280
+   Parent I170 at x=-140, parentFamilyWidth=420, allocatedWidth=420
+   Parent I171 at x=210, parentFamilyWidth=280, allocatedWidth=280
+ Layout family F77 at centerX=-140, parents=[I172, I173], children=[I170, I6456]
+   F77 has 2 parents with ancestor family widths: I172(F81)=420, I173(F156)=420
+   Parent I172 at x=-350, parentFamilyWidth=420, allocatedWidth=420
+   Parent I173 at x=70, parentFamilyWidth=420, allocatedWidth=420
+ Layout family F81 at centerX=-350, parents=[I179, I180], children=[I172]
+   F81 has 2 parents with ancestor family widths: I179(none)=112, I180(none)=112
+   Parent I179 at x=-416, parentFamilyWidth=112, allocatedWidth=132
+   Parent I180 at x=-284, parentFamilyWidth=112, allocatedWidth=132
+ Layout family F156 at centerX=70, parents=[I329, I330], children=[I173]
+   F156 has 2 parents with ancestor family widths: I329(none)=112, I330(none)=112
+   Parent I329 at x=4, parentFamilyWidth=112, allocatedWidth=132
+   Parent I330 at x=136, parentFamilyWidth=112, allocatedWidth=132
+   F77 children widths: I170(F76)=280, I6456(undefined)=100
+ Layout family F214 at centerX=210, parents=[I439, I440], children=[I171]
+   F214 has 2 parents with ancestor family widths: I439(F215)=280, I440(none)=112
+   Parent I439 at x=154, parentFamilyWidth=280, allocatedWidth=280
+   Parent I440 at x=350, parentFamilyWidth=112, allocatedWidth=112
+ Layout family F215 at centerX=154, parents=[I441, I442], children=[I439]
+   F215 has 2 parents with ancestor family widths: I441(none)=112, I442(none)=112
+   Parent I441 at x=88, parentFamilyWidth=112, allocatedWidth=132
+   Parent I442 at x=220, parentFamilyWidth=112, allocatedWidth=132
+ Layout family F75 at centerX=0, parents=[I168, I169], children=[I386]
+   F75 has 2 parents with ancestor family widths: I168(F76)=280, I169(none)=112
+   Parent I168 at x=-56, parentFamilyWidth=280, allocatedWidth=280
+   Parent I169 at x=140, parentFamilyWidth=112, allocatedWidth=112
+ Layout family F187 at centerX=0, parents=[I386, I387], children=[I390]
+   F187 has 2 parents with ancestor family widths: I386(F75)=280, I387(none)=112
+   Parent I386 at x=-56, parentFamilyWidth=280, allocatedWidth=280
+   Parent I387 at x=140, parentFamilyWidth=112, allocatedWidth=112
+ Filtered to 18 individuals and 8 families
+ Reachable families: (8) ['F156', 'F187', 'F214', 'F215', 'F75', 'F76', 'F77', 'F81']
+ Layout family F76 at centerX=0, parents=[I170, I171], children=[I168]
+   F76 has 2 parents with ancestor family widths: I170(F77)=420, I171(F214)=280
+   Parent I170 at x=-140, parentFamilyWidth=420, allocatedWidth=420
+   Parent I171 at x=210, parentFamilyWidth=280, allocatedWidth=280
+ Layout family F77 at centerX=-140, parents=[I172, I173], children=[I170, I6456]
+   F77 has 2 parents with ancestor family widths: I172(F81)=420, I173(F156)=420
+   Parent I172 at x=-350, parentFamilyWidth=420, allocatedWidth=420
+   Parent I173 at x=70, parentFamilyWidth=420, allocatedWidth=420
+ Layout family F81 at centerX=-350, parents=[I179, I180], children=[I172]
+   F81 has 2 parents with ancestor family widths: I179(none)=112, I180(none)=112
+   Parent I179 at x=-416, parentFamilyWidth=112, allocatedWidth=132
+   Parent I180 at x=-284, parentFamilyWidth=112, allocatedWidth=132
+ Layout family F156 at centerX=70, parents=[I329, I330], children=[I173]
+   F156 has 2 parents with ancestor family widths: I329(none)=112, I330(none)=112
+familyLayout.ts:98   Parent I329 at x=4, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I330 at x=136, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:129   F77 children widths: I170(F76)=280, I6456(undefined)=100
+familyLayout.ts:49 Layout family F214 at centerX=210, parents=[I439, I440], children=[I171]
+familyLayout.ts:72   F214 has 2 parents with ancestor family widths: I439(F215)=280, I440(none)=112
+familyLayout.ts:98   Parent I439 at x=154, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I440 at x=350, parentFamilyWidth=112, allocatedWidth=112
+familyLayout.ts:49 Layout family F215 at centerX=154, parents=[I441, I442], children=[I439]
+familyLayout.ts:72   F215 has 2 parents with ancestor family widths: I441(none)=112, I442(none)=112
+familyLayout.ts:98   Parent I441 at x=88, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I442 at x=220, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:49 Layout family F75 at centerX=0, parents=[I168, I169], children=[I386]
+familyLayout.ts:72   F75 has 2 parents with ancestor family widths: I168(F76)=280, I169(none)=112
+familyLayout.ts:98   Parent I168 at x=-56, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I169 at x=140, parentFamilyWidth=112, allocatedWidth=112
+familyLayout.ts:49 Layout family F187 at centerX=0, parents=[I386, I387], children=[I390]
+familyLayout.ts:72   F187 has 2 parents with ancestor family widths: I386(F75)=280, I387(none)=112
+familyLayout.ts:98   Parent I386 at x=-56, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I387 at x=140, parentFamilyWidth=112, allocatedWidth=112
+TreeView.tsx:126 Filtered to 18 individuals and 8 families
+TreeView.tsx:127 Reachable families: (8) ['F156', 'F187', 'F214', 'F215', 'F75', 'F76', 'F77', 'F81']
+familyLayout.ts:49 Layout family F76 at centerX=0, parents=[I170, I171], children=[I168]
+familyLayout.ts:72   F76 has 2 parents with ancestor family widths: I170(F77)=420, I171(F214)=280
+familyLayout.ts:98   Parent I170 at x=-140, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:98   Parent I171 at x=210, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:49 Layout family F77 at centerX=-140, parents=[I172, I173], children=[I170, I6456]
+familyLayout.ts:72   F77 has 2 parents with ancestor family widths: I172(F81)=420, I173(F156)=420
+familyLayout.ts:98   Parent I172 at x=-350, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:98   Parent I173 at x=70, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:49 Layout family F81 at centerX=-350, parents=[I179, I180], children=[I172]
+familyLayout.ts:72   F81 has 2 parents with ancestor family widths: I179(none)=112, I180(none)=112
+familyLayout.ts:98   Parent I179 at x=-416, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I180 at x=-284, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:49 Layout family F156 at centerX=70, parents=[I329, I330], children=[I173]
+familyLayout.ts:72   F156 has 2 parents with ancestor family widths: I329(none)=112, I330(none)=112
+familyLayout.ts:98   Parent I329 at x=4, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I330 at x=136, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:129   F77 children widths: I170(F76)=280, I6456(undefined)=100
+familyLayout.ts:49 Layout family F214 at centerX=210, parents=[I439, I440], children=[I171]
+familyLayout.ts:72   F214 has 2 parents with ancestor family widths: I439(F215)=280, I440(none)=112
+familyLayout.ts:98   Parent I439 at x=154, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I440 at x=350, parentFamilyWidth=112, allocatedWidth=112
+familyLayout.ts:49 Layout family F215 at centerX=154, parents=[I441, I442], children=[I439]
+familyLayout.ts:72   F215 has 2 parents with ancestor family widths: I441(none)=112, I442(none)=112
+familyLayout.ts:98   Parent I441 at x=88, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I442 at x=220, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:49 Layout family F75 at centerX=0, parents=[I168, I169], children=[I386]
+familyLayout.ts:72   F75 has 2 parents with ancestor family widths: I168(F76)=280, I169(none)=112
+familyLayout.ts:98   Parent I168 at x=-56, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I169 at x=140, parentFamilyWidth=112, allocatedWidth=112
+familyLayout.ts:49 Layout family F187 at centerX=0, parents=[I386, I387], children=[I390]
+familyLayout.ts:72   F187 has 2 parents with ancestor family widths: I386(F75)=280, I387(none)=112
+familyLayout.ts:98   Parent I386 at x=-56, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I387 at x=140, parentFamilyWidth=112, allocatedWidth=112
+TreeView.tsx:126 Filtered to 18 individuals and 8 families
+TreeView.tsx:127 Reachable families: (8) ['F156', 'F187', 'F214', 'F215', 'F75', 'F76', 'F77', 'F81']
+familyLayout.ts:49 Layout family F76 at centerX=0, parents=[I170, I171], children=[I168]
+familyLayout.ts:72   F76 has 2 parents with ancestor family widths: I170(F77)=420, I171(F214)=280
+familyLayout.ts:98   Parent I170 at x=-140, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:98   Parent I171 at x=210, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:49 Layout family F77 at centerX=-140, parents=[I172, I173], children=[I170, I6456]
+familyLayout.ts:72   F77 has 2 parents with ancestor family widths: I172(F81)=420, I173(F156)=420
+familyLayout.ts:98   Parent I172 at x=-350, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:98   Parent I173 at x=70, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:49 Layout family F81 at centerX=-350, parents=[I179, I180], children=[I172]
+familyLayout.ts:72   F81 has 2 parents with ancestor family widths: I179(none)=112, I180(none)=112
+familyLayout.ts:98   Parent I179 at x=-416, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I180 at x=-284, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:49 Layout family F156 at centerX=70, parents=[I329, I330], children=[I173]
+familyLayout.ts:72   F156 has 2 parents with ancestor family widths: I329(none)=112, I330(none)=112
+familyLayout.ts:98   Parent I329 at x=4, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I330 at x=136, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:129   F77 children widths: I170(F76)=280, I6456(undefined)=100
+familyLayout.ts:49 Layout family F214 at centerX=210, parents=[I439, I440], children=[I171]
+familyLayout.ts:72   F214 has 2 parents with ancestor family widths: I439(F215)=280, I440(none)=112
+familyLayout.ts:98   Parent I439 at x=154, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I440 at x=350, parentFamilyWidth=112, allocatedWidth=112
+familyLayout.ts:49 Layout family F215 at centerX=154, parents=[I441, I442], children=[I439]
+familyLayout.ts:72   F215 has 2 parents with ancestor family widths: I441(none)=112, I442(none)=112
+familyLayout.ts:98   Parent I441 at x=88, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I442 at x=220, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:49 Layout family F75 at centerX=0, parents=[I168, I169], children=[I386]
+familyLayout.ts:72   F75 has 2 parents with ancestor family widths: I168(F76)=280, I169(none)=112
+familyLayout.ts:98   Parent I168 at x=-56, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I169 at x=140, parentFamilyWidth=112, allocatedWidth=112
+familyLayout.ts:49 Layout family F187 at centerX=0, parents=[I386, I387], children=[I390]
+familyLayout.ts:72   F187 has 2 parents with ancestor family widths: I386(F75)=280, I387(none)=112
+familyLayout.ts:98   Parent I386 at x=-56, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I387 at x=140, parentFamilyWidth=112, allocatedWidth=112
+TreeView.tsx:126 Filtered to 18 individuals and 8 families
+TreeView.tsx:127 Reachable families: (8) ['F156', 'F187', 'F214', 'F215', 'F75', 'F76', 'F77', 'F81']
+familyLayout.ts:49 Layout family F76 at centerX=0, parents=[I170, I171], children=[I168]
+familyLayout.ts:72   F76 has 2 parents with ancestor family widths: I170(F77)=420, I171(F214)=280
+familyLayout.ts:98   Parent I170 at x=-140, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:98   Parent I171 at x=210, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:49 Layout family F77 at centerX=-140, parents=[I172, I173], children=[I170, I6456]
+familyLayout.ts:72   F77 has 2 parents with ancestor family widths: I172(F81)=420, I173(F156)=420
+familyLayout.ts:98   Parent I172 at x=-350, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:98   Parent I173 at x=70, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:49 Layout family F81 at centerX=-350, parents=[I179, I180], children=[I172]
+familyLayout.ts:72   F81 has 2 parents with ancestor family widths: I179(none)=112, I180(none)=112
+familyLayout.ts:98   Parent I179 at x=-416, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I180 at x=-284, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:49 Layout family F156 at centerX=70, parents=[I329, I330], children=[I173]
+familyLayout.ts:72   F156 has 2 parents with ancestor family widths: I329(none)=112, I330(none)=112
+familyLayout.ts:98   Parent I329 at x=4, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I330 at x=136, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:129   F77 children widths: I170(F76)=280, I6456(undefined)=100
+familyLayout.ts:49 Layout family F214 at centerX=210, parents=[I439, I440], children=[I171]
+familyLayout.ts:72   F214 has 2 parents with ancestor family widths: I439(F215)=280, I440(none)=112
+familyLayout.ts:98   Parent I439 at x=154, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I440 at x=350, parentFamilyWidth=112, allocatedWidth=112
+familyLayout.ts:49 Layout family F215 at centerX=154, parents=[I441, I442], children=[I439]
+familyLayout.ts:72   F215 has 2 parents with ancestor family widths: I441(none)=112, I442(none)=112
+familyLayout.ts:98   Parent I441 at x=88, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I442 at x=220, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:49 Layout family F75 at centerX=0, parents=[I168, I169], children=[I386]
+familyLayout.ts:72   F75 has 2 parents with ancestor family widths: I168(F76)=280, I169(none)=112
+familyLayout.ts:98   Parent I168 at x=-56, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I169 at x=140, parentFamilyWidth=112, allocatedWidth=112
+familyLayout.ts:49 Layout family F187 at centerX=0, parents=[I386, I387], children=[I390]
+familyLayout.ts:72   F187 has 2 parents with ancestor family widths: I386(F75)=280, I387(none)=112
+familyLayout.ts:98   Parent I386 at x=-56, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I387 at x=140, parentFamilyWidth=112, allocatedWidth=112
+TreeView.tsx:126 Filtered to 18 individuals and 8 families
+TreeView.tsx:127 Reachable families: (8) ['F156', 'F187', 'F214', 'F215', 'F75', 'F76', 'F77', 'F81']
+familyLayout.ts:49 Layout family F76 at centerX=0, parents=[I170, I171], children=[I168]
+familyLayout.ts:72   F76 has 2 parents with ancestor family widths: I170(F77)=420, I171(F214)=280
+familyLayout.ts:98   Parent I170 at x=-140, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:98   Parent I171 at x=210, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:49 Layout family F77 at centerX=-140, parents=[I172, I173], children=[I170, I6456]
+familyLayout.ts:72   F77 has 2 parents with ancestor family widths: I172(F81)=420, I173(F156)=420
+familyLayout.ts:98   Parent I172 at x=-350, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:98   Parent I173 at x=70, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:49 Layout family F81 at centerX=-350, parents=[I179, I180], children=[I172]
+familyLayout.ts:72   F81 has 2 parents with ancestor family widths: I179(none)=112, I180(none)=112
+familyLayout.ts:98   Parent I179 at x=-416, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I180 at x=-284, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:49 Layout family F156 at centerX=70, parents=[I329, I330], children=[I173]
+familyLayout.ts:72   F156 has 2 parents with ancestor family widths: I329(none)=112, I330(none)=112
+familyLayout.ts:98   Parent I329 at x=4, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I330 at x=136, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:129   F77 children widths: I170(F76)=280, I6456(undefined)=100
+familyLayout.ts:49 Layout family F214 at centerX=210, parents=[I439, I440], children=[I171]
+familyLayout.ts:72   F214 has 2 parents with ancestor family widths: I439(F215)=280, I440(none)=112
+familyLayout.ts:98   Parent I439 at x=154, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I440 at x=350, parentFamilyWidth=112, allocatedWidth=112
+familyLayout.ts:49 Layout family F215 at centerX=154, parents=[I441, I442], children=[I439]
+familyLayout.ts:72   F215 has 2 parents with ancestor family widths: I441(none)=112, I442(none)=112
+familyLayout.ts:98   Parent I441 at x=88, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I442 at x=220, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:49 Layout family F75 at centerX=0, parents=[I168, I169], children=[I386]
+familyLayout.ts:72   F75 has 2 parents with ancestor family widths: I168(F76)=280, I169(none)=112
+familyLayout.ts:98   Parent I168 at x=-56, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I169 at x=140, parentFamilyWidth=112, allocatedWidth=112
+familyLayout.ts:49 Layout family F187 at centerX=0, parents=[I386, I387], children=[I390]
+familyLayout.ts:72   F187 has 2 parents with ancestor family widths: I386(F75)=280, I387(none)=112
+familyLayout.ts:98   Parent I386 at x=-56, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I387 at x=140, parentFamilyWidth=112, allocatedWidth=112
+TreeView.tsx:126 Filtered to 18 individuals and 8 families
+TreeView.tsx:127 Reachable families: (8) ['F156', 'F187', 'F214', 'F215', 'F75', 'F76', 'F77', 'F81']
+familyLayout.ts:49 Layout family F76 at centerX=0, parents=[I170, I171], children=[I168]
+familyLayout.ts:72   F76 has 2 parents with ancestor family widths: I170(F77)=420, I171(F214)=280
+familyLayout.ts:98   Parent I170 at x=-140, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:98   Parent I171 at x=210, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:49 Layout family F77 at centerX=-140, parents=[I172, I173], children=[I170, I6456]
+familyLayout.ts:72   F77 has 2 parents with ancestor family widths: I172(F81)=420, I173(F156)=420
+familyLayout.ts:98   Parent I172 at x=-350, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:98   Parent I173 at x=70, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:49 Layout family F81 at centerX=-350, parents=[I179, I180], children=[I172]
+familyLayout.ts:72   F81 has 2 parents with ancestor family widths: I179(none)=112, I180(none)=112
+familyLayout.ts:98   Parent I179 at x=-416, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I180 at x=-284, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:49 Layout family F156 at centerX=70, parents=[I329, I330], children=[I173]
+familyLayout.ts:72   F156 has 2 parents with ancestor family widths: I329(none)=112, I330(none)=112
+familyLayout.ts:98   Parent I329 at x=4, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I330 at x=136, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:129   F77 children widths: I170(F76)=280, I6456(undefined)=100
+familyLayout.ts:49 Layout family F214 at centerX=210, parents=[I439, I440], children=[I171]
+familyLayout.ts:72   F214 has 2 parents with ancestor family widths: I439(F215)=280, I440(none)=112
+familyLayout.ts:98   Parent I439 at x=154, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I440 at x=350, parentFamilyWidth=112, allocatedWidth=112
+familyLayout.ts:49 Layout family F215 at centerX=154, parents=[I441, I442], children=[I439]
+familyLayout.ts:72   F215 has 2 parents with ancestor family widths: I441(none)=112, I442(none)=112
+familyLayout.ts:98   Parent I441 at x=88, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I442 at x=220, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:49 Layout family F75 at centerX=0, parents=[I168, I169], children=[I386]
+familyLayout.ts:72   F75 has 2 parents with ancestor family widths: I168(F76)=280, I169(none)=112
+familyLayout.ts:98   Parent I168 at x=-56, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I169 at x=140, parentFamilyWidth=112, allocatedWidth=112
+familyLayout.ts:49 Layout family F187 at centerX=0, parents=[I386, I387], children=[I390]
+familyLayout.ts:72   F187 has 2 parents with ancestor family widths: I386(F75)=280, I387(none)=112
+familyLayout.ts:98   Parent I386 at x=-56, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I387 at x=140, parentFamilyWidth=112, allocatedWidth=112
+TreeView.tsx:126 Filtered to 18 individuals and 8 families
+TreeView.tsx:127 Reachable families: (8) ['F156', 'F187', 'F214', 'F215', 'F75', 'F76', 'F77', 'F81']
+familyLayout.ts:49 Layout family F76 at centerX=0, parents=[I170, I171], children=[I168]
+familyLayout.ts:72   F76 has 2 parents with ancestor family widths: I170(F77)=420, I171(F214)=280
+familyLayout.ts:98   Parent I170 at x=-140, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:98   Parent I171 at x=210, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:49 Layout family F77 at centerX=-140, parents=[I172, I173], children=[I170, I6456]
+familyLayout.ts:72   F77 has 2 parents with ancestor family widths: I172(F81)=420, I173(F156)=420
+familyLayout.ts:98   Parent I172 at x=-350, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:98   Parent I173 at x=70, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:49 Layout family F81 at centerX=-350, parents=[I179, I180], children=[I172]
+familyLayout.ts:72   F81 has 2 parents with ancestor family widths: I179(none)=112, I180(none)=112
+familyLayout.ts:98   Parent I179 at x=-416, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I180 at x=-284, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:49 Layout family F156 at centerX=70, parents=[I329, I330], children=[I173]
+familyLayout.ts:72   F156 has 2 parents with ancestor family widths: I329(none)=112, I330(none)=112
+familyLayout.ts:98   Parent I329 at x=4, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I330 at x=136, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:129   F77 children widths: I170(F76)=280, I6456(undefined)=100
+familyLayout.ts:49 Layout family F214 at centerX=210, parents=[I439, I440], children=[I171]
+familyLayout.ts:72   F214 has 2 parents with ancestor family widths: I439(F215)=280, I440(none)=112
+familyLayout.ts:98   Parent I439 at x=154, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I440 at x=350, parentFamilyWidth=112, allocatedWidth=112
+familyLayout.ts:49 Layout family F215 at centerX=154, parents=[I441, I442], children=[I439]
+familyLayout.ts:72   F215 has 2 parents with ancestor family widths: I441(none)=112, I442(none)=112
+familyLayout.ts:98   Parent I441 at x=88, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I442 at x=220, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:49 Layout family F75 at centerX=0, parents=[I168, I169], children=[I386]
+familyLayout.ts:72   F75 has 2 parents with ancestor family widths: I168(F76)=280, I169(none)=112
+familyLayout.ts:98   Parent I168 at x=-56, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I169 at x=140, parentFamilyWidth=112, allocatedWidth=112
+familyLayout.ts:49 Layout family F187 at centerX=0, parents=[I386, I387], children=[I390]
+familyLayout.ts:72   F187 has 2 parents with ancestor family widths: I386(F75)=280, I387(none)=112
+familyLayout.ts:98   Parent I386 at x=-56, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I387 at x=140, parentFamilyWidth=112, allocatedWidth=112
+TreeView.tsx:126 Filtered to 18 individuals and 8 families
+TreeView.tsx:127 Reachable families: (8) ['F156', 'F187', 'F214', 'F215', 'F75', 'F76', 'F77', 'F81']
+familyLayout.ts:49 Layout family F76 at centerX=0, parents=[I170, I171], children=[I168]
+familyLayout.ts:72   F76 has 2 parents with ancestor family widths: I170(F77)=420, I171(F214)=280
+familyLayout.ts:98   Parent I170 at x=-140, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:98   Parent I171 at x=210, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:49 Layout family F77 at centerX=-140, parents=[I172, I173], children=[I170, I6456]
+familyLayout.ts:72   F77 has 2 parents with ancestor family widths: I172(F81)=420, I173(F156)=420
+familyLayout.ts:98   Parent I172 at x=-350, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:98   Parent I173 at x=70, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:49 Layout family F81 at centerX=-350, parents=[I179, I180], children=[I172]
+familyLayout.ts:72   F81 has 2 parents with ancestor family widths: I179(none)=112, I180(none)=112
+familyLayout.ts:98   Parent I179 at x=-416, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I180 at x=-284, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:49 Layout family F156 at centerX=70, parents=[I329, I330], children=[I173]
+familyLayout.ts:72   F156 has 2 parents with ancestor family widths: I329(none)=112, I330(none)=112
+familyLayout.ts:98   Parent I329 at x=4, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I330 at x=136, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:129   F77 children widths: I170(F76)=280, I6456(undefined)=100
+familyLayout.ts:49 Layout family F214 at centerX=210, parents=[I439, I440], children=[I171]
+familyLayout.ts:72   F214 has 2 parents with ancestor family widths: I439(F215)=280, I440(none)=112
+familyLayout.ts:98   Parent I439 at x=154, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I440 at x=350, parentFamilyWidth=112, allocatedWidth=112
+familyLayout.ts:49 Layout family F215 at centerX=154, parents=[I441, I442], children=[I439]
+familyLayout.ts:72   F215 has 2 parents with ancestor family widths: I441(none)=112, I442(none)=112
+familyLayout.ts:98   Parent I441 at x=88, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I442 at x=220, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:49 Layout family F75 at centerX=0, parents=[I168, I169], children=[I386]
+familyLayout.ts:72   F75 has 2 parents with ancestor family widths: I168(F76)=280, I169(none)=112
+familyLayout.ts:98   Parent I168 at x=-56, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I169 at x=140, parentFamilyWidth=112, allocatedWidth=112
+familyLayout.ts:49 Layout family F187 at centerX=0, parents=[I386, I387], children=[I390]
+familyLayout.ts:72   F187 has 2 parents with ancestor family widths: I386(F75)=280, I387(none)=112
+familyLayout.ts:98   Parent I386 at x=-56, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I387 at x=140, parentFamilyWidth=112, allocatedWidth=112
+TreeView.tsx:126 Filtered to 18 individuals and 8 families
+TreeView.tsx:127 Reachable families: (8) ['F156', 'F187', 'F214', 'F215', 'F75', 'F76', 'F77', 'F81']
+familyLayout.ts:49 Layout family F76 at centerX=0, parents=[I170, I171], children=[I168]
+familyLayout.ts:72   F76 has 2 parents with ancestor family widths: I170(F77)=420, I171(F214)=280
+familyLayout.ts:98   Parent I170 at x=-140, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:98   Parent I171 at x=210, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:49 Layout family F77 at centerX=-140, parents=[I172, I173], children=[I170, I6456]
+familyLayout.ts:72   F77 has 2 parents with ancestor family widths: I172(F81)=420, I173(F156)=420
+familyLayout.ts:98   Parent I172 at x=-350, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:98   Parent I173 at x=70, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:49 Layout family F81 at centerX=-350, parents=[I179, I180], children=[I172]
+familyLayout.ts:72   F81 has 2 parents with ancestor family widths: I179(none)=112, I180(none)=112
+familyLayout.ts:98   Parent I179 at x=-416, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I180 at x=-284, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:49 Layout family F156 at centerX=70, parents=[I329, I330], children=[I173]
+familyLayout.ts:72   F156 has 2 parents with ancestor family widths: I329(none)=112, I330(none)=112
+familyLayout.ts:98   Parent I329 at x=4, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I330 at x=136, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:129   F77 children widths: I170(F76)=280, I6456(undefined)=100
+familyLayout.ts:49 Layout family F214 at centerX=210, parents=[I439, I440], children=[I171]
+familyLayout.ts:72   F214 has 2 parents with ancestor family widths: I439(F215)=280, I440(none)=112
+familyLayout.ts:98   Parent I439 at x=154, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I440 at x=350, parentFamilyWidth=112, allocatedWidth=112
+familyLayout.ts:49 Layout family F215 at centerX=154, parents=[I441, I442], children=[I439]
+familyLayout.ts:72   F215 has 2 parents with ancestor family widths: I441(none)=112, I442(none)=112
+familyLayout.ts:98   Parent I441 at x=88, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I442 at x=220, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:49 Layout family F75 at centerX=0, parents=[I168, I169], children=[I386]
+familyLayout.ts:72   F75 has 2 parents with ancestor family widths: I168(F76)=280, I169(none)=112
+familyLayout.ts:98   Parent I168 at x=-56, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I169 at x=140, parentFamilyWidth=112, allocatedWidth=112
+familyLayout.ts:49 Layout family F187 at centerX=0, parents=[I386, I387], children=[I390]
+familyLayout.ts:72   F187 has 2 parents with ancestor family widths: I386(F75)=280, I387(none)=112
+familyLayout.ts:98   Parent I386 at x=-56, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I387 at x=140, parentFamilyWidth=112, allocatedWidth=112
+TreeView.tsx:126 Filtered to 18 individuals and 8 families
+TreeView.tsx:127 Reachable families: (8) ['F156', 'F187', 'F214', 'F215', 'F75', 'F76', 'F77', 'F81']
+familyLayout.ts:49 Layout family F76 at centerX=0, parents=[I170, I171], children=[I168]
+familyLayout.ts:72   F76 has 2 parents with ancestor family widths: I170(F77)=420, I171(F214)=280
+familyLayout.ts:98   Parent I170 at x=-140, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:98   Parent I171 at x=210, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:49 Layout family F77 at centerX=-140, parents=[I172, I173], children=[I170, I6456]
+familyLayout.ts:72   F77 has 2 parents with ancestor family widths: I172(F81)=420, I173(F156)=420
+familyLayout.ts:98   Parent I172 at x=-350, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:98   Parent I173 at x=70, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:49 Layout family F81 at centerX=-350, parents=[I179, I180], children=[I172]
+familyLayout.ts:72   F81 has 2 parents with ancestor family widths: I179(none)=112, I180(none)=112
+familyLayout.ts:98   Parent I179 at x=-416, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I180 at x=-284, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:49 Layout family F156 at centerX=70, parents=[I329, I330], children=[I173]
+familyLayout.ts:72   F156 has 2 parents with ancestor family widths: I329(none)=112, I330(none)=112
+familyLayout.ts:98   Parent I329 at x=4, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I330 at x=136, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:129   F77 children widths: I170(F76)=280, I6456(undefined)=100
+familyLayout.ts:49 Layout family F214 at centerX=210, parents=[I439, I440], children=[I171]
+familyLayout.ts:72   F214 has 2 parents with ancestor family widths: I439(F215)=280, I440(none)=112
+familyLayout.ts:98   Parent I439 at x=154, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I440 at x=350, parentFamilyWidth=112, allocatedWidth=112
+familyLayout.ts:49 Layout family F215 at centerX=154, parents=[I441, I442], children=[I439]
+familyLayout.ts:72   F215 has 2 parents with ancestor family widths: I441(none)=112, I442(none)=112
+familyLayout.ts:98   Parent I441 at x=88, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I442 at x=220, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:49 Layout family F75 at centerX=0, parents=[I168, I169], children=[I386]
+familyLayout.ts:72   F75 has 2 parents with ancestor family widths: I168(F76)=280, I169(none)=112
+familyLayout.ts:98   Parent I168 at x=-56, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I169 at x=140, parentFamilyWidth=112, allocatedWidth=112
+familyLayout.ts:49 Layout family F187 at centerX=0, parents=[I386, I387], children=[I390]
+familyLayout.ts:72   F187 has 2 parents with ancestor family widths: I386(F75)=280, I387(none)=112
+familyLayout.ts:98   Parent I386 at x=-56, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I387 at x=140, parentFamilyWidth=112, allocatedWidth=112
+TreeView.tsx:126 Filtered to 18 individuals and 8 families
+TreeView.tsx:127 Reachable families: (8) ['F156', 'F187', 'F214', 'F215', 'F75', 'F76', 'F77', 'F81']
+familyLayout.ts:49 Layout family F76 at centerX=0, parents=[I170, I171], children=[I168]
+familyLayout.ts:72   F76 has 2 parents with ancestor family widths: I170(F77)=420, I171(F214)=280
+familyLayout.ts:98   Parent I170 at x=-140, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:98   Parent I171 at x=210, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:49 Layout family F77 at centerX=-140, parents=[I172, I173], children=[I170, I6456]
+familyLayout.ts:72   F77 has 2 parents with ancestor family widths: I172(F81)=420, I173(F156)=420
+familyLayout.ts:98   Parent I172 at x=-350, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:98   Parent I173 at x=70, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:49 Layout family F81 at centerX=-350, parents=[I179, I180], children=[I172]
+familyLayout.ts:72   F81 has 2 parents with ancestor family widths: I179(none)=112, I180(none)=112
+familyLayout.ts:98   Parent I179 at x=-416, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I180 at x=-284, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:49 Layout family F156 at centerX=70, parents=[I329, I330], children=[I173]
+familyLayout.ts:72   F156 has 2 parents with ancestor family widths: I329(none)=112, I330(none)=112
+familyLayout.ts:98   Parent I329 at x=4, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I330 at x=136, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:129   F77 children widths: I170(F76)=280, I6456(undefined)=100
+familyLayout.ts:49 Layout family F214 at centerX=210, parents=[I439, I440], children=[I171]
+familyLayout.ts:72   F214 has 2 parents with ancestor family widths: I439(F215)=280, I440(none)=112
+familyLayout.ts:98   Parent I439 at x=154, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I440 at x=350, parentFamilyWidth=112, allocatedWidth=112
+familyLayout.ts:49 Layout family F215 at centerX=154, parents=[I441, I442], children=[I439]
+familyLayout.ts:72   F215 has 2 parents with ancestor family widths: I441(none)=112, I442(none)=112
+familyLayout.ts:98   Parent I441 at x=88, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I442 at x=220, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:49 Layout family F75 at centerX=0, parents=[I168, I169], children=[I386]
+familyLayout.ts:72   F75 has 2 parents with ancestor family widths: I168(F76)=280, I169(none)=112
+familyLayout.ts:98   Parent I168 at x=-56, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I169 at x=140, parentFamilyWidth=112, allocatedWidth=112
+familyLayout.ts:49 Layout family F187 at centerX=0, parents=[I386, I387], children=[I390]
+familyLayout.ts:72   F187 has 2 parents with ancestor family widths: I386(F75)=280, I387(none)=112
+familyLayout.ts:98   Parent I386 at x=-56, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I387 at x=140, parentFamilyWidth=112, allocatedWidth=112
+TreeView.tsx:126 Filtered to 18 individuals and 8 families
+TreeView.tsx:127 Reachable families: (8) ['F156', 'F187', 'F214', 'F215', 'F75', 'F76', 'F77', 'F81']
+familyLayout.ts:49 Layout family F76 at centerX=0, parents=[I170, I171], children=[I168]
+familyLayout.ts:72   F76 has 2 parents with ancestor family widths: I170(F77)=420, I171(F214)=280
+familyLayout.ts:98   Parent I170 at x=-140, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:98   Parent I171 at x=210, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:49 Layout family F77 at centerX=-140, parents=[I172, I173], children=[I170, I6456]
+familyLayout.ts:72   F77 has 2 parents with ancestor family widths: I172(F81)=420, I173(F156)=420
+familyLayout.ts:98   Parent I172 at x=-350, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:98   Parent I173 at x=70, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:49 Layout family F81 at centerX=-350, parents=[I179, I180], children=[I172]
+familyLayout.ts:72   F81 has 2 parents with ancestor family widths: I179(none)=112, I180(none)=112
+familyLayout.ts:98   Parent I179 at x=-416, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I180 at x=-284, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:49 Layout family F156 at centerX=70, parents=[I329, I330], children=[I173]
+familyLayout.ts:72   F156 has 2 parents with ancestor family widths: I329(none)=112, I330(none)=112
+familyLayout.ts:98   Parent I329 at x=4, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I330 at x=136, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:129   F77 children widths: I170(F76)=280, I6456(undefined)=100
+familyLayout.ts:49 Layout family F214 at centerX=210, parents=[I439, I440], children=[I171]
+familyLayout.ts:72   F214 has 2 parents with ancestor family widths: I439(F215)=280, I440(none)=112
+familyLayout.ts:98   Parent I439 at x=154, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I440 at x=350, parentFamilyWidth=112, allocatedWidth=112
+familyLayout.ts:49 Layout family F215 at centerX=154, parents=[I441, I442], children=[I439]
+familyLayout.ts:72   F215 has 2 parents with ancestor family widths: I441(none)=112, I442(none)=112
+familyLayout.ts:98   Parent I441 at x=88, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I442 at x=220, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:49 Layout family F75 at centerX=0, parents=[I168, I169], children=[I386]
+familyLayout.ts:72   F75 has 2 parents with ancestor family widths: I168(F76)=280, I169(none)=112
+familyLayout.ts:98   Parent I168 at x=-56, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I169 at x=140, parentFamilyWidth=112, allocatedWidth=112
+familyLayout.ts:49 Layout family F187 at centerX=0, parents=[I386, I387], children=[I390]
+familyLayout.ts:72   F187 has 2 parents with ancestor family widths: I386(F75)=280, I387(none)=112
+familyLayout.ts:98   Parent I386 at x=-56, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I387 at x=140, parentFamilyWidth=112, allocatedWidth=112
+TreeView.tsx:126 Filtered to 18 individuals and 8 families
+TreeView.tsx:127 Reachable families: (8) ['F156', 'F187', 'F214', 'F215', 'F75', 'F76', 'F77', 'F81']
+familyLayout.ts:49 Layout family F76 at centerX=0, parents=[I170, I171], children=[I168]
+familyLayout.ts:72   F76 has 2 parents with ancestor family widths: I170(F77)=420, I171(F214)=280
+familyLayout.ts:98   Parent I170 at x=-140, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:98   Parent I171 at x=210, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:49 Layout family F77 at centerX=-140, parents=[I172, I173], children=[I170, I6456]
+familyLayout.ts:72   F77 has 2 parents with ancestor family widths: I172(F81)=420, I173(F156)=420
+familyLayout.ts:98   Parent I172 at x=-350, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:98   Parent I173 at x=70, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:49 Layout family F81 at centerX=-350, parents=[I179, I180], children=[I172]
+familyLayout.ts:72   F81 has 2 parents with ancestor family widths: I179(none)=112, I180(none)=112
+familyLayout.ts:98   Parent I179 at x=-416, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I180 at x=-284, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:49 Layout family F156 at centerX=70, parents=[I329, I330], children=[I173]
+familyLayout.ts:72   F156 has 2 parents with ancestor family widths: I329(none)=112, I330(none)=112
+familyLayout.ts:98   Parent I329 at x=4, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I330 at x=136, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:129   F77 children widths: I170(F76)=280, I6456(undefined)=100
+familyLayout.ts:49 Layout family F214 at centerX=210, parents=[I439, I440], children=[I171]
+familyLayout.ts:72   F214 has 2 parents with ancestor family widths: I439(F215)=280, I440(none)=112
+familyLayout.ts:98   Parent I439 at x=154, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I440 at x=350, parentFamilyWidth=112, allocatedWidth=112
+familyLayout.ts:49 Layout family F215 at centerX=154, parents=[I441, I442], children=[I439]
+familyLayout.ts:72   F215 has 2 parents with ancestor family widths: I441(none)=112, I442(none)=112
+familyLayout.ts:98   Parent I441 at x=88, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I442 at x=220, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:49 Layout family F75 at centerX=0, parents=[I168, I169], children=[I386]
+familyLayout.ts:72   F75 has 2 parents with ancestor family widths: I168(F76)=280, I169(none)=112
+familyLayout.ts:98   Parent I168 at x=-56, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I169 at x=140, parentFamilyWidth=112, allocatedWidth=112
+familyLayout.ts:49 Layout family F187 at centerX=0, parents=[I386, I387], children=[I390]
+familyLayout.ts:72   F187 has 2 parents with ancestor family widths: I386(F75)=280, I387(none)=112
+familyLayout.ts:98   Parent I386 at x=-56, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I387 at x=140, parentFamilyWidth=112, allocatedWidth=112
+TreeView.tsx:126 Filtered to 18 individuals and 8 families
+TreeView.tsx:127 Reachable families: (8) ['F156', 'F187', 'F214', 'F215', 'F75', 'F76', 'F77', 'F81']
+familyLayout.ts:49 Layout family F76 at centerX=0, parents=[I170, I171], children=[I168]
+familyLayout.ts:72   F76 has 2 parents with ancestor family widths: I170(F77)=420, I171(F214)=280
+familyLayout.ts:98   Parent I170 at x=-140, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:98   Parent I171 at x=210, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:49 Layout family F77 at centerX=-140, parents=[I172, I173], children=[I170, I6456]
+familyLayout.ts:72   F77 has 2 parents with ancestor family widths: I172(F81)=420, I173(F156)=420
+familyLayout.ts:98   Parent I172 at x=-350, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:98   Parent I173 at x=70, parentFamilyWidth=420, allocatedWidth=420
+familyLayout.ts:49 Layout family F81 at centerX=-350, parents=[I179, I180], children=[I172]
+familyLayout.ts:72   F81 has 2 parents with ancestor family widths: I179(none)=112, I180(none)=112
+familyLayout.ts:98   Parent I179 at x=-416, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I180 at x=-284, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:49 Layout family F156 at centerX=70, parents=[I329, I330], children=[I173]
+familyLayout.ts:72   F156 has 2 parents with ancestor family widths: I329(none)=112, I330(none)=112
+familyLayout.ts:98   Parent I329 at x=4, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I330 at x=136, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:129   F77 children widths: I170(F76)=280, I6456(undefined)=100
+familyLayout.ts:49 Layout family F214 at centerX=210, parents=[I439, I440], children=[I171]
+familyLayout.ts:72   F214 has 2 parents with ancestor family widths: I439(F215)=280, I440(none)=112
+familyLayout.ts:98   Parent I439 at x=154, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I440 at x=350, parentFamilyWidth=112, allocatedWidth=112
+familyLayout.ts:49 Layout family F215 at centerX=154, parents=[I441, I442], children=[I439]
+familyLayout.ts:72   F215 has 2 parents with ancestor family widths: I441(none)=112, I442(none)=112
+familyLayout.ts:98   Parent I441 at x=88, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:98   Parent I442 at x=220, parentFamilyWidth=112, allocatedWidth=132
+familyLayout.ts:49 Layout family F75 at centerX=0, parents=[I168, I169], children=[I386]
+familyLayout.ts:72   F75 has 2 parents with ancestor family widths: I168(F76)=280, I169(none)=112
+familyLayout.ts:98   Parent I168 at x=-56, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I169 at x=140, parentFamilyWidth=112, allocatedWidth=112
+familyLayout.ts:49 Layout family F187 at centerX=0, parents=[I386, I387], children=[I390]
+familyLayout.ts:72   F187 has 2 parents with ancestor family widths: I386(F75)=280, I387(none)=112
+familyLayout.ts:98   Parent I386 at x=-56, parentFamilyWidth=280, allocatedWidth=280
+familyLayout.ts:98   Parent I387 at x=140, parentFamilyWidth=112, allocatedWidth=112

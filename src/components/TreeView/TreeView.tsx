@@ -15,7 +15,9 @@ interface TreeViewProps {
     onSelectFamily?: (id: string) => void;
     // spacing props (optional)
     siblingGap?: number; // px gap between sibling child blocks
-    parentGap?: number; // px gap between parent boxes
+    parentGap?: number; // px gap between parent boxes (spouses) - default 20
+    ancestorFamilyGap?: number; // px gap between ancestor family units - default 40
+    descendantFamilyGap?: number; // px gap between descendant family units - default 40
     familyPadding?: number; // extra padding when sizing family blocks
     focusItem?: string | null; // id of person or family where decoding starts
     maxGenerationsForward?: number; // how many younger generations to render (forward)
@@ -24,7 +26,21 @@ interface TreeViewProps {
 }
 
 // Render a single tree: each person is one node placed by generation (distance from root)
-export const TreeView: React.FC<TreeViewProps> = ({ individuals, families = [], selectedId, onSelectPerson, onSelectFamily, siblingGap = 20, parentGap = 40, familyPadding = 16, maxGenerationsForward = 2, maxGenerationsBackward = 2, selectedTreeIndex }) => {
+export const TreeView: React.FC<TreeViewProps> = ({
+    individuals,
+    families = [],
+    selectedId,
+    onSelectPerson,
+    onSelectFamily,
+    siblingGap = 20,
+    parentGap = 20,
+    ancestorFamilyGap = 40,
+    descendantFamilyGap = 40,
+    familyPadding = 16,
+    maxGenerationsForward = 2,
+    maxGenerationsBackward = 2,
+    selectedTreeIndex
+}) => {
     
     // If selectedId is provided, traverse from that person within generation limits
     // Otherwise, use tree component filtering
@@ -203,7 +219,10 @@ export const TreeView: React.FC<TreeViewProps> = ({ individuals, families = [], 
         yOffset,
         singleWidth,
         siblingGap,
-        selectedId
+        selectedId,
+        parentGap,
+        ancestorFamilyGap,
+        descendantFamilyGap
     });
     
     // Layout strategy: if selectedId exists, start from their lineage; otherwise use root families
@@ -532,7 +551,16 @@ export const TreeView: React.FC<TreeViewProps> = ({ individuals, families = [], 
                         className={`person-box ${ind.families && ind.families.length ? 'parent' : 'standalone'} ${selectedId === ind.id ? 'selected' : ''}`}
                         style={{ left: `${p.x}px`, top: p.y, transform: 'translate(-50%, -50%)', position: 'absolute' }}
                         onClick={() => onSelectPerson?.(ind.id)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                onSelectPerson?.(ind.id);
+                            }
+                        }}
                         title={ind.name || ind.id}
+                        role="button"
+                        tabIndex={0}
+                        aria-label={`${ind.name || ind.id}${dateLine ? `, ${dateLine}` : ''}`}
                         ref={(el) => {
                             if (el) personEls.current.set(ind.id, el);
                             else personEls.current.delete(ind.id);
@@ -552,7 +580,16 @@ export const TreeView: React.FC<TreeViewProps> = ({ individuals, families = [], 
                     className="family-box"
                     style={{ left: `${fam.x}px`, top: fam.y, transform: 'translate(-50%, -50%)', position: 'absolute' }}
                     onClick={() => onSelectFamily?.(fam.id)}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            onSelectFamily?.(fam.id);
+                        }
+                    }}
                     title={fam.id}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`Family ${fam.id}`}
                     ref={(el) => {
                         if (el) familyEls.current.set(fam.id, el);
                         else familyEls.current.delete(fam.id);

@@ -18,6 +18,9 @@ export interface LayoutParams {
     singleWidth: number;
     siblingGap: number;
     selectedId?: string | null;
+    parentGap?: number;
+    ancestorFamilyGap?: number;
+    descendantFamilyGap?: number;
 }
 
 export type LayoutDirection = 'ancestor' | 'descendant' | 'both';
@@ -37,14 +40,37 @@ export function createFamilyLayouter(params: LayoutParams) {
     
     const pos: Record<string, Position> = {};
     
-    // Layout constants
-    const PARENT_GAP = 20; // gap between parent boxes (spouses)
-    const ANCESTOR_FAMILY_GAP = 40; // gap between different ancestor family trees
-    const DESCENDANT_FAMILY_GAP = 40; // gap between different descendant family trees
+    // Layout constants - use provided values or defaults
+    const PARENT_GAP = params.parentGap ?? 20; // gap between parent boxes (spouses)
+    const ANCESTOR_FAMILY_GAP = params.ancestorFamilyGap ?? 40; // gap between different ancestor family trees
+    const DESCENDANT_FAMILY_GAP = params.descendantFamilyGap ?? 40; // gap between different descendant family trees
+    const MAX_COLLISION_SEARCH_DISTANCE = 2000; // maximum pixels to search for non-overlapping position
     
     // Create Map-based lookups for O(1) access
     const familyById = new Map(familiesLocal.map(f => [f.id, f]));
     const individualById = new Map(individualsLocal.map(i => [i.id, i]));
+    
+    // Build reverse lookup: person -> families where they are a child (for finding parent families)
+    const personToParentFamily = new Map<string, Family | undefined>();
+    familiesLocal.forEach(fam => {
+        (fam.children || []).forEach(childId => {
+            // Each person typically has only one biological parent family
+            if (!personToParentFamily.has(childId)) {
+                personToParentFamily.set(childId, fam);
+            }
+        });
+    });
+    
+    // Build reverse lookup: person -> families where they are a parent (for finding child families)
+    const personToChildFamilies = new Map<string, Family[]>();
+    familiesLocal.forEach(fam => {
+        (fam.parents || []).forEach(parentId => {
+            if (!personToChildFamilies.has(parentId)) {
+                personToChildFamilies.set(parentId, []);
+            }
+            personToChildFamilies.get(parentId)!.push(fam);
+        });
+    });
     
     // Track occupied horizontal ranges at each generation level to prevent overlaps
     const occupiedRanges: Map<number, Array<{ min: number; max: number }>> = new Map();
@@ -86,7 +112,7 @@ export function createFamilyLayouter(params: LayoutParams) {
         }
         
         // Search outward from preferred position
-        for (let offset = ANCESTOR_FAMILY_GAP; offset < 2000; offset += ANCESTOR_FAMILY_GAP) {
+        for (let offset = ANCESTOR_FAMILY_GAP; offset < MAX_COLLISION_SEARCH_DISTANCE; offset += ANCESTOR_FAMILY_GAP) {
             // Try to the right
             testX = preferredX + offset;
             if (!hasOverlap(generation, testX - halfWidth, testX + halfWidth)) {
@@ -134,8 +160,8 @@ export function createFamilyLayouter(params: LayoutParams) {
         let parentPositions: Array<{ id: string; x: number; y: number; familyWidth: number }> = [];
         
         if (parents.length === 1) {
-            // Find parent family by checking all families for this person as a child
-            const parentFam = Array.from(familyById.values()).find(f => (f.children || []).includes(parents[0]));
+            // Use reverse lookup to find parent family
+            const parentFam = personToParentFamily.get(parents[0]);
             const famWidth = parentFam ? computeFamilyWidth(parentFam.id) : singleWidth;
             parentPositions = [{ id: parents[0], x: centerX, y: parentY, familyWidth: famWidth }];
         } else if (parents.length >= 2) {
@@ -144,9 +170,6 @@ export function createFamilyLayouter(params: LayoutParams) {
             // Always keep spouses close together with simple spacing
             const totalParentBoxWidth = parentBoxWidths.reduce((s, w) => s + w, 0) + Math.max(0, parents.length - 1) * PARENT_GAP;
             let px = centerX - totalParentBoxWidth / 2;
-            
-            // When in ancestor/both mode, calculate ancestor family widths for positioning their families
-            const useAncestorSpacing = direction === 'ancestor' || direction === 'both';
             
             parents.forEach((p: string, i: number) => {
                 const boxWidth = parentBoxWidths[i];
@@ -178,7 +201,7 @@ export function createFamilyLayouter(params: LayoutParams) {
     });        // Now recursively layout each parent's parent family
         // Check for overlaps and adjust position if needed
         const parentsWithAncestors = parentPositions.filter(pp => {
-            const parentFamily = Array.from(familyById.values()).find(f => (f.children || []).includes(pp.id));
+            const parentFamily = personToParentFamily.get(pp.id);
             return parentFamily && !familiesProcessed.has(parentFamily.id);
         });
         
@@ -190,7 +213,7 @@ export function createFamilyLayouter(params: LayoutParams) {
             
             // Calculate total width needed for this generation's families
             const familyIds = sortedParents.map(pp => {
-                const parentFamily = Array.from(familyById.values()).find(f => (f.children || []).includes(pp.id));
+                const parentFamily = personToParentFamily.get(pp.id);
                 return parentFamily?.id;
             }).filter(id => id) as string[];
             
@@ -208,7 +231,7 @@ export function createFamilyLayouter(params: LayoutParams) {
             
             // Position each ancestor family, checking for overlaps
             sortedParents.forEach((pp) => {
-                const parentFamily = Array.from(familyById.values()).find(f => (f.children || []).includes(pp.id));
+                const parentFamily = personToParentFamily.get(pp.id);
                 if (parentFamily) {
                     // Use simple width (just the parents, not recursive ancestors)
                     const numParents = (parentFamily.parents || []).length;
@@ -254,7 +277,7 @@ export function createFamilyLayouter(params: LayoutParams) {
         
         sortedKids.forEach((kid: string) => {
             // Find ALL families where this child is a parent (multiple marriages)
-            const childFamilies = Array.from(familyById.values()).filter(f => (f.parents || []).includes(kid));
+            const childFamilies = personToChildFamilies.get(kid) || [];
             
             if (childFamilies.length === 0) {
                 // Child has no spouse family, just add them as a single person

@@ -100,6 +100,59 @@ const App: React.FC = () => {
     const treeViewRef = React.useRef<{ getPersonPosition: (id: string) => { x: number; y: number } | null }>(null);
     const lastPan = React.useRef<{ x: number; y: number } | null>(null);
     const pinchRef = React.useRef<{ initialDist: number; initialScale: number } | null>(null);
+    const scaleRef = React.useRef<number>(scale);
+    const offsetRef = React.useRef<{ x: number; y: number }>(offset);
+    
+    // Keep refs in sync with state
+    React.useEffect(() => {
+        scaleRef.current = scale;
+        offsetRef.current = offset;
+    }, [scale, offset]);
+
+    // Add wheel event listener for zoom (needs passive: false)
+    useEffect(() => {
+        const container = panRef.current;
+        if (!container) {
+            console.log('Container not ready yet');
+            return;
+        }
+        
+        console.log('Attaching wheel event listener');
+        
+        const handleWheel = (e: WheelEvent) => {
+            e.preventDefault();
+            
+            // Determine zoom direction and amount
+            const delta = -e.deltaY;
+            const zoomAmount = delta > 0 ? 0.1 : -0.1;
+            const currentScale = scaleRef.current;
+            const newScale = Math.max(0.5, Math.min(2, +(currentScale + zoomAmount).toFixed(2)));
+            
+            if (newScale === currentScale) return; // No change
+            
+            // Get mouse position relative to container
+            const rect = container.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+            
+            // Adjust offset so the point under the mouse stays in place while zooming
+            const sRatio = newScale / currentScale;
+            const currentOffset = offsetRef.current;
+            const newOffset = {
+                x: currentOffset.x + (sRatio - 1) * (currentOffset.x - mouseX),
+                y: currentOffset.y + (sRatio - 1) * (currentOffset.y - mouseY),
+            };
+            
+            setScale(newScale);
+            setOffset(newOffset);
+        };
+        
+        container.addEventListener('wheel', handleWheel, { passive: false });
+        
+        return () => {
+            container.removeEventListener('wheel', handleWheel);
+        };
+    }, [familyTree]);
 
     // Center on selected person when it changes
     useEffect(() => {
