@@ -8,10 +8,13 @@ The Family Tree Framework is a modern TypeScript/React library for visualizing a
   - Removes invalid individual/family references
   - Normalizes IDs and formats
   - Structured date parsing (birth/death dates with ISO output)
+  - Marriage date parsing from MARR/DATE tags
 - **Family-Centric Layout**: Positions families as units with proper generation-based alignment
-  - Recursive layout algorithm with measured widths
-  - Dynamic sibling gap adjustment for wide trees
+  - Recursive layout algorithm with smart width calculations
+  - Generation-level centering around selected individual
+  - Collision detection to prevent overlaps
   - Automatic coordinate normalization
+  - Multiple marriage support with chronological ordering
 - **Advanced Navigation**:
   - Focus on specific individuals or families
   - Generation limiting (forward and backward)
@@ -23,11 +26,13 @@ The Family Tree Framework is a modern TypeScript/React library for visualizing a
   - O(n) filtering with Map-based lookups
   - Limited rendering (configurable item limit)
   - Auto-configuration for large datasets
+  - Simple width calculations for efficient spacing
 - **Interactive Features**:
   - Click person boxes to focus and filter tree
   - Click family boxes to view family units
   - Searchable person list with birth/death dates
   - Pan and zoom support (demo)
+  - Multiple marriages displayed side-by-side
 - **TypeScript & Testing**: Fully typed with 29 passing tests
 
 ## Getting Started
@@ -99,17 +104,47 @@ const { individuals, families } = parseGedcom(gedcomText);
 
 ### TreeView Props
 - `individuals`: Array of individual objects with id, name, birthDate, deathDate, etc.
-- `families`: Array of family objects with id, parents[], children[]
+- `families`: Array of family objects with id, parents[], children[], marriageDate
 - `focusItem`: Individual or family ID to center the tree on
 - `maxGenerationsForward`: Limit descendant generations (default: 100)
 - `maxGenerationsBackward`: Limit ancestor generations (default: 10)
 - `selectedTreeIndex`: Which tree component to display (0 = largest, 1 = second largest, etc.)
-- `selectedId`: Currently selected person ID
+- `selectedId`: Currently selected person ID (used for centering generations)
 - `onSelectPerson`: Callback when person box clicked
 - `onSelectFamily`: Callback when family box clicked
-- `siblingGap`: Horizontal spacing between siblings (default: 28px)
+- `siblingGap`: Horizontal spacing between siblings (default: 20px)
 
 Note: The framework automatically discovers all tree components. Use `discoverTreeComponents()` to get a list of available trees and their sizes.
+
+### Layout Algorithm
+The framework uses an intelligent layout algorithm with the following features:
+
+**Spacing & Width Calculations:**
+- Uses simple family width (just the spouses) for spacing calculations, not recursive tree width
+- Prevents excessive gaps while maintaining visual clarity
+- `parentGap`: 20px between spouses
+- `ancestorFamilyGap`: 40px between ancestor family units
+- `descendantFamilyGap`: 40px between descendant family units
+
+**Generation Centering:**
+- All ancestor and descendant generations are centered around the selected individual's x-position
+- Provides balanced, symmetrical tree visualization
+
+**Collision Detection:**
+- Tracks occupied horizontal space at each generation level
+- Automatically adjusts positions to prevent overlaps
+- Searches outward from preferred positions when conflicts occur
+
+**Ordering & Organization:**
+- Children sorted by birth date (oldest to youngest, left to right)
+- Ancestor families positioned left-to-right matching parent order
+- Multiple marriages sorted chronologically by marriage date
+- Reduces crossing lines and improves readability
+
+**Multiple Marriages:**
+- Each marriage appears as a separate family unit
+- Person with multiple spouses shows each marriage side-by-side
+- Children grouped with their respective parent pairs
 
 ### Date Parsing
 The parser exports `parseGedcomDate` for structured date handling:
@@ -126,9 +161,9 @@ For detailed information on the architecture and GEDCOM specification, please re
 - [GEDCOM Specification](docs/gedcom-spec.md) - GEDCOM file format details
 
 ## Known Limitations
-- Very wide trees (many siblings) may require horizontal scrolling even with dynamic gap adjustment
-- Layout is optimized for descendant trees; ancestor-heavy trees may need layout tuning
+- Very wide trees (many siblings) may require horizontal scrolling
 - Performance degrades with >10,000 individuals (consider pagination for larger datasets)
+- Complex ancestor trees with many branches may need manual adjustment of gap constants
 
 ## Troubleshooting
 
