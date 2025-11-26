@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, lazy, Suspense } from 'react';
 import ReactDOM from 'react-dom';
 // Ensure demo styles are loaded when running the demo directly
 import '../../src/styles/index.css';
@@ -8,6 +8,10 @@ import { FileSelector } from './components/FileSelector';
 import { DebugPanel } from './components/DebugPanel';
 import { ControlPanel } from './components/ControlPanel';
 import { PersonList } from './components/PersonList';
+import { EditorModal } from './components/EditorModal';
+
+// Lazy load editors for code splitting
+const PersonEditor = lazy(() => import('../../src/components/Editor/PersonEditor'));
 
 const App: React.FC = () => {
     const [familyTree, setFamilyTree] = useState<{ individuals: any[]; families: any[] } | null>(null);
@@ -22,6 +26,27 @@ const App: React.FC = () => {
     const [maxGenerationsBackward, setMaxGenerationsBackward] = useState<number>(2);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [showDebugPanel, setShowDebugPanel] = useState<boolean>(false);
+    const [editingPerson, setEditingPerson] = useState<any | null>(null);
+
+    const handleEditPerson = () => {
+        if (!selectedId || !familyTree) return;
+        const person = familyTree.individuals.find(i => i.id === selectedId);
+        if (person) {
+            setEditingPerson(person);
+        }
+    };
+
+    const handleSavePerson = (updatedPerson: any) => {
+        if (!familyTree) return;
+        
+        setFamilyTree({
+            ...familyTree,
+            individuals: familyTree.individuals.map(p => 
+                p.id === updatedPerson.id ? { ...p, ...updatedPerson } : p
+            )
+        });
+        setEditingPerson(null);
+    };
 
     const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -418,15 +443,39 @@ const App: React.FC = () => {
                     </div>
                     </div>
                     {selectedId && (
-                        <div className="editor">
-                            <h3>Selected Person</h3>
-                            <pre style={{ whiteSpace: 'pre-wrap' }}>
-                                {JSON.stringify(
-                                    familyTree.individuals.find((i) => i.id === selectedId),
-                                    null,
-                                    2
-                                )}
-                            </pre>
+                        <div className="editor" style={{ marginTop: '20px', padding: '20px', background: '#f5f5f5', borderRadius: '8px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                                <h3 style={{ margin: 0 }}>Selected Person</h3>
+                                <button 
+                                    onClick={handleEditPerson}
+                                    className="button"
+                                    style={{ background: '#007bff', color: 'white' }}
+                                >
+                                    ✏️ Edit Person
+                                </button>
+                            </div>
+                            <div style={{ background: 'white', padding: '12px', borderRadius: '4px' }}>
+                                {(() => {
+                                    const person = familyTree.individuals.find((i) => i.id === selectedId);
+                                    if (!person) return null;
+                                    return (
+                                        <div>
+                                            <p><strong>ID:</strong> {person.id}</p>
+                                            <p><strong>Name:</strong> {person.name || 'N/A'}</p>
+                                            <p><strong>Birth:</strong> {person.birthDate?.original || person.birthDate?.iso || 'N/A'}</p>
+                                            <p><strong>Death:</strong> {person.deathDate?.original || person.deathDate?.iso || 'N/A'}</p>
+                                            {person.sex && <p><strong>Sex:</strong> {person.sex}</p>}
+                                            {person.notes && <p><strong>Notes:</strong> {person.notes}</p>}
+                                            <details style={{ marginTop: '12px' }}>
+                                                <summary style={{ cursor: 'pointer', color: '#666' }}>View Full Data</summary>
+                                                <pre style={{ whiteSpace: 'pre-wrap', fontSize: '11px', marginTop: '8px' }}>
+                                                    {JSON.stringify(person, null, 2)}
+                                                </pre>
+                                            </details>
+                                        </div>
+                                    );
+                                })()}
+                            </div>
                         </div>
                     )}
                     {selectedFamilyId && (
@@ -436,6 +485,25 @@ const App: React.FC = () => {
                                 {JSON.stringify(familyTree.families.find((f) => f.id === selectedFamilyId), null, 2)}
                             </pre>
                         </div>
+                    )}
+                    
+                    {/* Editor Modal */}
+                    {editingPerson && (
+                        <EditorModal onClose={() => setEditingPerson(null)}>
+                            <Suspense fallback={<div style={{ padding: '20px', textAlign: 'center' }}>Loading editor...</div>}>
+                                <PersonEditor
+                                    person={{
+                                        id: editingPerson.id,
+                                        name: editingPerson.name || '',
+                                        birthDate: editingPerson.birthDate?.iso || editingPerson.birthDate?.original || '',
+                                        deathDate: editingPerson.deathDate?.iso || editingPerson.deathDate?.original || '',
+                                        notes: editingPerson.notes || ''
+                                    }}
+                                    onSave={handleSavePerson}
+                                    onCancel={() => setEditingPerson(null)}
+                                />
+                            </Suspense>
+                        </EditorModal>
                     )}
                 </>
             ) : (

@@ -153,8 +153,97 @@ h1, h2, h3 {
     background-color: #007bff;
     color: white;
     cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
 }
 
 .button:hover {
     background-color: #0056b3;
+}
+
+.button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* Person Editor Styles */
+.person-editor {
+    font-family: Arial, sans-serif;
+}
+
+.person-editor h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.person-editor > div {
+    margin-bottom: 16px;
+}
+
+.person-editor label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #555;
+}
+
+.person-editor input,
+.person-editor textarea {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
+.person-editor input:focus,
+.person-editor textarea:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.person-editor textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.person-editor .editor-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.person-editor .editor-actions button {
+    flex: 1;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.person-editor .editor-actions button:first-child {
+    background-color: #28a745;
+    color: white;
+}
+
+.person-editor .editor-actions button:first-child:hover {
+    background-color: #218838;
+}
+
+.person-editor .editor-actions button:last-child {
+    background-color: #6c757d;
+    color: white;
+}
+
+.person-editor .editor-actions button:last-child:hover {
+    background-color: #5a6268;
 }
