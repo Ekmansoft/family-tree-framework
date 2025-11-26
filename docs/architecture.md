@@ -50,12 +50,18 @@ The Family Tree Framework is designed to provide a robust and user-friendly inte
   - **Width Calculations**: Uses simple family width (spouses only) instead of recursive tree width for efficient spacing
   - **Generation Centering**: Centers all generations around the selected individual's x-position
   - **Collision Detection**: Tracks occupied horizontal space per generation to prevent overlaps
+  - **Performance Optimized**: O(1) Map-based lookups for families and individuals (no linear searches)
   - **Smart Positioning**: 
     - Searches outward from preferred positions when conflicts occur
     - Maintains left-to-right ordering to reduce crossing lines
     - Handles multiple marriages by creating separate family units
   - **Direction-Aware**: Different layout strategies for ancestors vs. descendants
   - **Configurable Gaps**: Separate gap constants for spouses (20px), ancestors (40px), and descendants (40px)
+  - **Type-Safe**: Fully typed with Individual, Family, and Position interfaces
+  
+- **Relationship Maps** (`relationshipMaps.ts`): Utility for building person-to-family mappings
+  - Creates bidirectional maps linking individuals to families where they appear as children or parents
+  - Reusable across components for efficient relationship lookups
   
 - **Width Calculation** (`familyWidthCalculation.ts`): Recursive computation of family tree widths including all descendants
 
