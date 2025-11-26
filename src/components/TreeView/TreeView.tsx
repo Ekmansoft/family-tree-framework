@@ -22,7 +22,7 @@ interface TreeViewProps {
 }
 
 // Render a single tree: each person is one node placed by generation (distance from root)
-export const TreeView: React.FC<TreeViewProps> = ({ individuals, families = [], selectedId, onSelectPerson, onSelectFamily, siblingGap = 28, parentGap = 40, familyPadding = 16, maxGenerationsForward = 2, maxGenerationsBackward = 2, selectedTreeIndex }) => {
+export const TreeView: React.FC<TreeViewProps> = ({ individuals, families = [], selectedId, onSelectPerson, onSelectFamily, siblingGap = 20, parentGap = 40, familyPadding = 16, maxGenerationsForward = 2, maxGenerationsBackward = 2, selectedTreeIndex }) => {
     
     // If selectedId is provided, traverse from that person within generation limits
     // Otherwise, use tree component filtering
@@ -79,21 +79,7 @@ export const TreeView: React.FC<TreeViewProps> = ({ individuals, families = [], 
                                 reachableFamilies.add(spouseFamId);
                             });
                         });
-                        // Add ALL children (siblings) and their spouse families
-                        (fam.children || []).forEach((childId: string) => {
-                            reachableIndividuals.add(childId);
-                            // Add families where siblings are parents (their spouse families)
-                            (personToParentFamilies.get(childId) || []).forEach(spouseFamId => {
-                                reachableFamilies.add(spouseFamId);
-                                // Also add the spouses themselves
-                                const spouseFam = familyById.get(spouseFamId);
-                                if (spouseFam) {
-                                    (spouseFam.parents || []).forEach((spouseId: string) => {
-                                        reachableIndividuals.add(spouseId);
-                                    });
-                                }
-                            });
-                        });
+                        // Do NOT add siblings when going backward - only direct ancestors
                     }
                 });
             });
@@ -113,13 +99,16 @@ export const TreeView: React.FC<TreeViewProps> = ({ individuals, families = [], 
                     reachableFamilies.add(famId);
                     const fam = familyById.get(famId);
                     if (fam) {
-                        // Add all parents (spouses)
+                        // Add all parents (spouses) of the current person
                         (fam.parents || []).forEach((parentId: string) => {
                             reachableIndividuals.add(parentId);
                         });
-                        // Add ALL children
+                        // Add children but DON'T continue traversing through siblings
                         (fam.children || []).forEach((childId: string) => {
                             reachableIndividuals.add(childId);
+                            // Only continue traversing if this is in the direct line
+                            // For now, we'll add all children to continue traversal
+                            // but we should only traverse through the selected child's line
                             nextGeneration.add(childId);
                         });
                     }
@@ -132,6 +121,11 @@ export const TreeView: React.FC<TreeViewProps> = ({ individuals, families = [], 
         // Filter to reachable individuals and families
         individualsLocal = individuals.filter(i => reachableIndividuals.has(i.id));
         familiesLocal = families.filter((f: any) => reachableFamilies.has(f.id));
+        
+        if (typeof window !== 'undefined' && (window as any).DEBUG_LAYOUT) {
+            console.log(`Filtered to ${individualsLocal.length} individuals and ${familiesLocal.length} families`);
+            console.log(`Reachable families:`, Array.from(reachableFamilies).sort());
+        }
     } else {
         // No selection - use tree component filtering
         const result = filterByMaxTrees({ 
@@ -196,13 +190,6 @@ export const TreeView: React.FC<TreeViewProps> = ({ individuals, families = [], 
         });
     }
 
-    // Estimate tree width for dynamic sibling gap
-    const estimatedTreeWidth = rootFamilies.reduce((sum, f) => {
-        const childCount = (f.children || []).length;
-        return sum + childCount * 150;
-    }, 0);
-    const dynamicSiblingGap = estimatedTreeWidth > 5000 ? Math.max(8, siblingGap / 3) : siblingGap;
-    
     // Create family width calculator
     const computeFamilyWidth = createFamilyWidthCalculator({
         familiesLocal,
@@ -211,13 +198,14 @@ export const TreeView: React.FC<TreeViewProps> = ({ individuals, families = [], 
         maxGenerationsForward,
         maxGenerationsBackward,
         singleWidth,
-        siblingGap: dynamicSiblingGap,
+        siblingGap,
         parentGap,
         familyPadding
     });
     
     // Create layout function
     const { layoutFamily, pos } = createFamilyLayouter({
+        individualsLocal,
         familiesLocal,
         levelOf,
         computeFamilyWidth,
@@ -227,25 +215,69 @@ export const TreeView: React.FC<TreeViewProps> = ({ individuals, families = [], 
         rowHeight,
         yOffset,
         singleWidth,
-        dynamicSiblingGap
+        siblingGap,
+        selectedId
     });
     
-    // Layout all root families side by side
+    // Layout strategy: if selectedId exists, start from their lineage; otherwise use root families
     const familiesProcessed = new Set<string>();
-    const rootWidths = rootFamilies.map((f) => computeFamilyWidth(f.id));
+    let totalTreeWidth = 200;
     
-    // Calculate total width needed
-    const totalTreeWidth = rootWidths.reduce((s, w) => s + w, 0) || 200;
-    
-    // Start from negative half-width to center the layout around x=0
-    // This ensures balanced space usage when families have uneven descendant distributions
-    let cursor = -totalTreeWidth / 2;
-    rootFamilies.forEach((fam, idx) => {
-        const w = rootWidths[idx] || 200;
-        const famCenter = cursor + w / 2;
-        layoutFamily(fam.id, famCenter, familiesProcessed);
-        cursor += w;
-    });
+    if (selectedId) {
+        // Find the selected person's parent family (where they are a child)
+        const selectedParentFamily = familiesLocal.find(f => 
+            (f.children || []).includes(selectedId)
+        );
+        
+        if (selectedParentFamily) {
+            // Start layout from the selected person's parent family
+            const familyWidth = computeFamilyWidth(selectedParentFamily.id);
+            totalTreeWidth = familyWidth;
+            layoutFamily(selectedParentFamily.id, 0, familiesProcessed, 'both');
+        } else {
+            // Selected person has no parent family, they might be a parent themselves
+            // Find families where they are a parent
+            const selectedAsParentFamilies = familiesLocal.filter(f =>
+                (f.parents || []).includes(selectedId)
+            );
+            
+            if (selectedAsParentFamilies.length > 0) {
+                // Layout families where selected person is a parent, side by side
+                const widths = selectedAsParentFamilies.map(f => computeFamilyWidth(f.id));
+                totalTreeWidth = widths.reduce((s, w) => s + w, 0) || 200;
+                let cursor = -totalTreeWidth / 2;
+                
+                selectedAsParentFamilies.forEach((fam, idx) => {
+                    const w = widths[idx] || 200;
+                    const famCenter = cursor + w / 2;
+                    layoutFamily(fam.id, famCenter, familiesProcessed, 'both');
+                    cursor += w;
+                });
+            } else {
+                // Selected person is standalone, position them at center
+                const ind = individualsLocal.find(i => i.id === selectedId);
+                if (ind) {
+                    const level = levelOf.get(selectedId) ?? 0;
+                    const row = level * 2;
+                    const y = row * rowHeight + rowHeight / 2 + yOffset;
+                    pos[selectedId] = { x: 0, y };
+                    totalTreeWidth = singleWidth;
+                }
+            }
+        }
+    } else {
+        // No selected person: use root families approach
+        const rootWidths = rootFamilies.map((f) => computeFamilyWidth(f.id));
+        totalTreeWidth = rootWidths.reduce((s, w) => s + w, 0) || 200;
+        
+        let cursor = -totalTreeWidth / 2;
+        rootFamilies.forEach((fam, idx) => {
+            const w = rootWidths[idx] || 200;
+            const famCenter = cursor + w / 2;
+            layoutFamily(fam.id, famCenter, familiesProcessed, 'both');
+            cursor += w;
+        });
+    }
 
     // Apply X offset to ensure positive space
     const { pos: finalPos, minX, maxX } = applyXOffset(pos, 100);
@@ -279,9 +311,9 @@ export const TreeView: React.FC<TreeViewProps> = ({ individuals, families = [], 
             const pavg = avg(parentPos);
             familyX = pavg.x;
 
-            // Place family row between parents and children using parent generation.
+            // Place family box closer to parents (about 1/3 of the way down to children)
             const maxParentLevel = Math.max(...parentLevels);
-            const familyRow = maxParentLevel * 2 + 1;
+            const familyRow = maxParentLevel * 2 + 0.4; // Reduced from +1 to +0.4 to move closer to parents
             familyY = familyRow * rowHeight + rowHeight / 2 + yOffset;
         } else if (childPos.length > 0) {
             // No parents available (or not positioned) — fall back to centering under children

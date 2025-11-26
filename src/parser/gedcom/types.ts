@@ -11,6 +11,7 @@ export interface Family {
     id: string;
     parents?: string[]; // IDs of parents (husband, wife or other)
     children: string[]; // IDs of children
+    marriageDate?: string; // Marriage date from MARR tag
 }
 
 export interface GedcomData {

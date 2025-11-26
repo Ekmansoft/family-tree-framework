@@ -4,29 +4,44 @@
 
 import { debugLog, normalizeId } from './lineParsing';
 
+// Track the current level-1 tag for nested date parsing
+let currentFamilyTag: string | null = null;
+
 /**
- * Handle level-1 tags within a family record (HUSB, WIFE, CHIL)
+ * Handle level-1 and level-2 tags within a family record (HUSB, WIFE, CHIL, MARR, DATE)
  */
 export const handleFamilyTag = (
     tag: string,
     value: string,
-    currentFamily: any
+    currentFamily: any,
+    level: string = '1'
 ): void => {
-    if (tag === 'HUSB' || tag === 'WIFE') {
-        const pid = normalizeId(value);
-        if (pid) {
-            if (!currentFamily.parents) currentFamily.parents = [];
-            if (!currentFamily.parents.includes(pid)) {
-                currentFamily.parents.push(pid);
+    if (level === '1') {
+        if (tag === 'HUSB' || tag === 'WIFE') {
+            const pid = normalizeId(value);
+            if (pid) {
+                if (!currentFamily.parents) currentFamily.parents = [];
+                if (!currentFamily.parents.includes(pid)) {
+                    currentFamily.parents.push(pid);
+                }
             }
+        } else if (tag === 'CHIL') {
+            const cid = normalizeId(value);
+            if (cid) {
+                if (!currentFamily.children) currentFamily.children = [];
+                if (!currentFamily.children.includes(cid)) {
+                    currentFamily.children.push(cid);
+                }
+            }
+        } else if (tag === 'MARR') {
+            // Track that we're in a MARR section for nested tags
+            currentFamilyTag = 'MARR';
         }
-    } else if (tag === 'CHIL') {
-        const cid = normalizeId(value);
-        if (cid) {
-            if (!currentFamily.children) currentFamily.children = [];
-            if (!currentFamily.children.includes(cid)) {
-                currentFamily.children.push(cid);
-            }
+    } else if (level === '2') {
+        // Handle level-2 tags nested under level-1 tags
+        if (currentFamilyTag === 'MARR' && tag === 'DATE') {
+            currentFamily.marriageDate = value;
+            currentFamilyTag = null; // Reset after capturing date
         }
     }
 };

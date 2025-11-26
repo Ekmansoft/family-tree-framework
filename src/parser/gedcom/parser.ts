@@ -119,7 +119,12 @@ export function parseGedcom(gedcomText: string): { individuals: any[]; families:
                     skipUntilLine = index + skip;
                 }
             } else if (currentFamily) {
-                handleFamilyTag(tag, value, currentFamily);
+                handleFamilyTag(tag, value, currentFamily, level);
+            }
+        } else if (level === '2') {
+            // Handle level-2 tags for families (like DATE under MARR)
+            if (currentFamily) {
+                handleFamilyTag(tag, value, currentFamily, level);
             }
         }
     });
