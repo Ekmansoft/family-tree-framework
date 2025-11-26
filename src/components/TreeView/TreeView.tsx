@@ -2,12 +2,14 @@ import React, { useLayoutEffect, useRef, useState } from 'react';
 import { assignGenerations } from './utils/generationAssignment';
 import { createFamilyWidthCalculator } from './utils/familyWidthCalculation';
 import { createFamilyLayouter, applyXOffset } from './utils/familyLayout';
-import { filterByMaxTrees, buildRelationshipMaps } from './utils/treeFiltering';
+import { filterByMaxTrees, buildRelationshipMaps as buildPersonRelationshipMaps } from './utils/treeFiltering';
+import { buildRelationshipMaps as buildFamilyRelationshipMaps } from './utils/relationshipMaps';
 import { ConnectionLines } from './ConnectionLines';
+import type { Individual, Family } from './types';
 
 interface TreeViewProps {
-    individuals: any[];
-    families?: any[];
+    individuals: Individual[];
+    families?: Family[];
     selectedId?: string | null;
     onSelectPerson?: (id: string) => void;
     onSelectFamily?: (id: string) => void;
@@ -32,25 +34,10 @@ export const TreeView: React.FC<TreeViewProps> = ({ individuals, families = [], 
     if (selectedId) {
         // Build relationship maps from all data
         const individualById = new Map(individuals.map(i => [i.id, i]));
-        const familyById = new Map(families.map((f: any) => [f.id, f]));
+        const familyById = new Map(families.map(f => [f.id, f]));
         
-        // Build maps: person -> families where they are a child
-        const personToChildFamilies = new Map<string, string[]>();
-        families.forEach((fam: any) => {
-            (fam.children || []).forEach((childId: string) => {
-                if (!personToChildFamilies.has(childId)) personToChildFamilies.set(childId, []);
-                personToChildFamilies.get(childId)!.push(fam.id);
-            });
-        });
-        
-        // Build maps: person -> families where they are a parent
-        const personToParentFamilies = new Map<string, string[]>();
-        families.forEach((fam: any) => {
-            (fam.parents || []).forEach((parentId: string) => {
-                if (!personToParentFamilies.has(parentId)) personToParentFamilies.set(parentId, []);
-                personToParentFamilies.get(parentId)!.push(fam.id);
-            });
-        });
+        // Build maps: person -> families where they are a child/parent
+        const { personToChildFamilies, personToParentFamilies } = buildFamilyRelationshipMaps(families);
         
         const reachableIndividuals = new Set<string>();
         const reachableFamilies = new Set<string>();
@@ -139,7 +126,7 @@ export const TreeView: React.FC<TreeViewProps> = ({ individuals, families = [], 
     }
     
     // Build parent -> children edges from families
-    const { childrenOf, parentsOf } = buildRelationshipMaps(familiesLocal);
+    const { childrenOf, parentsOf } = buildPersonRelationshipMaps(familiesLocal);
 
     const individualsById = new Map<string, any>(individualsLocal.map((i) => [i.id, i]));
 

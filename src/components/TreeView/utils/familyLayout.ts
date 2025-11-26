@@ -3,9 +3,11 @@
  * Handles recursive positioning of families and individuals in the tree
  */
 
+import type { Individual, Family, Position } from '../types';
+
 export interface LayoutParams {
-    individualsLocal: any[];
-    familiesLocal: any[];
+    individualsLocal: Individual[];
+    familiesLocal: Family[];
     levelOf: Map<string, number>;
     computeFamilyWidth: (famId: string) => number;
     personWidthMap: Map<string, number>;
@@ -21,7 +23,7 @@ export interface LayoutParams {
 export type LayoutDirection = 'ancestor' | 'descendant' | 'both';
 
 export interface LayoutResult {
-    pos: Record<string, { x: number; y: number }>;
+    pos: Record<string, Position>;
     minX: number;
     maxX: number;
 }
@@ -33,10 +35,16 @@ export interface LayoutResult {
 export function createFamilyLayouter(params: LayoutParams) {
     const { individualsLocal, familiesLocal, levelOf, computeFamilyWidth, personWidthMap, maxGenerationsForward, maxGenerationsBackward, rowHeight, yOffset, singleWidth, siblingGap, selectedId } = params;
     
-    const pos: Record<string, { x: number; y: number }> = {};
-    const parentGap = 20; // desired gap between parent boxes (spouses)
-    const ancestorFamilyGap = 40; // gap between different ancestor family trees
-    const descendantFamilyGap = 40; // gap between different descendant family trees
+    const pos: Record<string, Position> = {};
+    
+    // Layout constants
+    const PARENT_GAP = 20; // gap between parent boxes (spouses)
+    const ANCESTOR_FAMILY_GAP = 40; // gap between different ancestor family trees
+    const DESCENDANT_FAMILY_GAP = 40; // gap between different descendant family trees
+    
+    // Create Map-based lookups for O(1) access
+    const familyById = new Map(familiesLocal.map(f => [f.id, f]));
+    const individualById = new Map(individualsLocal.map(i => [i.id, i]));
     
     // Track occupied horizontal ranges at each generation level to prevent overlaps
     const occupiedRanges: Map<number, Array<{ min: number; max: number }>> = new Map();
@@ -44,42 +52,18 @@ export function createFamilyLayouter(params: LayoutParams) {
     // Store the selected person's x position for centering generations
     let selectedPersonX: number | null = null;
     
-    // Track the offset for centering each generation
-    const generationOffsets: Map<number, number> = new Map();
-    
     // Helper function to calculate total width needed for a generation
-    // Only count immediate family width (parents + children), not recursive ancestors
-    function calculateGenerationWidth(generation: number, families: string[]): number {
+    // Only count immediate family width (parents), not recursive ancestors/descendants
+    function calculateGenerationWidth(generation: number, families: string[], gapSize: number): number {
         let totalWidth = 0;
         families.forEach(famId => {
             // Use a simple width estimate: number of parents * person width
-            const fam = familiesLocal.find(f => f.id === famId);
+            const fam = familyById.get(famId);
             const numParents = (fam?.parents || []).length;
-            const width = Math.max(numParents * singleWidth + (numParents - 1) * parentGap, singleWidth * 2);
-            totalWidth += width + ancestorFamilyGap;
+            const width = Math.max(numParents * singleWidth + (numParents - 1) * PARENT_GAP, singleWidth * 2);
+            totalWidth += width + gapSize;
         });
-        return Math.max(0, totalWidth - ancestorFamilyGap); // Remove last gap
-    }
-    
-    // Helper function to calculate descendant generation width
-    // For descendants, use simple width based on number of spouses in each family
-    function calculateDescendantGenerationWidth(generation: number, families: string[]): number {
-        let totalWidth = 0;
-        families.forEach(famId => {
-            const fam = familiesLocal.find(f => f.id === famId);
-            const numParents = (fam?.parents || []).length;
-            const width = Math.max(numParents * singleWidth + (numParents - 1) * parentGap, singleWidth * 2);
-            totalWidth += width + descendantFamilyGap;
-        });
-        return Math.max(0, totalWidth - descendantFamilyGap); // Remove last gap
-    }
-    
-    // Helper function to get or calculate the offset for centering a generation
-    function getGenerationOffset(generation: number): number {
-        if (!generationOffsets.has(generation)) {
-            generationOffsets.set(generation, 0);
-        }
-        return generationOffsets.get(generation)!;
+        return Math.max(0, totalWidth - gapSize); // Remove last gap
     }
     
     // Helper function to check if a range overlaps with existing ranges at a generation
@@ -102,7 +86,7 @@ export function createFamilyLayouter(params: LayoutParams) {
         }
         
         // Search outward from preferred position
-        for (let offset = ancestorFamilyGap; offset < 2000; offset += ancestorFamilyGap) {
+        for (let offset = ANCESTOR_FAMILY_GAP; offset < 2000; offset += ANCESTOR_FAMILY_GAP) {
             // Try to the right
             testX = preferredX + offset;
             if (!hasOverlap(generation, testX - halfWidth, testX + halfWidth)) {
@@ -131,7 +115,7 @@ export function createFamilyLayouter(params: LayoutParams) {
         if (familiesProcessed.has(famId)) return 0;
         familiesProcessed.add(famId);
         
-        const fam = familiesLocal.find((f: any) => f.id === famId);
+        const fam = familyById.get(famId);
         if (!fam) return 0;
         
         const parents: string[] = (fam.parents || []).slice();
@@ -150,14 +134,15 @@ export function createFamilyLayouter(params: LayoutParams) {
         let parentPositions: Array<{ id: string; x: number; y: number; familyWidth: number }> = [];
         
         if (parents.length === 1) {
-            const parentFam = familiesLocal.find((f: any) => (f.children || []).includes(parents[0]));
+            // Find parent family by checking all families for this person as a child
+            const parentFam = Array.from(familyById.values()).find(f => (f.children || []).includes(parents[0]));
             const famWidth = parentFam ? computeFamilyWidth(parentFam.id) : singleWidth;
             parentPositions = [{ id: parents[0], x: centerX, y: parentY, familyWidth: famWidth }];
         } else if (parents.length >= 2) {
             const parentBoxWidths = parents.map((p: string) => personWidthMap.get(p) ?? singleWidth);
             
             // Always keep spouses close together with simple spacing
-            const totalParentBoxWidth = parentBoxWidths.reduce((s, w) => s + w, 0) + Math.max(0, parents.length - 1) * parentGap;
+            const totalParentBoxWidth = parentBoxWidths.reduce((s, w) => s + w, 0) + Math.max(0, parents.length - 1) * PARENT_GAP;
             let px = centerX - totalParentBoxWidth / 2;
             
             // When in ancestor/both mode, calculate ancestor family widths for positioning their families
@@ -175,7 +160,7 @@ export function createFamilyLayouter(params: LayoutParams) {
                 
                 px += boxWidth;
                 if (i < parents.length - 1) {
-                    px += parentGap;
+                    px += PARENT_GAP;
                 }
             });
         }
@@ -193,7 +178,7 @@ export function createFamilyLayouter(params: LayoutParams) {
     });        // Now recursively layout each parent's parent family
         // Check for overlaps and adjust position if needed
         const parentsWithAncestors = parentPositions.filter(pp => {
-            const parentFamily = familiesLocal.find((f: any) => (f.children || []).includes(pp.id));
+            const parentFamily = Array.from(familyById.values()).find(f => (f.children || []).includes(pp.id));
             return parentFamily && !familiesProcessed.has(parentFamily.id);
         });
         
@@ -205,11 +190,11 @@ export function createFamilyLayouter(params: LayoutParams) {
             
             // Calculate total width needed for this generation's families
             const familyIds = sortedParents.map(pp => {
-                const parentFamily = familiesLocal.find((f: any) => (f.children || []).includes(pp.id));
+                const parentFamily = Array.from(familyById.values()).find(f => (f.children || []).includes(pp.id));
                 return parentFamily?.id;
             }).filter(id => id) as string[];
             
-            const totalGenWidth = calculateGenerationWidth(parentFamilyLevel, familyIds);
+            const totalGenWidth = calculateGenerationWidth(parentFamilyLevel, familyIds, ANCESTOR_FAMILY_GAP);
             // Center around selected person if available, otherwise use family center
             const centerPoint = selectedPersonX !== null ? selectedPersonX : centerX;
             const genOffset = centerPoint - totalGenWidth / 2;
@@ -223,11 +208,11 @@ export function createFamilyLayouter(params: LayoutParams) {
             
             // Position each ancestor family, checking for overlaps
             sortedParents.forEach((pp) => {
-                const parentFamily = familiesLocal.find((f: any) => (f.children || []).includes(pp.id));
+                const parentFamily = Array.from(familyById.values()).find(f => (f.children || []).includes(pp.id));
                 if (parentFamily) {
                     // Use simple width (just the parents, not recursive ancestors)
                     const numParents = (parentFamily.parents || []).length;
-                    const familyWidth = Math.max(numParents * singleWidth + (numParents - 1) * parentGap, singleWidth * 2);
+                    const familyWidth = Math.max(numParents * singleWidth + (numParents - 1) * PARENT_GAP, singleWidth * 2);
                     
                     if (typeof window !== 'undefined' && (window as any).DEBUG_LAYOUT) {
                         console.log(`    Family ${parentFamily.id} width=${familyWidth}`);
@@ -246,7 +231,7 @@ export function createFamilyLayouter(params: LayoutParams) {
                     markOccupied(parentFamilyLevel, adjustedX - familyWidth / 2, adjustedX + familyWidth / 2);
                     
                     // Advance position for next family
-                    currentX += familyWidth + ancestorFamilyGap;
+                    currentX += familyWidth + ANCESTOR_FAMILY_GAP;
                 }
             });
         }
@@ -256,8 +241,8 @@ export function createFamilyLayouter(params: LayoutParams) {
 
         // Sort children by birth date (oldest to youngest, left to right)
         const sortedKids = [...kids].sort((a, b) => {
-            const personA = individualsLocal.find(p => p.id === a);
-            const personB = individualsLocal.find(p => p.id === b);
+            const personA = individualById.get(a);
+            const personB = individualById.get(b);
             const dateA = String(personA?.birthDate || '');
             const dateB = String(personB?.birthDate || '');
             return dateA.localeCompare(dateB);
@@ -269,7 +254,7 @@ export function createFamilyLayouter(params: LayoutParams) {
         
         sortedKids.forEach((kid: string) => {
             // Find ALL families where this child is a parent (multiple marriages)
-            const childFamilies = familiesLocal.filter((f: any) => (f.parents || []).includes(kid));
+            const childFamilies = Array.from(familyById.values()).filter(f => (f.parents || []).includes(kid));
             
             if (childFamilies.length === 0) {
                 // Child has no spouse family, just add them as a single person
@@ -293,7 +278,7 @@ export function createFamilyLayouter(params: LayoutParams) {
                 sortedFamilies.forEach(childFam => {
                     // Use simple width: number of parents (spouses) in the child's family
                     const numParents = (childFam.parents || []).length;
-                    const width = Math.max(numParents * singleWidth + (numParents - 1) * parentGap, singleWidth);
+                    const width = Math.max(numParents * singleWidth + (numParents - 1) * PARENT_GAP, singleWidth);
                     childInfos.push({ childId: kid, familyId: childFam.id, width });
                 });
             }
@@ -311,7 +296,7 @@ export function createFamilyLayouter(params: LayoutParams) {
         
         // Calculate total width and center around selected person (or family center)
         const totalChildWidths = visibleChildInfos.reduce((s: number, c: any) => s + c.width, 0);
-        const totalChildWidth = totalChildWidths + Math.max(0, visibleChildInfos.length - 1) * descendantFamilyGap;
+        const totalChildWidth = totalChildWidths + Math.max(0, visibleChildInfos.length - 1) * DESCENDANT_FAMILY_GAP;
         const centerPoint = selectedPersonX !== null ? selectedPersonX : centerX;
         let childCursor = centerPoint - totalChildWidth / 2;
 
@@ -339,7 +324,7 @@ export function createFamilyLayouter(params: LayoutParams) {
             }
 
             // advance cursor by this child's width plus gap (except after last)
-            childCursor += info.width + (idx < visibleChildInfos.length - 1 ? descendantFamilyGap : 0);
+            childCursor += info.width + (idx < visibleChildInfos.length - 1 ? DESCENDANT_FAMILY_GAP : 0);
         });
 
         return totalChildWidth;
