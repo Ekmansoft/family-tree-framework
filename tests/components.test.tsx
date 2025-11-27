@@ -105,8 +105,10 @@ describe('PersonEditor Component', () => {
 
 describe('RelationshipEditor Component', () => {
     test('renders RelationshipEditor correctly', () => {
-        render(<RelationshipEditor relationships={[]} onUpdate={() => {}} />);
-        expect(screen.getByText(/edit relationships/i)).toBeInTheDocument();
+        const family = { id: 'F1', parents: [], children: [] };
+        const individuals = [{ id: 'I1', name: 'John Doe' }];
+        render(<RelationshipEditor family={family} individuals={individuals} onSave={() => {}} onCancel={() => {}} />);
+        expect(screen.getByText(/edit family/i)).toBeInTheDocument();
     });
 });
 

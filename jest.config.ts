@@ -4,7 +4,9 @@ module.exports = {
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   testPathIgnorePatterns: ['/node_modules/', '/dist/'],
   transform: {
-    '^.+\\.tsx?$': 'ts-jest',
+    '^.+\\.tsx?$': ['ts-jest', {
+      tsconfig: 'tsconfig.test.json'
+    }],
   },
   setupFilesAfterEnv: ['<rootDir>/tests/setupTests.ts'],
   coverageDirectory: '<rootDir>/coverage',
