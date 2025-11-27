@@ -465,32 +465,129 @@ const App: React.FC = () => {
                     </div>
                     </div>
                     {selectedId && (
-                        <div className="editor" style={{ marginTop: '20px', padding: '20px', background: '#f5f5f5', borderRadius: '8px' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                                <h3 style={{ margin: 0 }}>Selected Person</h3>
+                        <div className="editor" style={{ 
+                            marginTop: '20px', 
+                            padding: '24px', 
+                            background: 'white', 
+                            borderRadius: '12px',
+                            boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+                            border: '1px solid #e0e0e0'
+                        }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                                <h3 style={{ margin: 0, color: '#333', fontSize: '18px', fontWeight: '600' }}>
+                                    👤 Selected Person
+                                </h3>
                                 <button 
                                     onClick={handleEditPerson}
                                     className="button"
-                                    style={{ background: '#007bff', color: 'white' }}
+                                    style={{ 
+                                        background: '#667eea', 
+                                        color: 'white',
+                                        border: 'none',
+                                        padding: '8px 16px',
+                                        borderRadius: '6px',
+                                        fontWeight: '600',
+                                        cursor: 'pointer',
+                                        transition: 'all 0.2s',
+                                        boxShadow: '0 2px 8px rgba(102, 126, 234, 0.3)'
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.transform = 'translateY(-2px)';
+                                        e.currentTarget.style.boxShadow = '0 4px 12px rgba(102, 126, 234, 0.4)';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.transform = 'translateY(0)';
+                                        e.currentTarget.style.boxShadow = '0 2px 8px rgba(102, 126, 234, 0.3)';
+                                    }}
                                 >
-                                    ✏️ Edit Person
+                                    ✏️ Edit
                                 </button>
                             </div>
-                            <div style={{ background: 'white', padding: '12px', borderRadius: '4px' }}>
-                                {(() => {
-                                    const person = familyTree.individuals.find((i) => i.id === selectedId);
-                                    if (!person) return null;
-                                    return (
-                                        <div>
-                                            <p><strong>ID:</strong> {person.id}</p>
-                                            <p><strong>Name:</strong> {person.name || 'N/A'}</p>
-                                            <p><strong>Birth:</strong> {person.birthDate?.original || person.birthDate?.iso || 'N/A'}</p>
-                                            <p><strong>Death:</strong> {person.deathDate?.original || person.deathDate?.iso || 'N/A'}</p>
-                                            {person.sex && <p><strong>Sex:</strong> {person.sex}</p>}
-                                            {person.notes && <p><strong>Notes:</strong> {person.notes}</p>}
-                                            <details style={{ marginTop: '12px' }}>
-                                                <summary style={{ cursor: 'pointer', color: '#666' }}>View Full Data</summary>
-                                                <pre style={{ whiteSpace: 'pre-wrap', fontSize: '11px', marginTop: '8px' }}>
+                            {(() => {
+                                const person = familyTree.individuals.find((i) => i.id === selectedId);
+                                if (!person) return null;
+                                return (
+                                    <div style={{ fontSize: '14px', lineHeight: '1.8' }}>
+                                            <div style={{ marginBottom: '16px', paddingBottom: '16px', borderBottom: '2px solid #f0f0f0' }}>
+                                                <h4 style={{ margin: '0 0 8px 0', color: '#667eea', fontSize: '20px', fontWeight: '700' }}>
+                                                    {person.name || 'Unknown'}
+                                                </h4>
+                                                <span style={{ 
+                                                    display: 'inline-block',
+                                                    padding: '4px 12px',
+                                                    background: '#f0f4ff',
+                                                    color: '#667eea',
+                                                    borderRadius: '12px',
+                                                    fontSize: '12px',
+                                                    fontWeight: '600'
+                                                }}>
+                                                    ID: {person.id}
+                                                </span>
+                                            </div>
+                                            
+                                            {(person.birthDate || person.deathDate) && (
+                                                <div style={{ marginBottom: '12px' }}>
+                                                    {person.birthDate && (
+                                                        <p style={{ margin: '8px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                                            <span style={{ fontSize: '16px' }}>🎂</span>
+                                                            <span style={{ color: '#666' }}>Born:</span>
+                                                            <strong style={{ color: '#333' }}>{person.birthDate?.original || person.birthDate?.iso || 'N/A'}</strong>
+                                                        </p>
+                                                    )}
+                                                    {person.deathDate && (
+                                                        <p style={{ margin: '8px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                                            <span style={{ fontSize: '16px' }}>⚰️</span>
+                                                            <span style={{ color: '#666' }}>Died:</span>
+                                                            <strong style={{ color: '#333' }}>{person.deathDate?.original || person.deathDate?.iso || 'N/A'}</strong>
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            )}
+                                            
+                                            {person.sex && (
+                                                <p style={{ margin: '8px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                                    <span style={{ fontSize: '16px' }}>{person.sex === 'M' ? '♂️' : person.sex === 'F' ? '♀️' : '⚧'}</span>
+                                                    <span style={{ color: '#666' }}>Gender:</span>
+                                                    <strong style={{ color: '#333' }}>{person.sex === 'M' ? 'Male' : person.sex === 'F' ? 'Female' : person.sex}</strong>
+                                                </p>
+                                            )}
+                                            
+                                            {person.notes && (
+                                                <div style={{ 
+                                                    marginTop: '16px',
+                                                    padding: '12px',
+                                                    background: '#fffbf0',
+                                                    borderLeft: '4px solid #ffd700',
+                                                    borderRadius: '4px'
+                                                }}>
+                                                    <p style={{ margin: 0, fontSize: '13px', color: '#666' }}>
+                                                        <strong style={{ color: '#333' }}>📝 Notes:</strong><br/>
+                                                        {person.notes}
+                                                    </p>
+                                                </div>
+                                            )}
+                                            
+                                            <details style={{ marginTop: '16px' }}>
+                                                <summary style={{ 
+                                                    cursor: 'pointer', 
+                                                    color: '#667eea',
+                                                    fontWeight: '600',
+                                                    fontSize: '13px',
+                                                    padding: '8px',
+                                                    borderRadius: '4px',
+                                                    transition: 'background 0.2s'
+                                                }}>
+                                                    🔍 View Full Data
+                                                </summary>
+                                                <pre style={{ 
+                                                    whiteSpace: 'pre-wrap', 
+                                                    fontSize: '11px', 
+                                                    marginTop: '8px',
+                                                    padding: '12px',
+                                                    background: '#f8f9fa',
+                                                    borderRadius: '4px',
+                                                    overflow: 'auto'
+                                                }}>
                                                     {JSON.stringify(person, null, 2)}
                                                 </pre>
                                             </details>
@@ -501,71 +598,181 @@ const App: React.FC = () => {
                         </div>
                     )}
                     {selectedFamilyId && (
-                        <div className="editor" style={{ marginTop: '20px', padding: '20px', background: '#f5f5f5', borderRadius: '8px' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                                <h3 style={{ margin: 0 }}>Selected Family</h3>
+                        <div className="editor" style={{ 
+                            marginTop: '20px', 
+                            padding: '24px', 
+                            background: 'white', 
+                            borderRadius: '12px',
+                            boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+                            border: '1px solid #e0e0e0'
+                        }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                                <h3 style={{ margin: 0, color: '#333', fontSize: '18px', fontWeight: '600' }}>
+                                    👨‍👩‍👧‍👦 Selected Family
+                                </h3>
                                 <button 
                                     onClick={handleEditFamily}
                                     className="button"
-                                    style={{ background: '#28a745', color: 'white' }}
+                                    style={{ 
+                                        background: '#48bb78', 
+                                        color: 'white',
+                                        border: 'none',
+                                        padding: '8px 16px',
+                                        borderRadius: '6px',
+                                        fontWeight: '600',
+                                        cursor: 'pointer',
+                                        transition: 'all 0.2s',
+                                        boxShadow: '0 2px 8px rgba(72, 187, 120, 0.3)'
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.transform = 'translateY(-2px)';
+                                        e.currentTarget.style.boxShadow = '0 4px 12px rgba(72, 187, 120, 0.4)';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.transform = 'translateY(0)';
+                                        e.currentTarget.style.boxShadow = '0 2px 8px rgba(72, 187, 120, 0.3)';
+                                    }}
                                 >
-                                    ✏️ Edit Family
+                                    ✏️ Edit
                                 </button>
                             </div>
-                            <div style={{ background: 'white', padding: '12px', borderRadius: '4px' }}>
-                                {(() => {
-                                    const family = familyTree.families.find((f) => f.id === selectedFamilyId);
-                                    if (!family) return null;
-                                    
-                                    const getPersonName = (id: string) => {
-                                        const person = familyTree.individuals.find(i => i.id === id);
-                                        return person?.name || id;
-                                    };
-                                    
-                                    return (
-                                        <div>
-                                            <p><strong>ID:</strong> {family.id}</p>
-                                            
-                                            {family.parents && family.parents.length > 0 && (
-                                                <div style={{ marginTop: '12px' }}>
-                                                    <strong>Parents/Spouses:</strong>
-                                                    <ul style={{ marginTop: '4px' }}>
+                            {(() => {
+                                const family = familyTree.families.find((f) => f.id === selectedFamilyId);
+                                if (!family) return null;
+                                
+                                const getPersonName = (id: string) => {
+                                    const person = familyTree.individuals.find(i => i.id === id);
+                                    return person?.name || id;
+                                };
+                                
+                                return (
+                                    <div style={{ fontSize: '14px', lineHeight: '1.8' }}>
+                                        <div style={{ marginBottom: '16px', paddingBottom: '16px', borderBottom: '2px solid #f0f0f0' }}>
+                                            <h4 style={{ margin: '0 0 8px 0', color: '#333', fontSize: '18px', fontWeight: '700' }}>
+                                                Family Unit
+                                            </h4>
+                                            <span style={{ 
+                                                display: 'inline-block',
+                                                padding: '4px 12px',
+                                                background: '#f0f9ff',
+                                                color: '#48bb78',
+                                                borderRadius: '12px',
+                                                fontSize: '12px',
+                                                fontWeight: '600'
+                                            }}>
+                                                ID: {family.id}
+                                            </span>
+                                        </div>                                            {family.parents && family.parents.length > 0 && (
+                                                <div style={{ 
+                                                    marginBottom: '16px',
+                                                    padding: '12px',
+                                                    background: '#f8f9ff',
+                                                    borderRadius: '8px',
+                                                    borderLeft: '4px solid #667eea'
+                                                }}>
+                                                    <strong style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', color: '#667eea' }}>
+                                                        <span style={{ fontSize: '16px' }}>💑</span>
+                                                        Parents/Spouses:
+                                                    </strong>
+                                                    <ul style={{ 
+                                                        marginTop: '8px', 
+                                                        marginBottom: 0,
+                                                        paddingLeft: '24px',
+                                                        listStyle: 'none'
+                                                    }}>
                                                         {family.parents.map(pid => (
-                                                            <li key={pid}>{getPersonName(pid)}</li>
+                                                            <li key={pid} style={{ 
+                                                                margin: '4px 0',
+                                                                padding: '6px 12px',
+                                                                background: 'white',
+                                                                borderRadius: '4px',
+                                                                color: '#333'
+                                                            }}>
+                                                                👤 {getPersonName(pid)}
+                                                            </li>
                                                         ))}
                                                     </ul>
                                                 </div>
                                             )}
                                             
                                             {family.marriageDate && (
-                                                <p><strong>Marriage:</strong> {family.marriageDate.original || family.marriageDate.iso || 'N/A'}</p>
+                                                <p style={{ 
+                                                    margin: '12px 0',
+                                                    padding: '10px',
+                                                    background: '#fff9f0',
+                                                    borderRadius: '6px',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    gap: '8px'
+                                                }}>
+                                                    <span style={{ fontSize: '16px' }}>💍</span>
+                                                    <span style={{ color: '#666' }}>Marriage:</span>
+                                                    <strong style={{ color: '#333' }}>{family.marriageDate.original || family.marriageDate.iso || 'N/A'}</strong>
+                                                </p>
                                             )}
                                             
                                             {family.children && family.children.length > 0 && (
-                                                <div style={{ marginTop: '12px' }}>
-                                                    <strong>Children:</strong>
-                                                    <ul style={{ marginTop: '4px' }}>
+                                                <div style={{ 
+                                                    marginTop: '16px',
+                                                    padding: '12px',
+                                                    background: '#f0fff4',
+                                                    borderRadius: '8px',
+                                                    borderLeft: '4px solid #48bb78'
+                                                }}>
+                                                    <strong style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', color: '#48bb78' }}>
+                                                        <span style={{ fontSize: '16px' }}>👶</span>
+                                                        Children:
+                                                    </strong>
+                                                    <ul style={{ 
+                                                        marginTop: '8px',
+                                                        marginBottom: 0,
+                                                        paddingLeft: '24px',
+                                                        listStyle: 'none'
+                                                    }}>
                                                         {family.children.map(cid => (
-                                                            <li key={cid}>{getPersonName(cid)}</li>
+                                                            <li key={cid} style={{ 
+                                                                margin: '4px 0',
+                                                                padding: '6px 12px',
+                                                                background: 'white',
+                                                                borderRadius: '4px',
+                                                                color: '#333'
+                                                            }}>
+                                                                👤 {getPersonName(cid)}
+                                                            </li>
                                                         ))}
                                                     </ul>
                                                 </div>
                                             )}
                                             
-                                            <details style={{ marginTop: '12px' }}>
-                                                <summary style={{ cursor: 'pointer', color: '#666' }}>View Full Data</summary>
-                                                <pre style={{ whiteSpace: 'pre-wrap', fontSize: '11px', marginTop: '8px' }}>
+                                            <details style={{ marginTop: '16px' }}>
+                                                <summary style={{ 
+                                                    cursor: 'pointer', 
+                                                    color: '#f5576c',
+                                                    fontWeight: '600',
+                                                    fontSize: '13px',
+                                                    padding: '8px',
+                                                    borderRadius: '4px',
+                                                    transition: 'background 0.2s'
+                                                }}>
+                                                    🔍 View Full Data
+                                                </summary>
+                                                <pre style={{ 
+                                                    whiteSpace: 'pre-wrap', 
+                                                    fontSize: '11px', 
+                                                    marginTop: '8px',
+                                                    padding: '12px',
+                                                    background: '#f8f9fa',
+                                                    borderRadius: '4px',
+                                                    overflow: 'auto'
+                                                }}>
                                                     {JSON.stringify(family, null, 2)}
-                                                </pre>
-                                            </details>
-                                        </div>
-                                    );
-                                })()}
-                            </div>
+                                            </pre>
+                                        </details>
+                                    </div>
+                                );
+                            })()}
                         </div>
-                    )}
-                    
-                    {/* Editor Modal */}
+                    )}                    {/* Editor Modal */}
                     {editingPerson && (
                         <EditorModal onClose={() => setEditingPerson(null)}>
                             <Suspense fallback={<div style={{ padding: '20px', textAlign: 'center' }}>Loading editor...</div>}>
