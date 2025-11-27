@@ -97,6 +97,22 @@ export const TreeView: React.FC<TreeViewProps> = ({
                         // Add all siblings from this family
                         (fam.children || []).forEach((siblingId: string) => {
                             reachableIndividuals.add(siblingId);
+                            // Add siblings' families (their spouses and children)
+                            const siblingFamilies = personToParentFamilies.get(siblingId) || [];
+                            siblingFamilies.forEach(siblingFamId => {
+                                reachableFamilies.add(siblingFamId);
+                                const sibFam = familyById.get(siblingFamId);
+                                if (sibFam) {
+                                    // Add sibling's spouses
+                                    (sibFam.parents || []).forEach((spouseId: string) => {
+                                        reachableIndividuals.add(spouseId);
+                                    });
+                                    // Add sibling's children
+                                    (sibFam.children || []).forEach((childId: string) => {
+                                        reachableIndividuals.add(childId);
+                                    });
+                                }
+                            });
                         });
                     }
                 });
