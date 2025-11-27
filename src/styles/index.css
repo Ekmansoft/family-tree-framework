@@ -247,3 +247,158 @@ h1, h2, h3 {
 .person-editor .editor-actions button:last-child:hover {
     background-color: #5a6268;
 }
+
+/* Relationship Editor Styles */
+.relationship-editor {
+    font-family: Arial, sans-serif;
+    max-width: 600px;
+}
+
+.relationship-editor h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.relationship-editor h3 {
+    margin-top: 24px;
+    margin-bottom: 12px;
+    color: #555;
+    font-size: 16px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
+}
+
+.relationship-editor > div {
+    margin-bottom: 20px;
+}
+
+.relationship-editor label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #555;
+}
+
+.relationship-editor input,
+.relationship-editor select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
+.relationship-editor input:focus,
+.relationship-editor select:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.relationship-editor ul {
+    list-style: none;
+    padding: 0;
+    margin: 8px 0;
+}
+
+.relationship-editor ul li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
+    margin-bottom: 6px;
+}
+
+.relationship-editor ul li:hover {
+    background: #e9ecef;
+}
+
+.relationship-editor ul li button {
+    padding: 4px 12px;
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.relationship-editor ul li button:hover {
+    background: #c82333;
+}
+
+.relationship-editor .add-section {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.relationship-editor .add-section select {
+    flex: 1;
+}
+
+.relationship-editor .add-section button {
+    padding: 8px 16px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    white-space: nowrap;
+}
+
+.relationship-editor .add-section button:hover {
+    background: #0056b3;
+}
+
+.relationship-editor .add-section button:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+}
+
+.relationship-editor .editor-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.relationship-editor .editor-actions button {
+    flex: 1;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.relationship-editor .editor-actions button:first-child {
+    background-color: #28a745;
+    color: white;
+}
+
+.relationship-editor .editor-actions button:first-child:hover {
+    background-color: #218838;
+}
+
+.relationship-editor .editor-actions button:last-child {
+    background-color: #6c757d;
+    color: white;
+}
+
+.relationship-editor .editor-actions button:last-child:hover {
+    background-color: #5a6268;
+}

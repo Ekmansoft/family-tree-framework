@@ -12,6 +12,7 @@ import { EditorModal } from './components/EditorModal';
 
 // Lazy load editors for code splitting
 const PersonEditor = lazy(() => import('../../src/components/Editor/PersonEditor'));
+const RelationshipEditor = lazy(() => import('../../src/components/Editor/RelationshipEditor'));
 
 const App: React.FC = () => {
     const [familyTree, setFamilyTree] = useState<{ individuals: any[]; families: any[] } | null>(null);
@@ -27,6 +28,7 @@ const App: React.FC = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [showDebugPanel, setShowDebugPanel] = useState<boolean>(false);
     const [editingPerson, setEditingPerson] = useState<any | null>(null);
+    const [editingFamily, setEditingFamily] = useState<any | null>(null);
 
     const handleEditPerson = () => {
         if (!selectedId || !familyTree) return;
@@ -46,6 +48,26 @@ const App: React.FC = () => {
             )
         });
         setEditingPerson(null);
+    };
+
+    const handleEditFamily = () => {
+        if (!selectedFamilyId || !familyTree) return;
+        const family = familyTree.families.find(f => f.id === selectedFamilyId);
+        if (family) {
+            setEditingFamily(family);
+        }
+    };
+
+    const handleSaveFamily = (updatedFamily: any) => {
+        if (!familyTree) return;
+        
+        setFamilyTree({
+            ...familyTree,
+            families: familyTree.families.map(f => 
+                f.id === updatedFamily.id ? { ...f, ...updatedFamily } : f
+            )
+        });
+        setEditingFamily(null);
     };
 
     const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -479,11 +501,67 @@ const App: React.FC = () => {
                         </div>
                     )}
                     {selectedFamilyId && (
-                        <div className="editor">
-                            <h3>Selected Family</h3>
-                            <pre style={{ whiteSpace: 'pre-wrap' }}>
-                                {JSON.stringify(familyTree.families.find((f) => f.id === selectedFamilyId), null, 2)}
-                            </pre>
+                        <div className="editor" style={{ marginTop: '20px', padding: '20px', background: '#f5f5f5', borderRadius: '8px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                                <h3 style={{ margin: 0 }}>Selected Family</h3>
+                                <button 
+                                    onClick={handleEditFamily}
+                                    className="button"
+                                    style={{ background: '#28a745', color: 'white' }}
+                                >
+                                    ✏️ Edit Family
+                                </button>
+                            </div>
+                            <div style={{ background: 'white', padding: '12px', borderRadius: '4px' }}>
+                                {(() => {
+                                    const family = familyTree.families.find((f) => f.id === selectedFamilyId);
+                                    if (!family) return null;
+                                    
+                                    const getPersonName = (id: string) => {
+                                        const person = familyTree.individuals.find(i => i.id === id);
+                                        return person?.name || id;
+                                    };
+                                    
+                                    return (
+                                        <div>
+                                            <p><strong>ID:</strong> {family.id}</p>
+                                            
+                                            {family.parents && family.parents.length > 0 && (
+                                                <div style={{ marginTop: '12px' }}>
+                                                    <strong>Parents/Spouses:</strong>
+                                                    <ul style={{ marginTop: '4px' }}>
+                                                        {family.parents.map(pid => (
+                                                            <li key={pid}>{getPersonName(pid)}</li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                            )}
+                                            
+                                            {family.marriageDate && (
+                                                <p><strong>Marriage:</strong> {family.marriageDate.original || family.marriageDate.iso || 'N/A'}</p>
+                                            )}
+                                            
+                                            {family.children && family.children.length > 0 && (
+                                                <div style={{ marginTop: '12px' }}>
+                                                    <strong>Children:</strong>
+                                                    <ul style={{ marginTop: '4px' }}>
+                                                        {family.children.map(cid => (
+                                                            <li key={cid}>{getPersonName(cid)}</li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                            )}
+                                            
+                                            <details style={{ marginTop: '12px' }}>
+                                                <summary style={{ cursor: 'pointer', color: '#666' }}>View Full Data</summary>
+                                                <pre style={{ whiteSpace: 'pre-wrap', fontSize: '11px', marginTop: '8px' }}>
+                                                    {JSON.stringify(family, null, 2)}
+                                                </pre>
+                                            </details>
+                                        </div>
+                                    );
+                                })()}
+                            </div>
                         </div>
                     )}
                     
@@ -501,6 +579,19 @@ const App: React.FC = () => {
                                     }}
                                     onSave={handleSavePerson}
                                     onCancel={() => setEditingPerson(null)}
+                                />
+                            </Suspense>
+                        </EditorModal>
+                    )}
+                    
+                    {editingFamily && (
+                        <EditorModal onClose={() => setEditingFamily(null)}>
+                            <Suspense fallback={<div style={{ padding: '20px', textAlign: 'center' }}>Loading editor...</div>}>
+                                <RelationshipEditor
+                                    family={editingFamily}
+                                    individuals={familyTree.individuals}
+                                    onSave={handleSaveFamily}
+                                    onCancel={() => setEditingFamily(null)}
                                 />
                             </Suspense>
                         </EditorModal>
