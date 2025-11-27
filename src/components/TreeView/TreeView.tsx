@@ -94,7 +94,10 @@ export const TreeView: React.FC<TreeViewProps> = ({
                                 reachableFamilies.add(spouseFamId);
                             });
                         });
-                        // Do NOT add siblings when going backward - only direct ancestors
+                        // Add all siblings from this family
+                        (fam.children || []).forEach((siblingId: string) => {
+                            reachableIndividuals.add(siblingId);
+                        });
                     }
                 });
             });
