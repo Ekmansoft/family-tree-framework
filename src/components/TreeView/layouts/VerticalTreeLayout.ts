@@ -72,6 +72,7 @@ export class VerticalTreeLayout implements TreeLayoutStrategy {
         
         // Create layout function
         const { layoutFamily, pos } = createFamilyLayouter({
+            individualsLocal: individuals,
             familiesLocal: families,
             levelOf,
             computeFamilyWidth,
@@ -81,7 +82,7 @@ export class VerticalTreeLayout implements TreeLayoutStrategy {
             rowHeight,
             yOffset,
             singleWidth,
-            dynamicSiblingGap
+            siblingGap: dynamicSiblingGap
         });
         
         // Layout all root families
