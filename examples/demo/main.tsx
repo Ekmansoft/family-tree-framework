@@ -1,5 +1,5 @@
 import React, { useEffect, useState, lazy, Suspense } from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 // Ensure demo styles are loaded when running the demo directly
 import '../../src/styles/index.css';
 import { TreeView } from '../../src/components/TreeView/TreeView';
@@ -594,7 +594,6 @@ const App: React.FC = () => {
                                         </div>
                                     );
                                 })()}
-                            </div>
                         </div>
                     )}
                     {selectedFamilyId && (
@@ -766,13 +765,15 @@ const App: React.FC = () => {
                                                     overflow: 'auto'
                                                 }}>
                                                     {JSON.stringify(family, null, 2)}
-                                            </pre>
-                                        </details>
-                                    </div>
-                                );
-                            })()}
+                                                </pre>
+                                            </details>
+                                        </div>
+                                    );
+                                })()}
                         </div>
-                    )}                    {/* Editor Modal */}
+                    )}
+                    
+                    {/* Editor Modal */}
                     {editingPerson && (
                         <EditorModal onClose={() => setEditingPerson(null)}>
                             <Suspense fallback={<div style={{ padding: '20px', textAlign: 'center' }}>Loading editor...</div>}>
@@ -843,9 +844,12 @@ class ErrorBoundary extends React.Component<{ children?: React.ReactNode }, { er
     }
 }
 
-ReactDOM.render(
-    <ErrorBoundary>
-        <App />
-    </ErrorBoundary>,
-    document.getElementById('root')
-);
+const rootElement = document.getElementById('root');
+if (rootElement) {
+    const root = ReactDOM.createRoot(rootElement);
+    root.render(
+        <ErrorBoundary>
+            <App />
+        </ErrorBoundary>
+    );
+}
