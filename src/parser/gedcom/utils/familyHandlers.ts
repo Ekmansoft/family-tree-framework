@@ -3,6 +3,7 @@
  */
 
 import { debugLog, normalizeId } from './lineParsing';
+import { parseGedcomDate } from '../parser';
 
 // Track the current level-1 tag for nested date parsing
 let currentFamilyTag: string | null = null;
@@ -40,7 +41,7 @@ export const handleFamilyTag = (
     } else if (level === '2') {
         // Handle level-2 tags nested under level-1 tags
         if (currentFamilyTag === 'MARR' && tag === 'DATE') {
-            currentFamily.marriageDate = value;
+            currentFamily.marriageDate = parseGedcomDate(value);
             currentFamilyTag = null; // Reset after capturing date
         }
     }

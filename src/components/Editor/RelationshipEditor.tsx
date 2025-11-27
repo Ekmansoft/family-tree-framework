@@ -4,7 +4,7 @@ interface Family {
     id: string;
     parents?: string[];
     children?: string[];
-    marriageDate?: string;
+    marriageDate?: any; // Parsed date object with original, iso, etc.
 }
 
 interface Individual {
@@ -27,14 +27,16 @@ const RelationshipEditor: React.FC<RelationshipEditorProps> = ({
 }) => {
     const [parents, setParents] = useState<string[]>(family.parents || []);
     const [children, setChildren] = useState<string[]>(family.children || []);
-    const [marriageDate, setMarriageDate] = useState(family.marriageDate || '');
+    const [marriageDate, setMarriageDate] = useState(
+        family.marriageDate?.iso || family.marriageDate?.original || ''
+    );
 
     const handleSave = () => {
         onSave({
             ...family,
             parents,
             children,
-            marriageDate: marriageDate || undefined
+            marriageDate: marriageDate ? { original: marriageDate, iso: marriageDate } : undefined
         });
     };
 

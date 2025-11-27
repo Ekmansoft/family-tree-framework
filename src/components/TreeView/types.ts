@@ -15,7 +15,7 @@ export interface Family {
     id: string;
     parents?: string[];
     children: string[];
-    marriageDate?: string;
+    marriageDate?: any; // Parsed date object (same format as birthDate/deathDate)
 }
 
 export interface Position {
