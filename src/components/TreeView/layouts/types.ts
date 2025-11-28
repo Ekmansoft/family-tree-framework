@@ -9,6 +9,8 @@ export interface LayoutConfig {
     familyPadding: number;
     maxGenerationsForward: number;
     maxGenerationsBackward: number;
+    /** Optional: maximum ancestor generations for ancestor-oriented layouts */
+    maxAncestors?: number;
 }
 
 export interface LayoutResult {

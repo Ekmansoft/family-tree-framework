@@ -160,6 +160,73 @@ For detailed information on the architecture and GEDCOM specification, please re
 - [Architecture](docs/architecture.md) - Component structure and layout algorithms
 - [GEDCOM Specification](docs/gedcom-spec.md) - GEDCOM file format details
 
+## Adding a New Layout
+
+You can extend the framework with custom tree layouts (e.g. pedigree, hourglass) without modifying existing components.
+
+### 1. Create the Layout Component or Strategy
+Add a new file under `src/components/TreeView/` (for a fully custom React renderer) or under `src/components/TreeView/layouts/` if you are implementing a pure positioning strategy.
+
+Example (pure ancestor-like strategy):
+```typescript
+// src/components/TreeView/layouts/MyCustomLayout.ts
+import type { TreeLayoutStrategy, LayoutConfig } from './types';
+
+export const MyCustomLayout: TreeLayoutStrategy = {
+  id: 'myCustom',
+  name: 'My Custom Layout',
+  description: 'Experimental layout for specialized pedigree rendering.',
+  compute(individuals, families, selectedId, config: LayoutConfig) {
+    // Return object with personPositions: Record<id,{x,y}> and bounds: {width,height}
+    // Minimal example:
+    const personPositions: Record<string, {x:number; y:number}> = {};
+    individuals.forEach((p, idx) => { personPositions[p.id] = { x: idx * 180, y: 0 }; });
+    return { personPositions, bounds: { width: individuals.length * 180, height: 200 } };
+  }
+};
+```
+
+If you need a bespoke renderer (custom SVG connectors, distinct box styling), copy the pattern in `AncestorTreeView.tsx` and implement your layout calculation inside or via a helper.
+
+### 2. Register the Layout
+Edit `src/components/TreeView/layouts/index.ts` and append metadata:
+```typescript
+import { MyCustomTreeView } from '../MyCustomTreeView'; // or your strategy wrapper
+
+availableLayouts.push({
+  id: 'myCustom',
+  name: 'My Custom Layout',
+  description: 'Experimental layout for specialized pedigree rendering.',
+  component: MyCustomTreeView,
+  config: {
+    someNumber: { label: 'Some Number', type: 'number', min: 0, max: 10 }
+  },
+  defaultConfig: { someNumber: 3 }
+});
+```
+Each `config` entry auto-generates a numeric input in the demo toolbar when the layout is active.
+
+### 3. Consumption in Demo
+The demo dynamically renders selector buttons from `availableLayouts`. When your layout is selected, any `config` fields appear as inputs; adjust them to propagate into your component’s props (follow the pattern used for `ancestor` and `vertical`).
+
+### 4. Strategy vs Component
+- Use a strategy (`TreeLayoutStrategy`) when you only need positions and will reuse the generic renderer.
+- Use a custom component when you want specialized styling, connectors or interaction modes.
+
+### 5. Testing
+Add layout-specific tests in `tests/layout.test.ts` or create a new test file to validate positioning invariants (e.g. symmetry, spacing). Run with `npm test`.
+
+### 6. Performance Considerations
+For large datasets, prefer memoized calculations and avoid deep recursion without caching. Consider adding viewport-aware rendering if your layout can generate thousands of nodes off-screen.
+
+### 7. Connector Styling
+Follow the example in `AncestorTreeView.tsx` for generating SVG `<path>` elements with distinct stroke colors or dash patterns based on relationship metadata.
+
+### 8. Configuration Validation
+If a field requires custom validation beyond min/max, perform it before computing positions and optionally clamp or warn via `console.warn`.
+
+After registration and build, your new layout appears instantly in the demo UI.
+
 ## Known Limitations
 - Very wide trees (many siblings) may require horizontal scrolling
 - Performance degrades with >10,000 individuals (consider pagination for larger datasets)
