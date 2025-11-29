@@ -3,10 +3,13 @@ import ReactDOM from 'react-dom/client';
 // Ensure demo styles are loaded when running the demo directly
 import '../../src/styles/index.css';
 import { TreeView } from '../../src/components/TreeView/TreeView';
+import { AncestorTreeView } from '../../src/components/TreeView/AncestorTreeView';
+import { availableLayouts } from '../../src/components/TreeView/layouts';
 import { parseGedcom } from '../../src/parser';
 import { FileSelector } from './components/FileSelector';
 import { DebugPanel } from './components/DebugPanel';
-import { ControlPanel } from './components/ControlPanel';
+// Deprecated: ControlPanel replaced by inline layout config inputs
+// import { ControlPanel } from './components/ControlPanel';
 import { PersonList } from './components/PersonList';
 import { EditorModal } from './components/EditorModal';
 
@@ -17,18 +20,54 @@ const RelationshipEditor = lazy(() => import('../../src/components/Editor/Relati
 const App: React.FC = () => {
     const [familyTree, setFamilyTree] = useState<{ individuals: any[]; families: any[] } | null>(null);
     const [validationErrors, setValidationErrors] = useState<any[]>([]);
-    const [demoFile, setDemoFile] = useState<string>('demo-family.ged');
+    const [demoFile, setDemoFile] = useState<string>(() => localStorage.getItem('demo.demoFile') || 'demo-family.ged');
     const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
 
-    const [selectedId, setSelectedId] = useState<string | null>(null);
-    const [selectedFamilyId, setSelectedFamilyId] = useState<string | null>(null);
+    const [selectedId, setSelectedId] = useState<string | null>(() => localStorage.getItem('demo.selectedId') || null);
+    const [selectedFamilyId, setSelectedFamilyId] = useState<string | null>(() => localStorage.getItem('demo.selectedFamilyId') || null);
     const [personQuery, setPersonQuery] = useState<string>('');
-    const [maxGenerationsForward, setMaxGenerationsForward] = useState<number>(2);
-    const [maxGenerationsBackward, setMaxGenerationsBackward] = useState<number>(2);
+    const [maxGenerationsForward, setMaxGenerationsForward] = useState<number>(() => {
+        const v = localStorage.getItem('vertical.maxForward');
+        return v ? Math.max(0, Math.min(15, parseInt(v) || 2)) : 2;
+    });
+    const [maxGenerationsBackward, setMaxGenerationsBackward] = useState<number>(() => {
+        const v = localStorage.getItem('vertical.maxBackward');
+        return v ? Math.max(0, Math.min(15, parseInt(v) || 2)) : 2;
+    });
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [showDebugPanel, setShowDebugPanel] = useState<boolean>(false);
     const [editingPerson, setEditingPerson] = useState<any | null>(null);
     const [editingFamily, setEditingFamily] = useState<any | null>(null);
+    // layout selection (registry-driven)
+    const [layoutType, setLayoutType] = useState<string>(() => localStorage.getItem('demo.layoutType') || 'vertical');
+    // ancestor layout specific config (persisted)
+    const [maxAncestors, setMaxAncestors] = useState<number>(() => {
+        const v = localStorage.getItem('ancestor.maxAncestors');
+        return v ? Math.max(1, Math.min(15, parseInt(v) || 5)) : 5;
+    });
+    const [horizontalGap, setHorizontalGap] = useState<number>(() => {
+        const v = localStorage.getItem('ancestor.horizontalGap');
+        return v ? Math.max(60, Math.min(400, parseInt(v) || 180)) : 180;
+    });
+    const [ancestorBoxHeight, setAncestorBoxHeight] = useState<number>(() => {
+        const v = localStorage.getItem('ancestor.boxHeight');
+        return v ? Math.max(30, Math.min(120, parseInt(v) || 40)) : 40;
+    });
+    const [ancestorVerticalGap, setAncestorVerticalGap] = useState<number>(() => {
+        const v = localStorage.getItem('ancestor.verticalGap');
+        return v ? Math.max(8, Math.min(240, parseInt(v) || 32)) : 32;
+    });
+    const [ancestorBoxWidth, setAncestorBoxWidth] = useState<number>(() => {
+        const v = localStorage.getItem('ancestor.boxWidth');
+        return v ? Math.max(80, Math.min(260, parseInt(v) || 140)) : 140;
+    });
+
+    // persist ancestor layout settings
+    useEffect(() => { localStorage.setItem('ancestor.maxAncestors', String(maxAncestors)); }, [maxAncestors]);
+    useEffect(() => { localStorage.setItem('ancestor.horizontalGap', String(horizontalGap)); }, [horizontalGap]);
+    useEffect(() => { localStorage.setItem('ancestor.boxHeight', String(ancestorBoxHeight)); }, [ancestorBoxHeight]);
+    useEffect(() => { localStorage.setItem('ancestor.boxWidth', String(ancestorBoxWidth)); }, [ancestorBoxWidth]);
+    useEffect(() => { localStorage.setItem('ancestor.verticalGap', String(ancestorVerticalGap)); }, [ancestorVerticalGap]);
 
     const handleEditPerson = () => {
         if (!selectedId || !familyTree) return;
@@ -85,8 +124,11 @@ const App: React.FC = () => {
                 setValidationErrors(validationErrors || []);
                 setUploadedFileName(file.name);
                 setDemoFile(''); // Clear demo file selection
-                setSelectedId(null);
-                setSelectedFamilyId(null);
+                // Try restore selection if present in uploaded data
+                const savedSel = localStorage.getItem('demo.selectedId');
+                const savedFam = localStorage.getItem('demo.selectedFamilyId');
+                setSelectedId(savedSel && individuals.some(i => i.id === savedSel) ? savedSel : null);
+                setSelectedFamilyId(savedFam && families.some(f => f.id === savedFam) ? savedFam : null);
                 // Auto-configure for large files
                 if (individuals.length > 500) {
                     setShowDebugPanel(false);
@@ -121,9 +163,11 @@ const App: React.FC = () => {
                 setFamilyTree({ individuals, families });
                 setValidationErrors(validationErrors || []);
                 setUploadedFileName(null); // Clear uploaded file name when loading demo
-                // clear selections when switching demos
-                setSelectedId(null);
-                setSelectedFamilyId(null);
+                // Restore selections if IDs exist in this demo
+                const savedSel = localStorage.getItem('demo.selectedId');
+                const savedFam = localStorage.getItem('demo.selectedFamilyId');
+                setSelectedId(savedSel && individuals.some(i => i.id === savedSel) ? savedSel : null);
+                setSelectedFamilyId(savedFam && families.some(f => f.id === savedFam) ? savedFam : null);
                 // Auto-hide debug panel for large files
                 if (individuals.length > 500) {
                     setShowDebugPanel(false);
@@ -140,8 +184,21 @@ const App: React.FC = () => {
     }, [demoFile]);
     
     // zoom & pan state
-    const [scale, setScale] = useState<number>(1);
-    const [offset, setOffset] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+    const [scale, setScale] = useState<number>(() => {
+        const v = localStorage.getItem('demo.scale');
+        const n = v ? parseFloat(v) : 1;
+        return Math.max(0.5, Math.min(2, isNaN(n) ? 1 : n));
+    });
+    const [offset, setOffset] = useState<{ x: number; y: number }>(() => {
+        try {
+            const v = localStorage.getItem('demo.offset');
+            if (v) {
+                const o = JSON.parse(v);
+                if (typeof o?.x === 'number' && typeof o?.y === 'number') return o;
+            }
+        } catch {}
+        return { x: 0, y: 0 };
+    });
     const [isPanning, setIsPanning] = useState(false);
     const panRef = React.useRef<HTMLDivElement | null>(null);
     const treeViewRef = React.useRef<{ getPersonPosition: (id: string) => { x: number; y: number } | null }>(null);
@@ -149,12 +206,42 @@ const App: React.FC = () => {
     const pinchRef = React.useRef<{ initialDist: number; initialScale: number } | null>(null);
     const scaleRef = React.useRef<number>(scale);
     const offsetRef = React.useRef<{ x: number; y: number }>(offset);
+    const [contentBounds, setContentBounds] = useState<{ width: number; height: number }>({ width: 0, height: 0 });
     
     // Keep refs in sync with state
     React.useEffect(() => {
         scaleRef.current = scale;
         offsetRef.current = offset;
     }, [scale, offset]);
+
+    // persist selection
+    useEffect(() => { localStorage.setItem('demo.selectedId', selectedId ?? ''); }, [selectedId]);
+    useEffect(() => { localStorage.setItem('demo.selectedFamilyId', selectedFamilyId ?? ''); }, [selectedFamilyId]);
+
+    const fitToTree = React.useCallback(() => {
+        const container = panRef.current;
+        if (!container || !contentBounds.width || !contentBounds.height) return;
+        const cw = container.clientWidth;
+        const ch = container.clientHeight;
+        const bw = contentBounds.width;
+        const bh = contentBounds.height;
+        const margin = 20;
+        const scaleX = (cw - margin) / bw;
+        const scaleY = (ch - margin) / bh;
+        const s = Math.max(0.5, Math.min(2, Math.min(scaleX, scaleY)));
+        setScale(s);
+        const x = (cw - bw * s) / 2;
+        const y = (ch - bh * s) / 2;
+        setOffset({ x, y });
+    }, [contentBounds]);
+
+    // persist demo selections & view state
+    useEffect(() => { localStorage.setItem('demo.demoFile', demoFile); }, [demoFile]);
+    useEffect(() => { localStorage.setItem('demo.layoutType', layoutType); }, [layoutType]);
+    useEffect(() => { localStorage.setItem('demo.scale', String(scale)); }, [scale]);
+    useEffect(() => { localStorage.setItem('demo.offset', JSON.stringify(offset)); }, [offset]);
+    useEffect(() => { localStorage.setItem('vertical.maxForward', String(maxGenerationsForward)); }, [maxGenerationsForward]);
+    useEffect(() => { localStorage.setItem('vertical.maxBackward', String(maxGenerationsBackward)); }, [maxGenerationsBackward]);
 
     // Add wheel event listener for zoom (needs passive: false)
     useEffect(() => {
@@ -338,18 +425,124 @@ const App: React.FC = () => {
                             <button onClick={() => setScale((s) => Math.min(2, +(s + 0.1).toFixed(2)))}>Zoom +</button>
                             <button onClick={() => setScale((s) => Math.max(0.5, +(s - 0.1).toFixed(2)))} style={{ marginLeft: 8 }}>Zoom -</button>
                             <button onClick={() => { setScale(1); setOffset({ x: 0, y: 0 }); }} style={{ marginLeft: 8 }}>Reset</button>
+                            <button onClick={fitToTree} style={{ marginLeft: 8 }}>Fit</button>
+                        </div>
+                        <div style={{ marginLeft: 24, display: 'flex', alignItems: 'center', gap: 8 }}>
+                            <span style={{ fontWeight: 600, color: '#555' }}>Layout:</span>
+                            {availableLayouts.map(l => {
+                                const isActive = layoutType === l.id;
+                                const activeColor = l.id === 'ancestor' ? '#48bb78' : '#667eea';
+                                return (
+                                    <button
+                                        key={l.id}
+                                        onClick={() => setLayoutType(l.id)}
+                                        style={{
+                                            padding: '6px 14px',
+                                            borderRadius: 6,
+                                            border: isActive ? `2px solid ${activeColor}` : '1px solid #ccc',
+                                            background: isActive ? activeColor : '#fff',
+                                            color: isActive ? '#fff' : '#333',
+                                            fontWeight: isActive ? 600 : 400,
+                                            cursor: 'pointer',
+                                            transition: 'all 0.2s',
+                                        }}
+                                        title={l.description}
+                                    >
+                                        {l.id === 'vertical' ? '🌲 Vertical Tree' : '🎄 Ancestor Tree'}
+                                    </button>
+                                );
+                            })}
+                            {layoutType === 'vertical' && (
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginLeft: 12 }}>
+                                    <label style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                                        <span style={{ fontSize: 13, color: '#666' }}>Ancestors Back:</span>
+                                        <input
+                                            type="number"
+                                            min={0}
+                                            max={15}
+                                            value={maxGenerationsBackward}
+                                            onChange={(e) => setMaxGenerationsBackward(Math.max(0, Math.min(15, parseInt(e.target.value) || 0)))}
+                                            style={{ width: 56, padding: '4px 8px', borderRadius: 4, border: '1px solid #ccc' }}
+                                        />
+                                    </label>
+                                    <label style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                                        <span style={{ fontSize: 13, color: '#666' }}>Descendants Fwd:</span>
+                                        <input
+                                            type="number"
+                                            min={0}
+                                            max={15}
+                                            value={maxGenerationsForward}
+                                            onChange={(e) => setMaxGenerationsForward(Math.max(0, Math.min(15, parseInt(e.target.value) || 0)))}
+                                            style={{ width: 56, padding: '4px 8px', borderRadius: 4, border: '1px solid #ccc' }}
+                                        />
+                                    </label>
+                                </div>
+                            )}
+                            {layoutType === 'ancestor' && (
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginLeft: 12 }}>
+                                    <label style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                                        <span style={{ fontSize: 13, color: '#666' }}>Max Generations:</span>
+                                        <input
+                                            type="number"
+                                            min={1}
+                                            max={15}
+                                            value={maxAncestors}
+                                            onChange={(e) => setMaxAncestors(Math.max(1, Math.min(15, parseInt(e.target.value) || 7)))}
+                                            style={{ width: 56, padding: '4px 8px', borderRadius: 4, border: '1px solid #ccc' }}
+                                        />
+                                    </label>
+                                    <label style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                                        <span style={{ fontSize: 13, color: '#666' }}>H Gap:</span>
+                                        <input
+                                            type="number"
+                                            min={60}
+                                            max={400}
+                                            value={horizontalGap}
+                                            onChange={(e) => setHorizontalGap(Math.max(60, Math.min(400, parseInt(e.target.value) || 180)))}
+                                            style={{ width: 64, padding: '4px 8px', borderRadius: 4, border: '1px solid #ccc' }}
+                                        />
+                                    </label>
+                                    <label style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                                        <span style={{ fontSize: 13, color: '#666' }}>Box Height:</span>
+                                        <input
+                                            type="number"
+                                            min={30}
+                                            max={120}
+                                            value={ancestorBoxHeight}
+                                            onChange={(e) => setAncestorBoxHeight(Math.max(30, Math.min(120, parseInt(e.target.value) || 48)))}
+                                            style={{ width: 64, padding: '4px 8px', borderRadius: 4, border: '1px solid #ccc' }}
+                                        />
+                                    </label>
+                                    <label style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                                        <span style={{ fontSize: 13, color: '#666' }}>Box Width:</span>
+                                        <input
+                                            type="number"
+                                            min={80}
+                                            max={260}
+                                            value={ancestorBoxWidth}
+                                            onChange={(e) => setAncestorBoxWidth(Math.max(80, Math.min(260, parseInt(e.target.value) || 140)))}
+                                            style={{ width: 64, padding: '4px 8px', borderRadius: 4, border: '1px solid #ccc' }}
+                                        />
+                                    </label>
+                                    <label style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                                        <span style={{ fontSize: 13, color: '#666' }}>Vertical Gap:</span>
+                                        <input
+                                            type="number"
+                                            min={8}
+                                            max={240}
+                                            value={ancestorVerticalGap}
+                                            onChange={(e) => setAncestorVerticalGap(Math.max(8, Math.min(240, parseInt(e.target.value) || 32)))}
+                                            style={{ width: 64, padding: '4px 8px', borderRadius: 4, border: '1px solid #ccc' }}
+                                        />
+                                    </label>
+                                </div>
+                            )}
                         </div>
                     </div>
-                    <ControlPanel
-                        maxGenerationsForward={maxGenerationsForward}
-                        maxGenerationsBackward={maxGenerationsBackward}
-                        scale={scale}
-                        onMaxGenerationsForwardChange={setMaxGenerationsForward}
-                        onMaxGenerationsBackwardChange={setMaxGenerationsBackward}
-                        onScaleChange={setScale}
-                    />
+                    {/* ControlPanel removed; generation + scale controls now inline */}
 
-                    <div style={{ display: 'flex', gap: 12, width: '100%', maxWidth: '100vw' }}>
+                    <div style={{ display: 'flex', gap: 12, width: '100%', maxWidth: '100vw', alignItems: 'flex-start' }}>
+                    <div style={{ display: 'flex', gap: 12, flex: 1, minWidth: 0 }}>
                         <PersonList
                             individuals={familyTree.individuals}
                             personQuery={personQuery}
@@ -444,29 +637,50 @@ const App: React.FC = () => {
                                 lastPan.current = null;
                             }
                         }}
-                        style={{ border: '1px solid #ddd', background: '#fafafa', overflow: 'hidden', cursor: isPanning ? 'grabbing' : 'grab', height: 600, width: '100%', touchAction: 'none' as const }}
+                        style={{ border: '1px solid #ddd', background: '#fafafa', overflow: 'hidden', cursor: isPanning ? 'grabbing' : 'grab', height: 'calc(100vh - 320px)', minHeight: 600, width: '100%', touchAction: 'none' as const }}
                     >
                         <div style={{ transform: `translate(${offset.x}px, ${offset.y}px) scale(${scale})`, transformOrigin: '0 0', position: 'relative' }}>
-                            <TreeView
-                                individuals={familyTree.individuals}
-                                families={familyTree.families}
-                                selectedId={selectedId}
-                                maxGenerationsForward={maxGenerationsForward}
-                                maxGenerationsBackward={maxGenerationsBackward}
-                                onSelectPerson={(id: string) => {
-                                    setSelectedId(id);
-                                }}
-                                onSelectFamily={(fid: string) => {
-                                    setSelectedFamilyId(fid);
-                                }}
-                            />
+                            {layoutType === 'vertical' ? (
+                                <TreeView
+                                    individuals={familyTree.individuals}
+                                    families={familyTree.families}
+                                    selectedId={selectedId}
+                                    maxGenerationsForward={maxGenerationsForward}
+                                    maxGenerationsBackward={maxGenerationsBackward}
+                                    onSelectPerson={(id: string) => {
+                                        setSelectedId(id);
+                                    }}
+                                    onSelectFamily={(fid: string) => {
+                                        setSelectedFamilyId(fid);
+                                    }}
+                                    onBounds={(w, h) => setContentBounds({ width: w, height: h })}
+                                />
+                            ) : (
+                                <AncestorTreeView
+                                    individuals={familyTree.individuals}
+                                    families={familyTree.families}
+                                    selectedId={selectedId}
+                                    maxAncestors={maxAncestors}
+                                    horizontalGap={horizontalGap}
+                                    verticalGap={ancestorVerticalGap}
+                                    boxWidth={ancestorBoxWidth}
+                                    boxHeight={ancestorBoxHeight}
+                                    onSelectPerson={(id: string) => {
+                                        setSelectedId(id);
+                                    }}
+                                    onBounds={(w, h) => setContentBounds({ width: w, height: h })}
+                                />
+                            )}
+                        </div>
                         </div>
                     </div>
                     </div>
-                    </div>
+
+                    {/* Right side details panel */}
+                    {(selectedId || selectedFamilyId) && (
+                        <div style={{ width: '380px', flexShrink: 0, display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     {selectedId && (
                         <div className="editor" style={{ 
-                            marginTop: '20px', 
                             padding: '24px', 
                             background: 'white', 
                             borderRadius: '12px',
@@ -597,8 +811,7 @@ const App: React.FC = () => {
                         </div>
                     )}
                     {selectedFamilyId && (
-                        <div className="editor" style={{ 
-                            marginTop: '20px', 
+                        <div className="editor" style={{
                             padding: '24px', 
                             background: 'white', 
                             borderRadius: '12px',
@@ -772,6 +985,9 @@ const App: React.FC = () => {
                                 })()}
                         </div>
                     )}
+                    </div>
+                    )}
+                    </div>
                     
                     {/* Editor Modal */}
                     {editingPerson && (

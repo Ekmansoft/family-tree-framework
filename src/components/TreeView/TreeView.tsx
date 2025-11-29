@@ -26,6 +26,7 @@ interface TreeViewProps {
     selectedTreeIndex?: number; // which tree component to display (0 = largest, default)
     onPerformanceMetric?: (metricName: string, durationMs: number) => void; // optional performance callback
     enableVirtualRendering?: boolean; // enable viewport-based rendering for large trees
+    onBounds?: (width: number, height: number) => void; // report computed content bounds
 }
 
 // Render a single tree: each person is one node placed by generation (distance from root)
@@ -45,6 +46,7 @@ export const TreeView: React.FC<TreeViewProps> = ({
     selectedTreeIndex,
     onPerformanceMetric,
     enableVirtualRendering = false
+    , onBounds
 }) => {
     const perfStart = (label: string) => onPerformanceMetric ? performance.now() : 0;
     const perfEnd = (label: string, start: number) => {
@@ -330,6 +332,11 @@ export const TreeView: React.FC<TreeViewProps> = ({
     // Apply X offset to ensure positive space
     const { pos: finalPos, minX, maxX } = applyXOffset(pos, 100);
     const actualTreeWidth = maxX + 100;
+    // Report bounds when they change
+    React.useEffect(() => {
+        try { onBounds && onBounds(actualTreeWidth, totalHeight); } catch {}
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [actualTreeWidth, totalHeight]);
 
     // Build family positions AFTER applying offset to person positions
     const familyPositions: Array<{ id: string; x: number; y: number; parents: string[]; children: string[] }> = [];
