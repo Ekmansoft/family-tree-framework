@@ -356,6 +356,51 @@ export function createFamilyLayouter(params: LayoutParams) {
     return { layoutFamily, pos };
 }
 
+// Collect ancestor family groups generation-by-generation (pure helper)
+// Returns an array where index 0 is generation 1 (parents of start family),
+// index 1 is generation 2, etc., each entry is an array of family IDs.
+export function collectAncestorGenerations(families: Family[], startFamilyId: string, maxGenerationsBack: number): string[][] {
+    const familyById = new Map(families.map(f => [f.id, f]));
+
+    // Build reverse lookup: person -> families where they are a child
+    const personToParentFamily = new Map<string, Family | undefined>();
+    families.forEach(fam => {
+        (fam.children || []).forEach(childId => {
+            if (!personToParentFamily.has(childId)) {
+                personToParentFamily.set(childId, fam);
+            }
+        });
+    });
+
+    const result: string[][] = [];
+    let currentFamilies: string[] = [startFamilyId];
+
+    for (let gen = 1; gen <= maxGenerationsBack; gen++) {
+        const nextFamilies: string[] = [];
+
+        // For each family in current generation, collect their parents' families (one generation up)
+        currentFamilies.forEach(famId => {
+            const fam = familyById.get(famId);
+            if (!fam) return;
+
+            const parents = fam.parents || [];
+            // For each parent, find the family where that parent is a child (their parent family)
+            parents.forEach(parentId => {
+                const parentFamily = personToParentFamily.get(parentId);
+                if (parentFamily && !nextFamilies.includes(parentFamily.id)) {
+                    nextFamilies.push(parentFamily.id);
+                }
+            });
+        });
+
+        if (nextFamilies.length === 0) break;
+        result.push(nextFamilies);
+        currentFamilies = nextFamilies;
+    }
+
+    return result;
+}
+
 /**
  * Applies X and Y offsets to ensure all content is in positive space with padding
  */
