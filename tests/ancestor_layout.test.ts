@@ -68,18 +68,34 @@ describe('Ancestor layout - full binary 8 generations', () => {
     // Parent proximity: father above, mother below and within reasonable offset
     const connections: Array<{ from: string; to: string; genderHint?: 'M' | 'F' | 'U' }> = (layout as any).connections || [];
     expect(connections.length).toBeGreaterThan(0);
+    
+    // With power-of-2 spacing algorithm, distances grow exponentially
+    const verticalGap = 16; // default in AncestorTreeLayout
+    const boxHeight = 40;
+    const maxHeight = Math.pow(2, 8) * (boxHeight + verticalGap);
+    
     for (const c of connections) {
       const fromPos = positions[c.from];
       const toPos = positions[c.to];
       expect(fromPos).toBeTruthy();
       expect(toPos).toBeTruthy();
       const dy = toPos.y - fromPos.y;
+      const absDy = Math.abs(dy);
+      
+      // Determine generation from x-position (each generation is 180px apart horizontally)
+      const childGen = Math.round(fromPos.x / 180);
+      const parentGen = childGen + 1;
+      
+      // Calculate expected distance for this generation
+      const expectedSpacing = maxHeight / Math.pow(2, parentGen);
+      const expectedDistance = expectedSpacing / 2;
+      
       if (c.genderHint === 'M') {
         expect(dy).toBeLessThan(0); // father above
-        expect(Math.abs(dy)).toBeLessThanOrEqual(180); // capped expansion limit (parentOffset*5 with default 32)
+        expect(absDy).toBeCloseTo(expectedDistance, 0);
       } else if (c.genderHint === 'F') {
         expect(dy).toBeGreaterThan(0); // mother below
-        expect(Math.abs(dy)).toBeLessThanOrEqual(180);
+        expect(absDy).toBeCloseTo(expectedDistance, 0);
       }
     }
   });
