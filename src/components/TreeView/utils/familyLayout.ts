@@ -401,6 +401,111 @@ export function collectAncestorGenerations(families: Family[], startFamilyId: st
     return result;
 }
 
+// Compute ancestor family centers generation-by-generation.
+// - `personX` provides x positions for persons (children) to anchor preferences.
+// - Returns array per generation of objects { familyId, centerX, width }
+export function computeAncestorFamilyCenters(
+    families: Family[],
+    personX: Record<string, number>,
+    startFamilyId: string,
+    maxGenerationsBack: number,
+    singleWidth: number,
+    parentGap: number,
+    ancestorFamilyGap: number
+): Array<Array<{ familyId: string; centerX: number; width: number }>> {
+    const familyById = new Map(families.map(f => [f.id, f]));
+
+    // Helper to get families where a person is a child
+    const personToParentFamily = new Map<string, Family | undefined>();
+    families.forEach(fam => {
+        (fam.children || []).forEach(childId => {
+            if (!personToParentFamily.has(childId)) {
+                personToParentFamily.set(childId, fam);
+            }
+        });
+    });
+
+    const result: Array<Array<{ familyId: string; centerX: number; width: number }>> = [];
+    let currentFamilies: string[] = [startFamilyId];
+
+    for (let gen = 1; gen <= maxGenerationsBack; gen++) {
+        const nextFamilies: string[] = [];
+        const centers: Array<{ familyId: string; centerX: number; width: number }> = [];
+
+        // Collect unique parent families for this generation, preserving insertion order
+        const parentFamilyIds: string[] = [];
+        currentFamilies.forEach(famId => {
+            const fam = familyById.get(famId);
+            if (!fam) return;
+            const parents = fam.parents || [];
+            parents.forEach(pid => {
+                const pf = personToParentFamily.get(pid);
+                if (pf && !parentFamilyIds.includes(pf.id)) parentFamilyIds.push(pf.id);
+            });
+        });
+
+        if (parentFamilyIds.length === 0) break;
+
+        // For each parent family, compute preferred center as average x of its children
+        parentFamilyIds.forEach(famId => {
+            const fam = familyById.get(famId)!;
+            const children = fam.children || [];
+            const childXs = children.map(cid => personX[cid]).filter(x => typeof x === 'number');
+            const preferred = childXs.length > 0 ? (childXs.reduce((s, v) => s + v, 0) / childXs.length) : 0;
+            const numParents = (fam.parents || []).length;
+            const width = Math.max(numParents * singleWidth + Math.max(0, numParents - 1) * parentGap, singleWidth * 2);
+            centers.push({ familyId: famId, centerX: preferred, width });
+        });
+
+        // Now place them left-to-right. Start from first family's preferred center
+        let currentX = centers[0].centerX - centers[0].width / 2;
+        for (let i = 0; i < centers.length; i++) {
+            const c = centers[i];
+            // For the first family, center on preferred (if non-zero), else use currentX+width/2
+            let centerX: number;
+            if (i === 0 && c.centerX !== 0) {
+                centerX = c.centerX;
+                currentX = centerX + c.width / 2 + ancestorFamilyGap;
+            } else {
+                centerX = currentX + c.width / 2;
+                currentX += c.width + ancestorFamilyGap;
+            }
+            // Record center
+            centers[i].centerX = centerX;
+        }
+
+        result.push(centers);
+
+        // Prepare next generation
+        centers.forEach(ct => {
+            const fam = familyById.get(ct.familyId)!;
+            (fam.parents || []).forEach(pId => {
+                const pf = personToParentFamily.get(pId);
+                if (pf && !nextFamilies.includes(pf.id)) nextFamilies.push(pf.id);
+            });
+        });
+
+        // Update personX for next generation: set parent positions (parents will be positioned later by caller)
+        // Here we set each parent (person id) x to the appropriate spot based on family parents order
+        centers.forEach(ct => {
+            const fam = familyById.get(ct.familyId)!;
+            const parents = fam.parents || [];
+            // split total parent box into individual center positions
+            let px = ct.centerX - ( (parents.length * singleWidth + Math.max(0, parents.length -1) * parentGap) / 2 );
+            parents.forEach((pid, idx) => {
+                const cx = px + singleWidth / 2;
+                personX[pid] = cx;
+                px += singleWidth;
+                if (idx < parents.length - 1) px += parentGap;
+            });
+        });
+
+        currentFamilies = nextFamilies;
+    }
+
+    return result;
+}
+
 /**
  * Applies X and Y offsets to ensure all content is in positive space with padding
  */
