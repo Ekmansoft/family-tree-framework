@@ -16,8 +16,6 @@ interface UnifiedTreeViewProps extends TreeViewCommonProps {
   maxGenerationsBackward?: number;
   onSelectFamily?: (id: string) => void;
   // Ancestor-specific configuration
-  // Deprecated: use maxGenerationsBackward (acts as ancestors-back in ancestor layout)
-  maxAncestors?: number;
   horizontalGap?: number;
   verticalGap?: number;
 }
@@ -39,7 +37,6 @@ export const TreeView: React.FC<UnifiedTreeViewProps> = ({
   maxGenerationsBackward = 50,
   familyToParentDistance,
   familyToChildrenDistance,
-  maxAncestors = 7,
   horizontalGap = 180,
   verticalGap = 16,
 }) => {
@@ -85,12 +82,11 @@ export const TreeView: React.FC<UnifiedTreeViewProps> = ({
 
   const layout = useMemo(() => {
     if (layoutId === 'ancestor') {
-      const ancestorsBack = (typeof maxGenerationsBackward === 'number' ? maxGenerationsBackward : undefined) ?? maxAncestors;
       return computeAncestorLayout(
         individualsLocal,
         familiesLocal,
         selectedId ?? null,
-        ancestorsBack,
+        maxGenerationsBackward,
         horizontalGap,
         boxHeight,
         verticalGap
@@ -130,7 +126,6 @@ export const TreeView: React.FC<UnifiedTreeViewProps> = ({
     effectiveFamilyToParentDistance,
     effectiveFamilyToChildrenDistance,
     selectedId,
-    maxAncestors,
     horizontalGap,
     verticalGap,
   ]);
