@@ -1,10 +1,10 @@
 /**
- * Generate a full 8-generation descendant tree GEDCOM
+ * Generate a full N-generation descendant tree GEDCOM (default 7)
  * Root couple (gen 0) has 2 children, each child marries and has 2 children, etc.
- * Total: 2^0 + 2^1 + 2^2 + ... + 2^8 = 511 couples, 1022 individuals
+ * Full binary across all branches. Names prefixed with generation (GenN).
  */
 
-function generateDescendants8Gen() {
+function generateDescendantsNGen(totalGens = 7) {
   const lines = ['0 HEAD', '1 SOUR Family Tree Framework', '1 GEDC', '2 VERS 5.5.1', '2 FORM LINEAGE-LINKED', '1 CHAR UTF-8'];
   
   const baseYear = 1700;
@@ -22,7 +22,7 @@ function generateDescendants8Gen() {
   // Generate root couple
   individuals.push({
     id: 'I0',
-    name: 'Root',
+    name: 'Gen0 Root',
     surname: 'Ancestor',
     sex: 'M',
     birthYear: baseYear,
@@ -32,7 +32,7 @@ function generateDescendants8Gen() {
   
   individuals.push({
     id: 'I0_S',
-    name: 'RootSpouse',
+    name: 'Gen0 Spouse',
     surname: 'Ancestor',
     sex: 'F',
     birthYear: baseYear + 2,
@@ -51,7 +51,7 @@ function generateDescendants8Gen() {
   });
   
   // Generate children for each generation
-  for (let gen = 1; gen <= 8; gen++) {
+  for (let gen = 1; gen <= totalGens; gen++) {
     const numCouples = Math.pow(2, gen - 1);
     const birthYear = baseYear + gen * generationSpan;
     
@@ -67,7 +67,7 @@ function generateDescendants8Gen() {
         
         individuals.push({
           id: personId,
-          name: `Child${personIndex + 1}`,
+          name: `Gen${gen} Child${personIndex + 1}`,
           surname: 'Person',
           sex: sex,
           birthYear: birthYear + childIdx,
@@ -77,7 +77,7 @@ function generateDescendants8Gen() {
         
         individuals.push({
           id: spouseId,
-          name: `Child${personIndex + 1}Spouse`,
+          name: `Gen${gen} Child${personIndex + 1}Spouse`,
           surname: 'Person',
           sex: spouseSex,
           birthYear: birthYear + childIdx + (sex === 'M' ? 2 : -2),
@@ -87,7 +87,7 @@ function generateDescendants8Gen() {
         });
         
         // Create family for this couple (if not gen 8, they have children)
-        if (gen < 8) {
+        if (gen < totalGens) {
           const nextGenChildBase = personIndex * 2;
           families.push({
             id: `F${gen}_${personIndex}`,
@@ -130,6 +130,6 @@ function generateDescendants8Gen() {
 }
 
 const fs = require('fs');
-const content = generateDescendants8Gen();
-fs.writeFileSync('./examples/demo/descendants-8gen.ged', content, 'utf8');
-console.log('Generated descendants-8gen.ged with 8 generations');
+const content = generateDescendantsNGen(7);
+fs.writeFileSync('./examples/demo/descendants-7gen.ged', content, 'utf8');
+console.log('Generated descendants-7gen.ged with 7 generations (full binary)');
