@@ -17,6 +17,7 @@ interface UnifiedTreeViewProps extends TreeViewCommonProps {
   maxGenerationsBackward?: number;
   familyToParentDistance?: number;
   familyToChildrenDistance?: number;
+    onSelectFamily?: (id: string) => void;
   // Ancestor-specific configuration
   maxAncestors?: number;
   horizontalGap?: number;
@@ -29,6 +30,7 @@ export const TreeView: React.FC<UnifiedTreeViewProps> = ({
   families = [],
   selectedId,
   onSelectPerson,
+    onSelectFamily,
   onBounds,
   boxWidth = 140,
   boxHeight = 40,
@@ -198,6 +200,7 @@ export const TreeView: React.FC<UnifiedTreeViewProps> = ({
       layout={layout as any}
       selectedId={selectedId}
       onSelectPerson={onSelectPerson}
+            onSelectFamily={onSelectFamily}
       onBounds={onBounds}
       boxWidth={boxWidth}
       boxHeight={boxHeight}

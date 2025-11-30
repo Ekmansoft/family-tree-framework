@@ -2,8 +2,7 @@ import React, { useEffect, useState, lazy, Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
 // Ensure demo styles are loaded when running the demo directly
 import '../../src/styles/index.css';
-import { VerticalTreeView } from '../../src/components/TreeView/VerticalTreeView';
-import { AncestorTreeView } from '../../src/components/TreeView/AncestorTreeView';
+import { TreeView as UnifiedTreeView } from '../../src/components/TreeView/TreeView';
 import { availableLayouts } from '../../src/components/TreeView/layouts';
 import { parseGedcom } from '../../src/parser';
 import { FileSelector } from './components/FileSelector';
@@ -706,21 +705,16 @@ const App: React.FC = () => {
                                     familyToParentDistance,
                                     familyToChildrenDistance
                                 };
-                                return layoutType === 'vertical' ? (
-                                    <VerticalTreeView
+                                return (
+                                    <UnifiedTreeView
+                                        layoutId={layoutType === 'vertical' ? 'vertical' : 'ancestor'}
                                         {...commonProps}
                                         maxGenerationsForward={maxGenerationsForward}
                                         maxGenerationsBackward={maxGenerationsBackward}
                                         onSelectFamily={(fid: string) => setSelectedFamilyId(fid)}
-                                    />
-                                ) : (
-                                    <AncestorTreeView
-                                        {...commonProps}
                                         maxAncestors={maxAncestors}
                                         horizontalGap={horizontalGap}
                                         verticalGap={ancestorVerticalGap}
-                                        boxWidth={ancestorBoxWidth}
-                                        boxHeight={ancestorBoxHeight}
                                     />
                                 );
                             })()}
