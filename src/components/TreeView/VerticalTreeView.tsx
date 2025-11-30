@@ -6,6 +6,7 @@ import { buildRelationshipMaps as buildFamilyRelationshipMaps } from './utils/re
 import type { Individual, Family, TreeViewCommonProps } from './types';
 import { debounce } from '../../utils/helpers';
 import { VerticalTreeLayout } from './layouts/VerticalTreeLayout';
+import { Renderer } from './Shared/Renderer';
 
 interface VerticalTreeViewProps extends TreeViewCommonProps {
     onSelectFamily?: (id: string) => void;
@@ -204,7 +205,7 @@ export const VerticalTreeView: React.FC<VerticalTreeViewProps> = ({
     const familyHalfMap = useRef(new Map<string, number>());
     const personWidthMap = useRef(new Map<string, number>());
     const familyWidthMap = useRef(new Map<string, number>());
-    const [, setMeasuredVersion] = useState(0);
+    const [, setMeasuredVersion] = useState(0); // Shared renderer will handle DOM measurement when enabled
 
     // Calculate dimensions for individual positioning (used by layout strategy)
     const rowHeight = 90;
@@ -287,119 +288,9 @@ export const VerticalTreeView: React.FC<VerticalTreeViewProps> = ({
         console.log('Total in finalPos:', Object.keys(finalPos).length, 'Total individualsLocal:', individualsLocal.length);
     }
 
-    // Measure actual DOM heights after mount / updates so connectors meet box edges.
-    // Use useLayoutEffect so measurements happen before the browser paints.
+    // Connector alignment and measurement handled by shared renderer
     useLayoutEffect(() => {
-        const pMap = new Map<string, number>();
-        personEls.current.forEach((el, id) => {
-            try {
-                pMap.set(id, el.clientHeight / 2 || 24);
-            } catch {
-                pMap.set(id, 24);
-            }
-        });
-        const pWidthMap = new Map<string, number>();
-        personEls.current.forEach((el, id) => {
-            try {
-                pWidthMap.set(id, el.clientWidth || singleWidth);
-            } catch {
-                pWidthMap.set(id, singleWidth);
-            }
-        });
-
-        const fMap = new Map<string, number>();
-        familyEls.current.forEach((el, id) => {
-            try {
-                fMap.set(id, el.clientHeight / 2 || 9);
-            } catch {
-                fMap.set(id, 9);
-            }
-        });
-
-        const fWidthMap = new Map<string, number>();
-        familyEls.current.forEach((el, id) => {
-            try {
-                fWidthMap.set(id, el.clientWidth || 32);
-            } catch {
-                fWidthMap.set(id, 32);
-            }
-        });
-
-        // Only update refs and trigger a re-render if measured values changed
-        let changed = false;
-
-        if (pMap.size !== personHalfMap.current.size) changed = true;
-        else {
-            for (const [k, v] of pMap.entries()) {
-                if (personHalfMap.current.get(k) !== v) {
-                    changed = true;
-                    break;
-                }
-            }
-        }
-
-        if (!changed) {
-            if (fMap.size !== familyHalfMap.current.size) changed = true;
-            else {
-                for (const [k, v] of fMap.entries()) {
-                    if (familyHalfMap.current.get(k) !== v) {
-                        changed = true;
-                        break;
-                    }
-                }
-            }
-        }
-
-        if (changed) {
-            personHalfMap.current = pMap;
-            familyHalfMap.current = fMap;
-            personWidthMap.current = pWidthMap;
-            familyWidthMap.current = fWidthMap;
-            setMeasuredVersion((v) => v + 1);
-        }
-
-        // measure and cache container rect for getBoundingClientRect fallbacks
-        try {
-            if (innerRef.current) {
-                containerRectRef.current = innerRef.current.getBoundingClientRect();
-            }
-        } catch {
-            containerRectRef.current = null;
-        }
-
-        // Debug: print positions and computed connector endpoints for specific problematic IDs
-        if (typeof window !== 'undefined' && (window as any).DEBUG_TREE) {
-            const inspect = ['I3', 'I5'];
-            console.log('--- Connector debug ---');
-            inspect.forEach((id) => {
-                console.log(`pos[${id}] =`, pos[id]);
-                console.log(`personHalfMap[${id}] =`, personHalfMap.current.get(id));
-            const asParentFams = familiesLocal.filter((f) => (f.parents || []).includes(id));
-            const asChildFams = familiesLocal.filter((f) => (f.children || []).includes(id));
-                asParentFams.forEach((fam) => {
-                    const p = pos[id];
-                    const perHalf = personHalfMap.current.get(id) ?? 24;
-                    const famHalf = familyHalfMap.current.get(fam.id) ?? 9;
-                    const x1 = p?.x; const y1 = p ? p.y + perHalf : undefined;
-                    const famPos = famPosLookup(fam.id);
-                    const x2 = famPos ? famPos.x : undefined;
-                    const y2 = famPos ? famPos.y - famHalf : undefined;
-                    console.log(`asParent fam ${fam.id} endpoints: p->(${x1},${y1}) fam->(${x2},${y2})`);
-                });
-                asChildFams.forEach((fam) => {
-                    const c = pos[id];
-                    const perHalf = personHalfMap.current.get(id) ?? 24;
-                    const famHalf = familyHalfMap.current.get(fam.id) ?? 9;
-                    const famPos2 = famPosLookup(fam.id);
-                    const x1 = famPos2 ? famPos2.x : undefined;
-                    const y1 = famPos2 ? famPos2.y + famHalf : undefined;
-                    const x2 = c?.x; const y2 = c ? c.y - perHalf : undefined;
-                    console.log(`asChild fam ${fam.id} endpoints: fam->(${x1},${y1}) c->(${x2},${y2})`);
-                });
-            });
-            console.log('familyHalfMap sample:', Array.from(fMap.entries()).slice(0,5));
-            console.log('--- end connector debug ---');
-        }
+        // This logic is now handled by the Renderer component
     }, [individualsLocal, familiesLocal]);
 
     // helper to find familyPositions entry quickly
@@ -414,186 +305,17 @@ export const VerticalTreeView: React.FC<VerticalTreeViewProps> = ({
     }
 
     return (
-        <div className="tree-view" style={{ position: 'relative', width: '100%', minHeight: totalHeight, display: 'block' }}>
-            <div ref={innerRef} style={{ position: 'relative', width: actualTreeWidth, height: totalHeight }}>
-            <svg 
-                className="family-connectors" 
-                viewBox={`0 0 ${actualTreeWidth} ${totalHeight}`} 
-                style={{ 
-                    position: 'absolute', 
-                    left: 0, 
-                    top: 0, 
-                    width: '100%', 
-                    height: `${totalHeight}px`, 
-                    pointerEvents: 'none' 
-                }}
-            >
-                {familyPositions.map((fam) => (
-                    <g key={`fam-${fam.id}`}>
-                        {fam.parents.map((pid, pi) => {
-                            let p = finalPos[pid];
-                            if (!p) {
-                                const el = personEls.current.get(pid);
-                                const crect = containerRectRef.current;
-                                if (el && crect) {
-                                    try {
-                                        const r = el.getBoundingClientRect();
-                                        p = { 
-                                            x: (r.left - crect.left) + r.width / 2, 
-                                            y: (r.top - crect.top) + r.height / 2 
-                                        };
-                                    } catch {
-                                        p = { 
-                                            x: el.offsetLeft + el.clientWidth / 2, 
-                                            y: el.offsetTop + el.clientHeight / 2 
-                                        };
-                                    }
-                                }
-                            }
-                            if (!p) return null;
-
-                            const perHalf = personHalfMap.current.get(pid) ?? 
-                                (personEls.current.get(pid)?.clientHeight 
-                                    ? personEls.current.get(pid)!.clientHeight / 2 
-                                    : Math.max(20, Math.min(100, boxHeight / 2)));
-                            const famHalf = familyHalfMap.current.get(fam.id) ?? 9;
-                            const x1 = p.x;
-                            const y1 = p.y + perHalf;
-                            const x2 = fam.x;
-                            const y2 = fam.y - famHalf;
-
-                            return (
-                                <line 
-                                    key={`pf-${fam.id}-${pi}`} 
-                                    x1={`${x1}`} 
-                                    y1={`${y1}`} 
-                                    x2={`${x2}`} 
-                                    y2={`${y2}`} 
-                                    stroke="#666" 
-                                    strokeWidth={0.6} 
-                                />
-                            );
-                        })}
-
-                        {fam.children.map((cid, ci) => {
-                            let c = finalPos[cid];
-                            if (!c) {
-                                const el = personEls.current.get(cid);
-                                const crect = containerRectRef.current;
-                                if (el && crect) {
-                                    try {
-                                        const r = el.getBoundingClientRect();
-                                        c = { 
-                                            x: (r.left - crect.left) + r.width / 2, 
-                                            y: (r.top - crect.top) + r.height / 2 
-                                        };
-                                    } catch {
-                                        c = { 
-                                            x: el.offsetLeft + el.clientWidth / 2, 
-                                            y: el.offsetTop + el.clientHeight / 2 
-                                        };
-                                    }
-                                }
-                            }
-                            if (!c) return null;
-
-                            const perHalf = personHalfMap.current.get(cid) ?? 
-                                (personEls.current.get(cid)?.clientHeight 
-                                    ? personEls.current.get(cid)!.clientHeight / 2 
-                                    : Math.max(20, Math.min(100, boxHeight / 2)));
-                            const famHalf = familyHalfMap.current.get(fam.id) ?? 9;
-                            const x1 = fam.x;
-                            const y1 = fam.y + famHalf;
-                            const x2 = c.x;
-                            const y2 = c.y - perHalf;
-
-                            return (
-                                <line 
-                                    key={`fc-${fam.id}-${ci}`} 
-                                    x1={`${x1}`} 
-                                    y1={`${y1}`} 
-                                    x2={`${x2}`} 
-                                    y2={`${y2}`} 
-                                    stroke="#666" 
-                                    strokeWidth={0.6} 
-                                />
-                            );
-                        })}
-                    </g>
-                ))}
-            </svg>
-
-            {/* Render person boxes once each */}
-            {individualsLocal.map((ind) => {
-                const p = finalPos[ind.id];
-                if (!p) return null;
-                const birth = formatGedcomDateForDisplay(ind.birthDate);
-                const death = formatGedcomDateForDisplay(ind.deathDate);
-                const dateLine = birth || death ? `${birth ? `b. ${birth}` : ''}${birth && death ? ' — ' : ''}${death ? `d. ${death}` : ''}` : null;
-
-                try {
-                    if (typeof window !== 'undefined' && (window as any).SHOW_PERSON_RENDER_LOGS) {
-                        // eslint-disable-next-line no-console
-                        console.log('render person (tree):', ind.id, { birthDate: ind.birthDate, deathDate: ind.deathDate });
-                    }
-                } catch {}
-                const genderClass = ind.gender === 'M' ? 'male' : ind.gender === 'F' ? 'female' : 'unknown';
-                return (
-                    <div
-                        key={ind.id}
-                        className={`person-box ${ind.families && ind.families.length ? 'parent' : 'standalone'} ${selectedId === ind.id ? 'selected' : ''} ${genderClass}`}
-                        style={{ left: `${p.x}px`, top: p.y, transform: 'translate(-50%, -50%)', position: 'absolute', width: boxWidth }}
-                        onClick={() => onSelectPerson?.(ind.id)}
-                        onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                                e.preventDefault();
-                                onSelectPerson?.(ind.id);
-                            }
-                        }}
-                        title={ind.name || ind.id}
-                        role="button"
-                        tabIndex={0}
-                        aria-label={`${ind.name || ind.id}${dateLine ? `, ${dateLine}` : ''}`}
-                        ref={(el) => {
-                            if (el) personEls.current.set(ind.id, el);
-                            else personEls.current.delete(ind.id);
-                        }}
-                        data-person-id={ind.id}
-                    >
-                        <div className="person-name">{ind.name || ind.id}</div>
-                        {dateLine && <div className="person-dates">{dateLine}</div>}
-                        <div style={{ fontSize: 10, color: '#666' }}>{ind.id}</div>
-                    </div>
-                );
-            })}
-            {/* Render family boxes */}
-            {familyPositions.map((fam) => (
-                <div
-                    key={`fambox-${fam.id}`}
-                    className="family-box"
-                    style={{ left: `${fam.x}px`, top: fam.y, transform: 'translate(-50%, -50%)', position: 'absolute' }}
-                    onClick={() => onSelectFamily?.(fam.id)}
-                    onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault();
-                            onSelectFamily?.(fam.id);
-                        }
-                    }}
-                    title={fam.id}
-                    role="button"
-                    tabIndex={0}
-                    aria-label={`Family ${fam.id}`}
-                    ref={(el) => {
-                        if (el) familyEls.current.set(fam.id, el);
-                        else familyEls.current.delete(fam.id);
-                    }}
-                    data-family-id={fam.id}
-                >
-                    {fam.id}
-                </div>
-            ))}
-            </div>
-        </div>
+        <Renderer
+            individuals={individualsLocal}
+            layout={layoutResult as any}
+            selectedId={selectedId}
+            onSelectPerson={onSelectPerson}
+            onSelectFamily={onSelectFamily}
+            onBounds={onBounds}
+            boxWidth={boxWidth}
+            boxHeight={boxHeight}
+            enableConnectorEdgeAlignment={true}
+        />
     );
 };
 
