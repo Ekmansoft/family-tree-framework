@@ -8,8 +8,7 @@
   "exports": {
     ".": {
       "import": "./dist/family-tree-framework.es.js",
-      "require": "./dist/family-tree-framework.umd.js",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/family-tree-framework.umd.js"
     },
     "./style.css": "./dist/family-tree-framework.css"
   },

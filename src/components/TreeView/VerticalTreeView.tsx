@@ -528,10 +528,11 @@ export const VerticalTreeView: React.FC<VerticalTreeViewProps> = ({
                         console.log('render person (tree):', ind.id, { birthDate: ind.birthDate, deathDate: ind.deathDate });
                     }
                 } catch {}
+                const genderClass = ind.gender === 'M' ? 'male' : ind.gender === 'F' ? 'female' : 'unknown';
                 return (
                     <div
                         key={ind.id}
-                        className={`person-box ${ind.families && ind.families.length ? 'parent' : 'standalone'} ${selectedId === ind.id ? 'selected' : ''}`}
+                        className={`person-box ${ind.families && ind.families.length ? 'parent' : 'standalone'} ${selectedId === ind.id ? 'selected' : ''} ${genderClass}`}
                         style={{ left: `${p.x}px`, top: p.y, transform: 'translate(-50%, -50%)', position: 'absolute' }}
                         onClick={() => onSelectPerson?.(ind.id)}
                         onKeyDown={(e) => {

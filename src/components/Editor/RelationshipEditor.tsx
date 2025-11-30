@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 
-interface Family {
+export interface Family {
     id: string;
     parents?: string[];
     children?: string[];
     marriageDate?: any; // Parsed date object with original, iso, etc.
 }
 
-interface Individual {
+export interface Individual {
     id: string;
     name: string;
 }
 
-interface RelationshipEditorProps {
+export interface RelationshipEditorProps {
     family: Family;
     individuals: Individual[];
     onSave: (updatedFamily: Family) => void;

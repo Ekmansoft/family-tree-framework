@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Tree Framework Demo</title>
+    <!-- CSS is imported by the demo module; avoid absolute /src paths when Vite root is `examples/demo` -->
+  <script type="module" crossorigin src="/assets/index-C0ilRxJ4.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-BfPIrCJ4.css">
+</head>
+<body>
+    <div id="root"></div>
+    <div id="demo-diagnostics" style="position:fixed;left:8px;top:8px;z-index:100000;background:#fff;padding:8px;border:1px solid #ccc;font-family:monospace;font-size:12px;white-space:pre-wrap"></div>
+    <script>
+        (async function(){
+            try{
+                const diag = document.getElementById('demo-diagnostics');
+                diag.textContent = 'Location: ' + location.href + '\n';
+                try{
+                    // Try fetching the demo module relative to this index.html (works when Vite root is examples/demo)
+                    const r2 = await fetch('./main.tsx');
+                    diag.textContent += './main.tsx -> ' + r2.status + '\n';
+                    try{ const txt = await r2.text(); diag.textContent += 'main.tsx length: ' + txt.length + '\n'; } catch(e){ diag.textContent += 'could not read main.tsx body: ' + String(e) + '\n'; }
+                } catch(e) { diag.textContent += './main.tsx fetch error: ' + String(e) + '\n'; }
+            } catch(e) {
+                // ignore
+            }
+        })();
+    </script>
+</body>
+</html>

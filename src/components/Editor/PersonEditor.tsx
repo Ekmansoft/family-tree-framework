@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-interface Person {
+export interface Person {
     id: string;
     name: string;
     birthDate: string;
@@ -8,7 +8,7 @@ interface Person {
     notes?: string;
 }
 
-interface PersonEditorProps {
+export interface PersonEditorProps {
     person: Person;
     onSave: (updatedPerson: Person) => void;
     onCancel: () => void;
