@@ -10,7 +10,7 @@ interface BuildContext {
     personToParentFamily: Map<string, any>; // childId -> family containing parents
     individualById: Map<string, any>;
     maxAncestors: number;
-    horizontalGap: number;
+    horizontalGenerationGap: number;
     positions: Record<string, { x: number; y: number }>
     // connections (no placeholders)
     connections: Array<{ from: string; to: string; genderHint?: 'M' | 'F' | 'U' }>; // child -> parent links
@@ -24,7 +24,7 @@ export class AncestorTreeLayout implements TreeLayoutStrategy {
         config: LayoutConfig
     ): LayoutResult {
         const maxAncestors = config.maxAncestors ?? config.maxGenerationsBackward ?? 7;
-        const horizontalGap = (config as any).horizontalGap ?? 180;
+        const horizontalGenerationGap = (config as any).horizontalGenerationGap ?? 180;
         const boxHeight = (config as any).boxHeight ?? 30;
 
         // Build lookup maps for ancestry traversal
@@ -44,7 +44,7 @@ export class AncestorTreeLayout implements TreeLayoutStrategy {
             personToParentFamily,
             individualById,
             maxAncestors,
-            horizontalGap,
+            horizontalGenerationGap,
             positions: {},
             connections: []
         };
@@ -87,14 +87,14 @@ export class AncestorTreeLayout implements TreeLayoutStrategy {
                 // Position father above child, mother below, at fixed generation spacing
                 if (fatherId && !ctx.positions[fatherId]) {
                     const y = childPos.y - generationSpacing / 2;
-                    ctx.positions[fatherId] = { x: g * horizontalGap, y };
+                    ctx.positions[fatherId] = { x: g * ctx.horizontalGenerationGap, y };
                     generationMap.set(fatherId, g);
                     nextGen.push({ id: fatherId, gender: individualById.get(fatherId)?.gender });
                     ctx.connections.push({ from: child.id, to: fatherId, genderHint: 'M' });
                 }
                 if (motherId && !ctx.positions[motherId]) {
                     const y = childPos.y + generationSpacing / 2;
-                    ctx.positions[motherId] = { x: g * horizontalGap, y };
+                    ctx.positions[motherId] = { x: g * ctx.horizontalGenerationGap, y };
                     generationMap.set(motherId, g);
                     nextGen.push({ id: motherId, gender: individualById.get(motherId)?.gender });
                     ctx.connections.push({ from: child.id, to: motherId, genderHint: 'F' });
@@ -112,7 +112,7 @@ export class AncestorTreeLayout implements TreeLayoutStrategy {
         const yShift = -minY + paddingY;
         Object.keys(ctx.positions).forEach(id => { ctx.positions[id].y += yShift; });
         maxY += yShift;
-        const width = maxX + horizontalGap + 120; // right padding
+        const width = maxX + horizontalGenerationGap + 120; // right padding
         const height = maxY + paddingY;
 
         const result: LayoutResult = {
@@ -130,7 +130,7 @@ export function computeAncestorLayout(
     families: any[],
     selectedId: string | null,
     maxAncestors: number,
-    horizontalGap?: number,
+    horizontalGenerationGap?: number,
     boxHeight?: number,
     verticalGap?: number
 ) {
@@ -146,8 +146,8 @@ export function computeAncestorLayout(
         maxGenerationsBackward: maxAncestors,
         maxAncestors,
         // pass through custom gaps
-        ...(horizontalGap !== undefined ? { horizontalGap } : {}),
-        ...(boxHeight !== undefined ? { boxHeight } : { boxHeight: 30 }),
+        ...(horizontalGenerationGap !== undefined ? { horizontalGenerationGap } : {}),
+        ...(boxHeight !== undefined ? { boxHeight: boxHeight } : { boxHeight: 30 }),
         ...(verticalGap !== undefined ? { verticalGap } : {})
     } as any);
 }

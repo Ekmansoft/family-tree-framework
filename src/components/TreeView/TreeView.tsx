@@ -16,7 +16,7 @@ interface UnifiedTreeViewProps extends TreeViewCommonProps {
   maxGenerationsBackward?: number;
   onSelectFamily?: (id: string) => void;
   // Ancestor-specific configuration
-  horizontalGap?: number;
+  horizontalGenerationGap?: number;
   verticalGap?: number;
 }
 
@@ -37,7 +37,7 @@ export const TreeView: React.FC<UnifiedTreeViewProps> = ({
   maxGenerationsBackward = 50,
   familyToParentDistance,
   familyToChildrenDistance,
-  horizontalGap = 180,
+  horizontalGenerationGap = 180,
   verticalGap = 16,
 }) => {
   // First, restrict to the connected component containing the focus item (if any)
@@ -87,7 +87,7 @@ export const TreeView: React.FC<UnifiedTreeViewProps> = ({
         familiesLocal,
         selectedId ?? null,
         maxGenerationsBackward,
-        horizontalGap,
+        horizontalGenerationGap,
         boxHeight,
         verticalGap
       );
@@ -126,7 +126,7 @@ export const TreeView: React.FC<UnifiedTreeViewProps> = ({
     effectiveFamilyToParentDistance,
     effectiveFamilyToChildrenDistance,
     selectedId,
-    horizontalGap,
+    horizontalGenerationGap,
     verticalGap,
   ]);
 

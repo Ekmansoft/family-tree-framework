@@ -31,11 +31,11 @@ export const availableLayouts: LayoutMeta[] = [
     component: AncestorTreeView,
     config: {
       maxAncestors: { label: 'Max Generations', type: 'number', min: 1, max: 15 },
-      horizontalGap: { label: 'Horizontal Gap', type: 'number', min: 60, max: 400 },
+      horizontalGenerationGap: { label: 'Generation Distance', type: 'number', min: 60, max: 400 },
       boxHeight: { label: 'Box Height', type: 'number', min: 30, max: 120 },
       boxWidth: { label: 'Box Width', type: 'number', min: 80, max: 260 }
     },
-    defaultConfig: { maxAncestors: 5, horizontalGap: 180, boxHeight: 40, boxWidth: 140, parentOffset: 32, verticalGap: 16 }
+    defaultConfig: { maxAncestors: 5, horizontalGenerationGap: 180, boxHeight: 40, boxWidth: 140, parentOffset: 32, verticalGap: 16 }
   }
 ];
 

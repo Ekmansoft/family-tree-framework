@@ -11,8 +11,8 @@ export interface LayoutConfig {
     maxGenerationsBackward: number;
     /** Optional: maximum ancestor generations for ancestor-oriented layouts */
     maxAncestors?: number;
-    /** Horizontal spacing between columns or sibling groups */
-    horizontalGap?: number;
+    /** Horizontal distance between generation columns in ancestor layout */
+    horizontalGenerationGap?: number;
     /** Box dimensions used by layout calculations */
     boxWidth?: number;
     boxHeight?: number;

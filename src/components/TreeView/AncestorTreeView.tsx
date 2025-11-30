@@ -3,12 +3,12 @@ import type { TreeViewCommonProps } from './types';
 import { TreeView as UnifiedTreeView } from './TreeView';
 
 interface AncestorTreeViewProps extends TreeViewCommonProps {
-	horizontalGap?: number;
+	horizontalGenerationGap?: number;
 	verticalGap?: number;
 }
 
 export const AncestorTreeView: React.FC<AncestorTreeViewProps> = (props) => {
-	const { individuals, families = [], selectedId, onSelectPerson, onBounds, boxWidth = 140, boxHeight = 40, maxGenerationsBackward = 5, horizontalGap = 180, verticalGap = 32 } = props;
+	const { individuals, families = [], selectedId, onSelectPerson, onBounds, boxWidth = 140, boxHeight = 40, maxGenerationsBackward = 5, horizontalGenerationGap = 180, verticalGap = 32 } = props;
 	return (
 		<UnifiedTreeView
 			layoutId="ancestor"
@@ -20,7 +20,7 @@ export const AncestorTreeView: React.FC<AncestorTreeViewProps> = (props) => {
 			boxWidth={boxWidth}
 			boxHeight={boxHeight}
 			maxGenerationsBackward={maxGenerationsBackward}
-			horizontalGap={horizontalGap}
+			horizontalGenerationGap={horizontalGenerationGap}
 			verticalGap={verticalGap}
 		/>
 	);
