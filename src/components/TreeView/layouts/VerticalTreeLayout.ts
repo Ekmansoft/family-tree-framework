@@ -299,21 +299,15 @@ export class VerticalTreeLayout implements TreeLayoutStrategy {
                         });
                         console.log(`=== End Lower Generation (DESCENDANT PACKED + CHILD ALIGNED) ===\n`);
                     } else {
-                        // Ancestor lower levels (negative): enforce strict vertical distances for all groups
+                        // Ancestor lower levels (negative): place strictly at generation center `y`
                         groupData.forEach(({ g, intraGap, w, centerX, parentPositions, groupIdx }) => {
                             console.log(`Group ${groupIdx}: [${g.ids.join(', ')}] kind=${g.kind}`);
                             console.log(`  CenterX=${centerX.toFixed(2)} parents=[${parentPositions.map(p => p.x.toFixed(2)).join(', ')}]`);
                             let cursor = centerX - w / 2 + singleWidth / 2;
-                            const parentAvgY = parentPositions.length > 0 ? (parentPositions.reduce((s, p) => s + p.y, 0) / parentPositions.length) : undefined;
-                            let yLocal = y;
-                            if (parentAvgY !== undefined) {
-                                // Ancestors are placed ABOVE their children (negative direction)
-                                yLocal = parentAvgY - (familyToParentDistance + familyToChildrenDistance);
-                            }
                             g.ids.forEach((pid, idx) => {
                                 const x = cursor + idx * (singleWidth + intraGap);
-                                finalPos[pid] = { x, y: yLocal };
-                                console.log(`    ${pid}: x=${x.toFixed(2)} y=${yLocal.toFixed(2)}`);
+                                finalPos[pid] = { x, y };
+                                console.log(`    ${pid}: x=${x.toFixed(2)} y=${y.toFixed(2)}`);
                             });
                         });
                         console.log(`=== End Lower Generation (ANCESTOR) ===\n`);
