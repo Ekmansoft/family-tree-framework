@@ -1,12 +1,11 @@
 import React, { useLayoutEffect, useRef, useState, useMemo, useCallback } from 'react';
 import { assignGenerations } from './utils/generationAssignment';
-import { createFamilyWidthCalculator } from './utils/familyWidthCalculation';
-import { createFamilyLayouter, applyXOffset } from './utils/familyLayout';
 import { filterByMaxTrees, buildRelationshipMaps as buildPersonRelationshipMaps } from './utils/treeFiltering';
 import { buildRelationshipMaps as buildFamilyRelationshipMaps } from './utils/relationshipMaps';
 import { ConnectionLines } from './ConnectionLines';
 import type { Individual, Family } from './types';
 import { debounce } from '../../utils/helpers';
+import { VerticalTreeLayout } from './layouts/VerticalTreeLayout';
 
 interface TreeViewProps {
     individuals: Individual[];
@@ -204,10 +203,9 @@ export const TreeView: React.FC<TreeViewProps> = ({
     const familyWidthMap = useRef(new Map<string, number>());
     const [, setMeasuredVersion] = useState(0);
 
-    // Calculate dimensions
+    // Calculate dimensions for individual positioning (used by layout strategy)
     const rowHeight = 90;
     const totalLevels = maxLevel - minLevel;
-    const totalHeight = (totalLevels * 2 + 3) * rowHeight;
     const yOffset = Math.abs(minLevel) * 2 * rowHeight + rowHeight;
     const singleWidth = 100;
     
@@ -230,197 +228,39 @@ export const TreeView: React.FC<TreeViewProps> = ({
         });
     }
 
-    // Create family width calculator - memoized to avoid recalculation
-    const computeFamilyWidth = useMemo(() => {
-        const widthStart = perfStart('width-calculation');
-        const calculator = createFamilyWidthCalculator({
+    // Use VerticalTreeLayout strategy for computing positions
+    const layoutStart = perfStart('layout-computation');
+    const layoutStrategy = useMemo(() => new VerticalTreeLayout(), []);
+    
+    const layoutResult = useMemo(() => {
+        return layoutStrategy.computeLayout(
+            individualsLocal,
             familiesLocal,
             levelOf,
-            personWidthMap: personWidthMap.current,
-            maxGenerationsForward,
-            maxGenerationsBackward,
-            singleWidth,
-            siblingGap,
-            parentGap,
-            familyPadding
-        });
-        perfEnd('width-calculation', widthStart);
-        return calculator;
-    }, [familiesLocal, levelOf, maxGenerationsForward, maxGenerationsBackward, singleWidth, siblingGap, parentGap, familyPadding]);
-    
-    // Create layout function - memoized
-    const layoutStart = perfStart('layout-creation');
-    const { layoutFamily, pos } = useMemo(() => createFamilyLayouter({
-        individualsLocal,
-        familiesLocal,
-        levelOf,
-        computeFamilyWidth,
-        personWidthMap: personWidthMap.current,
-        maxGenerationsForward,
-        maxGenerationsBackward,
-        rowHeight,
-        yOffset,
-        singleWidth,
-        siblingGap,
-        selectedId,
-        parentGap,
-        ancestorFamilyGap,
-        descendantFamilyGap
-    }), [individualsLocal, familiesLocal, levelOf, computeFamilyWidth, maxGenerationsForward, maxGenerationsBackward, rowHeight, yOffset, singleWidth, siblingGap, selectedId, parentGap, ancestorFamilyGap, descendantFamilyGap]);
-    perfEnd('layout-creation', layoutStart);
-    
-    // Layout strategy: if selectedId exists, start from their lineage; otherwise use root families
-    const familiesProcessed = new Set<string>();
-    let totalTreeWidth = 200;
-    
-    if (selectedId) {
-        // Find the selected person's parent family (where they are a child)
-        const selectedParentFamily = familiesLocal.find(f => 
-            (f.children || []).includes(selectedId)
+            {
+                siblingGap,
+                parentGap,
+                familyPadding,
+                maxGenerationsForward,
+                maxGenerationsBackward,
+                simplePacking: true // Enable simple packing mode
+            } as any
         );
-        
-        if (selectedParentFamily) {
-            // Start layout from the selected person's parent family
-            const familyWidth = computeFamilyWidth(selectedParentFamily.id);
-            totalTreeWidth = familyWidth;
-            layoutFamily(selectedParentFamily.id, 0, familiesProcessed, 'both');
-        } else {
-            // Selected person has no parent family, they might be a parent themselves
-            // Find families where they are a parent
-            const selectedAsParentFamilies = familiesLocal.filter(f =>
-                (f.parents || []).includes(selectedId)
-            );
-            
-            if (selectedAsParentFamilies.length > 0) {
-                // Layout families where selected person is a parent, side by side
-                const widths = selectedAsParentFamilies.map(f => computeFamilyWidth(f.id));
-                totalTreeWidth = widths.reduce((s, w) => s + w, 0) || 200;
-                let cursor = -totalTreeWidth / 2;
-                
-                selectedAsParentFamilies.forEach((fam, idx) => {
-                    const w = widths[idx] || 200;
-                    const famCenter = cursor + w / 2;
-                    layoutFamily(fam.id, famCenter, familiesProcessed, 'both');
-                    cursor += w;
-                });
-            } else {
-                // Selected person is standalone, position them at center
-                const ind = individualsLocal.find(i => i.id === selectedId);
-                if (ind) {
-                    const level = levelOf.get(selectedId) ?? 0;
-                    const row = level * 2;
-                    const y = row * rowHeight + rowHeight / 2 + yOffset;
-                    pos[selectedId] = { x: 0, y };
-                    totalTreeWidth = singleWidth;
-                }
-            }
-        }
-    } else {
-        // No selected person: use root families approach
-        const rootWidths = rootFamilies.map((f) => computeFamilyWidth(f.id));
-        totalTreeWidth = rootWidths.reduce((s, w) => s + w, 0) || 200;
-        
-        let cursor = -totalTreeWidth / 2;
-        rootFamilies.forEach((fam, idx) => {
-            const w = rootWidths[idx] || 200;
-            const famCenter = cursor + w / 2;
-            layoutFamily(fam.id, famCenter, familiesProcessed, 'both');
-            cursor += w;
-        });
-    }
-
-    // Apply X offset to ensure positive space
-    const { pos: finalPos, minX, maxX } = applyXOffset(pos, 100);
-    const actualTreeWidth = maxX + 100;
+    }, [layoutStrategy, individualsLocal, familiesLocal, levelOf, siblingGap, parentGap, familyPadding, maxGenerationsForward, maxGenerationsBackward]);
+    perfEnd('layout-computation', layoutStart);
+    
+    const { personPositions: finalPos, familyPositions, bounds } = layoutResult;
+    const actualTreeWidth = bounds.width;
+    const totalHeight = bounds.height;
+    
+    // Legacy alias for old code (TODO: refactor and remove)
+    const pos = finalPos;
+    
     // Report bounds when they change
     React.useEffect(() => {
         try { onBounds && onBounds(actualTreeWidth, totalHeight); } catch {}
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [actualTreeWidth, totalHeight]);
-
-    // Build family positions AFTER applying offset to person positions
-    const familyPositions: Array<{ id: string; x: number; y: number; parents: string[]; children: string[] }> = [];
-    
-    // Build a set of valid individual IDs for validation
-    const validIndividualIds = new Set(individualsLocal.map(i => i.id));
-    
-    familiesLocal.forEach((fam) => {
-        // Filter out any references to non-existent individuals (corrupt GEDCOM handling)
-        const parents: string[] = (fam.parents || []).filter((pid: string) => validIndividualIds.has(pid));
-        const kids = (fam.children || []).filter((cid: string) => validIndividualIds.has(cid));
-
-        // compute average positions if available
-        const parentPos = parents.map((pid: string) => pos[pid]).filter(Boolean) as { x: number; y: number }[];
-        const childPos = kids.map((cid: string) => pos[cid]).filter(Boolean) as { x: number; y: number }[];
-
-        const avg = (arr: { x: number; y: number }[]) => ({ x: arr.reduce((s, a) => s + a.x, 0) / arr.length, y: arr.reduce((s, a) => s + a.y, 0) / arr.length });
-        let familyX = 50;
-        let familyY = 0;
-
-        // Prefer placing the family box between the parent generation and the child generation
-        const parentLevels = parents.map((pid: string) => levelOf.get(pid)).filter((v: unknown): v is number => typeof v === 'number');
-        const childLevels = kids.map((cid: string) => levelOf.get(cid)).filter((v: unknown): v is number => typeof v === 'number');
-
-        if (parentPos.length > 0 && parentLevels.length > 0) {
-            // Center the family box beneath the parents' average x position.
-            const pavg = avg(parentPos);
-            familyX = pavg.x;
-
-            // Place family box closer to parents (about 1/3 of the way down to children)
-            const maxParentLevel = Math.max(...parentLevels);
-            const familyRow = maxParentLevel * 2 + 0.4; // Reduced from +1 to +0.4 to move closer to parents
-            familyY = familyRow * rowHeight + rowHeight / 2 + yOffset;
-        } else if (childPos.length > 0) {
-            // No parents available (or not positioned) — fall back to centering under children
-            const cavg = avg(childPos);
-            familyX = cavg.x;
-            familyY = cavg.y - rowHeight * 0.4;
-        } else {
-            // Fallback center (will be adjusted after X offset calculation)
-            familyX = totalTreeWidth / 2;
-            familyY = rowHeight; // fallback
-        }
-
-        // Only include family boxes if we have positioned parents or children (visible within generation limit)
-        if (parentPos.length > 0 || childPos.length > 0) {
-            familyPositions.push({ id: fam.id, x: familyX, y: familyY, parents, children: kids });
-        }
-    });
-
-    // Fallback: ensure every individual has a position so connectors always draw,
-    // but only assign positions for individuals within the allowed forward generation.
-    individuals.forEach((ind) => {
-        if (pos[ind.id]) return;
-        const lvl = levelOf.get(ind.id) ?? 0;
-        if (lvl > maxGenerationsForward || lvl < -maxGenerationsBackward) return; // skip individuals beyond allowed generations
-
-        // Prefer parent's family position if available
-        const asParentFam = familiesLocal.find((f) => (f.parents || []).includes(ind.id));
-        if (asParentFam) {
-            const fp = familyPositions.find((fp) => fp.id === asParentFam.id);
-            if (fp) {
-                const pLevel = levelOf.get(ind.id) ?? 0;
-                const pRow = pLevel * 2;
-                finalPos[ind.id] = { x: fp.x + (/* offset if first/second parent */ 0), y: pRow * rowHeight + rowHeight / 2 + yOffset };
-                return;
-            }
-        }
-        // Else prefer child family position
-        const asChildFam = familiesLocal.find((f) => (f.children || []).includes(ind.id));
-        if (asChildFam) {
-            const fp = familyPositions.find((fp) => fp.id === asChildFam.id);
-            if (fp) {
-                const cLevel = levelOf.get(ind.id) ?? 0;
-                const cRow = cLevel * 2;
-                finalPos[ind.id] = { x: fp.x, y: cRow * rowHeight + rowHeight / 2 + yOffset };
-                return;
-            }
-        }
-        // Final fallback: center by level
-        finalPos[ind.id] = { x: actualTreeWidth / 2, y: (lvl * 2) * rowHeight + rowHeight / 2 + yOffset };
-    });
-    
-
 
     // Debug logging for specific problematic families
     if (typeof window !== 'undefined' && (window as any).DEBUG_POSITIONS) {
@@ -435,7 +275,6 @@ export const TreeView: React.FC<TreeViewProps> = ({
         });
         console.log('F75 in familyPositions:', familyPositions.find(f => f.id === 'F75'));
         console.log('F187 in familyPositions:', familyPositions.find(f => f.id === 'F187'));
-        console.log('minX:', minX, 'maxX:', maxX);
         console.log('actualTreeWidth:', actualTreeWidth);
         console.log('Total in finalPos:', Object.keys(finalPos).length, 'Total individualsLocal:', individualsLocal.length);
     }

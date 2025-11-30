@@ -22,7 +22,7 @@ export const availableLayouts: LayoutMeta[] = [
       maxGenerationsBackward: { label: 'Ancestors (back)', type: 'number', min: 0, max: 15 },
       maxGenerationsForward: { label: 'Descendants (forward)', type: 'number', min: 0, max: 15 }
     },
-    defaultConfig: { maxGenerationsBackward: 2, maxGenerationsForward: 2 }
+    defaultConfig: { maxGenerationsBackward: 2, maxGenerationsForward: 2, siblingGap: 40, parentGap: 20, familyPadding: 12, simplePacking: true }
   },
   {
     id: 'ancestor',

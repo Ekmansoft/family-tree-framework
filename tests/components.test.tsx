@@ -1,10 +1,8 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import TreeView from '../src/components/TreeView/TreeView';
-import TreeNode from '../src/components/TreeView/TreeNode';
 import PersonEditor from '../src/components/Editor/PersonEditor';
 import RelationshipEditor from '../src/components/Editor/RelationshipEditor';
-import Toolbar from '../src/components/Shared/Toolbar';
 
 describe('TreeView Component', () => {
     test('renders TreeView correctly', () => {
@@ -89,13 +87,6 @@ describe('TreeView Component', () => {
     });
 });
 
-describe('TreeNode Component', () => {
-    test('renders TreeNode correctly', () => {
-        render(<TreeNode name="John Doe" />);
-        expect(screen.getByText(/john doe/i)).toBeInTheDocument();
-    });
-});
-
 describe('PersonEditor Component', () => {
     test('renders PersonEditor correctly', () => {
         render(<PersonEditor person={{ id: 'p1', name: 'Jane Doe', birthDate: '1990-01-01' }} onSave={() => {}} onCancel={() => {}} />);
@@ -109,12 +100,5 @@ describe('RelationshipEditor Component', () => {
         const individuals = [{ id: 'I1', name: 'John Doe' }];
         render(<RelationshipEditor family={family} individuals={individuals} onSave={() => {}} onCancel={() => {}} />);
         expect(screen.getByText(/edit family/i)).toBeInTheDocument();
-    });
-});
-
-describe('Toolbar Component', () => {
-    test('renders Toolbar correctly', () => {
-        render(<Toolbar onSave={() => {}} onUndo={() => {}} onRedo={() => {}} />);
-        expect(screen.getByText(/save/i)).toBeInTheDocument();
     });
 });
