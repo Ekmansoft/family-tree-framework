@@ -326,6 +326,7 @@ export class VerticalTreeLayout implements TreeLayoutStrategy {
             console.log('🔧 VERTICAL LAYOUT: Simple packing mode DISABLED');
         }
         
+        
         // Build family positions
         const familyPositions: Array<{
             id: string;
@@ -336,6 +337,20 @@ export class VerticalTreeLayout implements TreeLayoutStrategy {
         }> = [];
         
         const validIndividualIds = new Set(individuals.map((i: any) => i.id));
+        
+        // Group families by their parent sets to detect multiple marriages
+        const parentSetToFamilies = new Map<string, any[]>();
+        families.forEach((fam: any) => {
+            const parents: string[] = (fam.parents || []).filter((pid: string) => validIndividualIds.has(pid));
+            if (parents.length > 0) {
+                // Use sorted parent IDs as key to group families with common parents
+                const parentKey = parents.slice().sort().join(',');
+                if (!parentSetToFamilies.has(parentKey)) {
+                    parentSetToFamilies.set(parentKey, []);
+                }
+                parentSetToFamilies.get(parentKey)!.push(fam);
+            }
+        });
         
         families.forEach((fam: any) => {
             const parents: string[] = (fam.parents || []).filter((pid: string) => validIndividualIds.has(pid));
@@ -357,11 +372,23 @@ export class VerticalTreeLayout implements TreeLayoutStrategy {
             const parentLevels = parents.map((pid: string) => levelOf.get(pid)).filter((v): v is number => typeof v === 'number');
             
             if (parentPos.length > 0 && parentLevels.length > 0) {
-                // Keep x centered between parents; compute Y relative to actual parent box positions
+                // Check if this is part of multiple marriages
+                const parentKey = parents.slice().sort().join(',');
+                const familiesWithSameParents = parentSetToFamilies.get(parentKey) || [fam];
+                
                 const pavg = avg(parentPos);
-                familyX = pavg.x;
-                // Position family box below parents by familyToParentDistance (independent of children distance)
                 familyY = pavg.y + familyToParentDistance;
+                
+                if (familiesWithSameParents.length > 1) {
+                    // Multiple marriages: arrange families horizontally
+                    const familyIndex = familiesWithSameParents.indexOf(fam);
+                    const familySpacing = boxWidth * 1.5; // spacing between family boxes
+                    const totalWidth = (familiesWithSameParents.length - 1) * familySpacing;
+                    familyX = pavg.x - totalWidth / 2 + familyIndex * familySpacing;
+                } else {
+                    // Single marriage: center between parents
+                    familyX = pavg.x;
+                }
             } else if (childPos.length > 0) {
                 const cavg = avg(childPos);
                 familyX = cavg.x;
@@ -371,7 +398,7 @@ export class VerticalTreeLayout implements TreeLayoutStrategy {
             
             familyPositions.push({ id: fam.id, x: familyX, y: familyY, parents, children: kids });
         });
-        
+
         const actualTreeWidth = maxX + 100;
         
         return {

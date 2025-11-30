@@ -24,6 +24,7 @@ export const FileSelector: React.FC<FileSelectorProps> = ({
                 >
                     <option value="demo-family.ged">Simple demo (2 parents, 3 children)</option>
                     <option value="demo-family-3gen.ged">3-generation demo</option>
+                    <option value="multiple-marriages.ged">Multiple marriages (1 father, 3 wives, 6 children)</option>
                     <option value="ancestor-8gen.ged">Ancestor 8 generations (511 individuals)</option>
                         <option value="descendants-7gen.ged">Descendants 7 generations (full binary, 2 parents + 2 children)</option>
                     <option value="sample-from-image.ged">Sample from image (Cruz / Willow branch)</option>
