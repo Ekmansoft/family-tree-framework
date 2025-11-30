@@ -11,6 +11,16 @@ export interface LayoutConfig {
     maxGenerationsBackward: number;
     /** Optional: maximum ancestor generations for ancestor-oriented layouts */
     maxAncestors?: number;
+    /** Horizontal spacing between columns or sibling groups */
+    horizontalGap?: number;
+    /** Box dimensions used by layout calculations */
+    boxWidth?: number;
+    boxHeight?: number;
+    /** Vertical distances for family-centric vertical layout */
+    familyToParentDistance?: number;
+    familyToChildrenDistance?: number;
+    /** Generic vertical gap used by ancestor layouts */
+    verticalGap?: number;
 }
 
 export interface LayoutResult {
@@ -30,6 +40,8 @@ export interface LayoutResult {
         minY: number;
         maxY: number;
     };
+    /** Optional connector list (child->parent, spouse links, etc.) */
+    connections?: Array<{ from: string; to: string; kind?: 'parent' | 'spouse' }>;
 }
 
 export interface TreeLayoutStrategy {

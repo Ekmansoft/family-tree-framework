@@ -115,12 +115,13 @@ export class AncestorTreeLayout implements TreeLayoutStrategy {
         const width = maxX + horizontalGap + 120; // right padding
         const height = maxY + paddingY;
 
-        return {
+        const result: LayoutResult = {
             personPositions: ctx.positions,
             familyPositions: [],
             bounds: { width, height, minX, maxX: width, minY: paddingY, maxY: height },
-            connections: ctx.connections
-        } as any;
+            connections: ctx.connections.map(c => ({ from: c.from, to: c.to, kind: 'parent' }))
+        };
+        return result;
     }
 }
 
