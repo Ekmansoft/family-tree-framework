@@ -1,16 +1,13 @@
 import React, { useLayoutEffect, useRef, useState, useMemo, useCallback } from 'react';
 import { assignGenerations } from './utils/generationAssignment';
+import './vertical.css';
 import { filterByMaxTrees, buildRelationshipMaps as buildPersonRelationshipMaps } from './utils/treeFiltering';
 import { buildRelationshipMaps as buildFamilyRelationshipMaps } from './utils/relationshipMaps';
-import type { Individual, Family } from './types';
+import type { Individual, Family, TreeViewCommonProps } from './types';
 import { debounce } from '../../utils/helpers';
 import { VerticalTreeLayout } from './layouts/VerticalTreeLayout';
 
-interface VerticalTreeViewProps {
-    individuals: Individual[];
-    families?: Family[];
-    selectedId?: string | null;
-    onSelectPerson?: (id: string) => void;
+interface VerticalTreeViewProps extends TreeViewCommonProps {
     onSelectFamily?: (id: string) => void;
     // spacing props (optional)
     siblingGap?: number; // px gap between sibling child blocks
@@ -24,7 +21,7 @@ interface VerticalTreeViewProps {
     selectedTreeIndex?: number; // which tree component to display (0 = largest, default)
     onPerformanceMetric?: (metricName: string, durationMs: number) => void; // optional performance callback
     enableVirtualRendering?: boolean; // enable viewport-based rendering for large trees
-    onBounds?: (width: number, height: number) => void; // report computed content bounds
+    onBounds?: (width: number, height: number) => void; // from common props
 }
 
 // Render a single tree: each person is one node placed by generation (distance from root)
@@ -43,9 +40,16 @@ export const VerticalTreeView: React.FC<VerticalTreeViewProps> = ({
     maxGenerationsBackward = 2,
     selectedTreeIndex,
     onPerformanceMetric,
-    enableVirtualRendering = false
-    , onBounds
+    enableVirtualRendering = false,
+    boxWidth = 100,
+    boxHeight = 40,
+    familyToParentDistance,
+    familyToChildrenDistance,
+    onBounds
 }) => {
+    // Default family distances to boxHeight for consistent vertical spacing
+    const effectiveFamilyToParentDistance = familyToParentDistance ?? boxHeight;
+    const effectiveFamilyToChildrenDistance = familyToChildrenDistance ?? boxHeight;
     const perfStart = (label: string) => onPerformanceMetric ? performance.now() : 0;
     const perfEnd = (label: string, start: number) => {
         if (onPerformanceMetric && start > 0) {
@@ -206,7 +210,7 @@ export const VerticalTreeView: React.FC<VerticalTreeViewProps> = ({
     const rowHeight = 90;
     const totalLevels = maxLevel - minLevel;
     const yOffset = Math.abs(minLevel) * 2 * rowHeight + rowHeight;
-    const singleWidth = 100;
+    const singleWidth = boxWidth;
     
     // Find root families (families where parents are not children in another family)
     const childParentFamily = new Map<string, string>();
@@ -242,10 +246,15 @@ export const VerticalTreeView: React.FC<VerticalTreeViewProps> = ({
                 familyPadding,
                 maxGenerationsForward,
                 maxGenerationsBackward,
-                simplePacking: true // Enable simple packing mode
+                simplePacking: true, // Enable simple packing mode
+                boxWidth,
+                boxHeight,
+                horizontalGap: siblingGap, // Use siblingGap as horizontalGap for now
+                familyToParentDistance: effectiveFamilyToParentDistance,
+                familyToChildrenDistance: effectiveFamilyToChildrenDistance
             } as any
         );
-    }, [layoutStrategy, individualsLocal, familiesLocal, levelOf, siblingGap, parentGap, familyPadding, maxGenerationsForward, maxGenerationsBackward]);
+    }, [layoutStrategy, individualsLocal, familiesLocal, levelOf, siblingGap, parentGap, familyPadding, maxGenerationsForward, maxGenerationsBackward, boxWidth, boxHeight, effectiveFamilyToParentDistance, effectiveFamilyToChildrenDistance]);
     perfEnd('layout-computation', layoutStart);
     
     const { personPositions: finalPos, familyPositions, bounds } = layoutResult;
@@ -446,7 +455,7 @@ export const VerticalTreeView: React.FC<VerticalTreeViewProps> = ({
                             const perHalf = personHalfMap.current.get(pid) ?? 
                                 (personEls.current.get(pid)?.clientHeight 
                                     ? personEls.current.get(pid)!.clientHeight / 2 
-                                    : 24);
+                                    : Math.max(20, Math.min(100, boxHeight / 2)));
                             const famHalf = familyHalfMap.current.get(fam.id) ?? 9;
                             const x1 = p.x;
                             const y1 = p.y + perHalf;
@@ -491,7 +500,7 @@ export const VerticalTreeView: React.FC<VerticalTreeViewProps> = ({
                             const perHalf = personHalfMap.current.get(cid) ?? 
                                 (personEls.current.get(cid)?.clientHeight 
                                     ? personEls.current.get(cid)!.clientHeight / 2 
-                                    : 24);
+                                    : Math.max(20, Math.min(100, boxHeight / 2)));
                             const famHalf = familyHalfMap.current.get(fam.id) ?? 9;
                             const x1 = fam.x;
                             const y1 = fam.y + famHalf;
@@ -533,7 +542,7 @@ export const VerticalTreeView: React.FC<VerticalTreeViewProps> = ({
                     <div
                         key={ind.id}
                         className={`person-box ${ind.families && ind.families.length ? 'parent' : 'standalone'} ${selectedId === ind.id ? 'selected' : ''} ${genderClass}`}
-                        style={{ left: `${p.x}px`, top: p.y, transform: 'translate(-50%, -50%)', position: 'absolute' }}
+                        style={{ left: `${p.x}px`, top: p.y, transform: 'translate(-50%, -50%)', position: 'absolute', width: boxWidth }}
                         onClick={() => onSelectPerson?.(ind.id)}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter' || e.key === ' ') {

@@ -1,0 +1,14 @@
+/* VerticalTreeView-specific styles */
+
+/* Sex-based coloring similar to AncestorTreeView */
+.person-box.male {
+    border-color: #2b6cb0;
+    background: linear-gradient(180deg, #ffffff, #eef6ff);
+}
+.person-box.female {
+    border-color: #c53030;
+    background: linear-gradient(180deg, #ffffff, #fff0f0);
+}
+.person-box.unknown {
+    border-color: #999;
+}

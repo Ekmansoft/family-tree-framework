@@ -18,15 +18,22 @@ export class VerticalTreeLayout implements TreeLayoutStrategy {
     ): LayoutResult {
         console.log('🌳 VerticalTreeLayout.computeLayout CALLED', { individuals: individuals.length, families: families.length, config });
         const { siblingGap, parentGap, familyPadding, maxGenerationsForward, maxGenerationsBackward } = config;
+        const boxWidth = (config as any).boxWidth || 100;
+        const boxHeight = (config as any).boxHeight || 40;
+        const horizontalGap = (config as any).horizontalGap || 20;
+        const familyToParentDistance = (config as any).familyToParentDistance || boxHeight;
+        const familyToChildrenDistance = (config as any).familyToChildrenDistance || boxHeight;
         // Optional simple packing mode: repack persons per generation left-to-right
         const simplePacking = (config as any).simplePacking === true;
         console.log('🔧 simplePacking =', simplePacking);
+        console.log('🔧 Using boxWidth:', boxWidth, 'boxHeight:', boxHeight, 'horizontalGap:', horizontalGap);
+        console.log('🔧 Family distances - toParent:', familyToParentDistance, 'toChildren:', familyToChildrenDistance);
         
         // Build relationship maps
         const { childrenOf, parentsOf } = buildRelationshipMaps(families);
         
-        // Calculate dimensions
-        const rowHeight = 90;
+        // Calculate dimensions - rowHeight is sum of both family distances (parent-to-family + family-to-children)
+        const rowHeight = familyToParentDistance + familyToChildrenDistance;
         let minLevel = 0;
         let maxLevel = 0;
         levelOf.forEach((lvl) => {
@@ -39,16 +46,16 @@ export class VerticalTreeLayout implements TreeLayoutStrategy {
         const yOffset = Math.abs(minLevel) * 2 * rowHeight + rowHeight;
         
         // Setup for width calculations
-        const singleWidth = 100;
+        const singleWidth = boxWidth;
         const personWidthMap = new Map<string, number>();
         individuals.forEach(ind => personWidthMap.set(ind.id, singleWidth));
         
         // Estimate tree width for dynamic sibling gap
         const estimatedTreeWidth = families.reduce((sum, f) => {
             const childCount = (f.children || []).length;
-            return sum + childCount * 150;
+            return sum + childCount * (boxWidth + horizontalGap);
         }, 0);
-        const dynamicSiblingGap = estimatedTreeWidth > 5000 ? Math.max(8, siblingGap / 3) : siblingGap;
+        const dynamicSiblingGap = estimatedTreeWidth > 5000 ? Math.max(8, horizontalGap / 3) : horizontalGap;
         
         // Create family width calculator
         const computeFamilyWidth = createFamilyWidthCalculator({
@@ -261,38 +268,52 @@ export class VerticalTreeLayout implements TreeLayoutStrategy {
                             console.log(`  Desired centerX=${centerX.toFixed(2)} parentCenters=[${parentPositions.map(p => p.x.toFixed(2)).join(', ')}]`);
                             console.log(`  Packed segment start=${packCursor.toFixed(2)} width=${w}`);
                             let cursor = packCursor + singleWidth / 2;
+                            // Compute Y from parent average when available to strictly enforce distances
+                            const ySpouse = parentPositions.length > 0
+                                ? (parentPositions.reduce((s, p) => s + p.y, 0) / parentPositions.length) + familyToParentDistance + familyToChildrenDistance
+                                : y; // fallback to generation center when parents unknown
                             g.ids.forEach((pid, idx) => {
                                 const x = cursor + idx * (singleWidth + intraGap);
-                                finalPos[pid] = { x, y };
-                                console.log(`    ${pid}: x=${x.toFixed(2)} packedIdx=${packedIdx}`);
+                                finalPos[pid] = { x, y: ySpouse };
+                                console.log(`    ${pid}: x=${x.toFixed(2)} y=${ySpouse.toFixed(2)} packedIdx=${packedIdx}`);
                             });
                             packCursor += w + interGroupGap;
                         });
 
-                        // Align child groups centered beneath their parents (do not repack horizontally)
+                        // Align child groups centered beneath their parents; compute Y honoring configured distances
                         childData.forEach(gd => {
                             const { g, intraGap, w, centerX, parentPositions, groupIdx } = gd;
                             console.log(`Child Group ${groupIdx}: [${g.ids.join(', ')}] centerX=${centerX.toFixed(2)} parents=[${parentPositions.map(p => p.x.toFixed(2)).join(', ')}]`);
                             // If no parent info fallback to average spouse packing center
                             const effectiveCenter = parentPositions.length > 0 ? centerX : avgSpouseCenter;
                             let cursor = effectiveCenter - w / 2 + singleWidth / 2;
+                            // Compute Y from parent average when available to strictly enforce distances
+                            const yChild = parentPositions.length > 0
+                                ? (parentPositions.reduce((s, p) => s + p.y, 0) / parentPositions.length) + familyToParentDistance + familyToChildrenDistance
+                                : y; // fallback to generation center when parents unknown
                             g.ids.forEach((pid, idx) => {
                                 const x = cursor + idx * (singleWidth + intraGap);
-                                finalPos[pid] = { x, y };
-                                console.log(`    ${pid}: x=${x.toFixed(2)} alignedUnderParents`);
+                                finalPos[pid] = { x, y: yChild };
+                                console.log(`    ${pid}: x=${x.toFixed(2)} alignedUnderParents y=${yChild.toFixed(2)}`);
                             });
                         });
                         console.log(`=== End Lower Generation (DESCENDANT PACKED + CHILD ALIGNED) ===\n`);
                     } else {
-                        // Ancestor lower levels (negative) keep previous centering logic per group
+                        // Ancestor lower levels (negative): enforce strict vertical distances for all groups
                         groupData.forEach(({ g, intraGap, w, centerX, parentPositions, groupIdx }) => {
                             console.log(`Group ${groupIdx}: [${g.ids.join(', ')}] kind=${g.kind}`);
                             console.log(`  CenterX=${centerX.toFixed(2)} parents=[${parentPositions.map(p => p.x.toFixed(2)).join(', ')}]`);
                             let cursor = centerX - w / 2 + singleWidth / 2;
+                            const parentAvgY = parentPositions.length > 0 ? (parentPositions.reduce((s, p) => s + p.y, 0) / parentPositions.length) : undefined;
+                            let yLocal = y;
+                            if (parentAvgY !== undefined) {
+                                // Both spouses and children are below their parents (positive Y direction)
+                                yLocal = parentAvgY + familyToParentDistance + familyToChildrenDistance;
+                            }
                             g.ids.forEach((pid, idx) => {
                                 const x = cursor + idx * (singleWidth + intraGap);
-                                finalPos[pid] = { x, y };
-                                console.log(`    ${pid}: x=${x.toFixed(2)}`);
+                                finalPos[pid] = { x, y: yLocal };
+                                console.log(`    ${pid}: x=${x.toFixed(2)} y=${yLocal.toFixed(2)}`);
                             });
                         });
                         console.log(`=== End Lower Generation (ANCESTOR) ===\n`);
@@ -336,20 +357,16 @@ export class VerticalTreeLayout implements TreeLayoutStrategy {
             const parentLevels = parents.map((pid: string) => levelOf.get(pid)).filter((v): v is number => typeof v === 'number');
             
             if (parentPos.length > 0 && parentLevels.length > 0) {
-                // Keep x centered between parents, but pull Y closer to parents (above children)
-                const avgX = parentPos.reduce((s, p) => s + p.x, 0) / parentPos.length;
-                familyX = avgX;
-                const maxParentLevel = Math.max(...parentLevels);
-                // Original placement used +1 (midway). Use a reduced fraction to bias upward.
-                const parentCenterY = (maxParentLevel * 2) * rowHeight + rowHeight / 2 + yOffset;
-                const childCenterY = ((maxParentLevel + 1) * 2) * rowHeight + rowHeight / 2 + yOffset;
-                // Interpolate closer to parents: 30% of the way toward children
-                const bias = 0.30;
-                familyY = parentCenterY + (childCenterY - parentCenterY) * bias;
+                // Keep x centered between parents; compute Y relative to actual parent box positions
+                const pavg = avg(parentPos);
+                familyX = pavg.x;
+                // Position family box below parents by familyToParentDistance (independent of children distance)
+                familyY = pavg.y + familyToParentDistance;
             } else if (childPos.length > 0) {
                 const cavg = avg(childPos);
                 familyX = cavg.x;
-                familyY = cavg.y - rowHeight * 0.4;
+                // Position family box above children by familyToChildrenDistance
+                familyY = cavg.y - familyToChildrenDistance;
             }
             
             familyPositions.push({ id: fam.id, x: familyX, y: familyY, parents, children: kids });

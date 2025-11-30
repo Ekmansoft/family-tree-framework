@@ -8,6 +8,9 @@ module.exports = {
       tsconfig: 'tsconfig.test.json'
     }],
   },
+  moduleNameMapper: {
+    '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
+  },
   setupFilesAfterEnv: ['<rootDir>/tests/setupTests.ts'],
   coverageDirectory: '<rootDir>/coverage',
   collectCoverageFrom: [

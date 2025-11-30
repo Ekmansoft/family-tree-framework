@@ -61,6 +61,14 @@ const App: React.FC = () => {
         const v = localStorage.getItem('ancestor.boxWidth');
         return v ? Math.max(80, Math.min(260, parseInt(v) || 140)) : 140;
     });
+    const [familyToParentDistance, setFamilyToParentDistance] = useState<number>(() => {
+        const v = localStorage.getItem('vertical.familyToParentDistance');
+        return v ? Math.max(10, Math.min(120, parseInt(v) || 40)) : 40;
+    });
+    const [familyToChildrenDistance, setFamilyToChildrenDistance] = useState<number>(() => {
+        const v = localStorage.getItem('vertical.familyToChildrenDistance');
+        return v ? Math.max(10, Math.min(120, parseInt(v) || 40)) : 40;
+    });
 
     // persist ancestor layout settings
     useEffect(() => { localStorage.setItem('ancestor.maxAncestors', String(maxAncestors)); }, [maxAncestors]);
@@ -68,6 +76,8 @@ const App: React.FC = () => {
     useEffect(() => { localStorage.setItem('ancestor.boxHeight', String(ancestorBoxHeight)); }, [ancestorBoxHeight]);
     useEffect(() => { localStorage.setItem('ancestor.boxWidth', String(ancestorBoxWidth)); }, [ancestorBoxWidth]);
     useEffect(() => { localStorage.setItem('ancestor.verticalGap', String(ancestorVerticalGap)); }, [ancestorVerticalGap]);
+    useEffect(() => { localStorage.setItem('vertical.familyToParentDistance', String(familyToParentDistance)); }, [familyToParentDistance]);
+    useEffect(() => { localStorage.setItem('vertical.familyToChildrenDistance', String(familyToChildrenDistance)); }, [familyToChildrenDistance]);
 
     const handleEditPerson = () => {
         if (!selectedId || !familyTree) return;
@@ -476,6 +486,50 @@ const App: React.FC = () => {
                                             style={{ width: 56, padding: '4px 8px', borderRadius: 4, border: '1px solid #ccc' }}
                                         />
                                     </label>
+                                    <label style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                                        <span style={{ fontSize: 13, color: '#666' }}>Box Height:</span>
+                                        <input
+                                            type="number"
+                                            min={30}
+                                            max={120}
+                                            value={ancestorBoxHeight}
+                                            onChange={(e) => setAncestorBoxHeight(Math.max(30, Math.min(120, parseInt(e.target.value) || 48)))}
+                                            style={{ width: 64, padding: '4px 8px', borderRadius: 4, border: '1px solid #ccc' }}
+                                        />
+                                    </label>
+                                    <label style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                                        <span style={{ fontSize: 13, color: '#666' }}>Box Width:</span>
+                                        <input
+                                            type="number"
+                                            min={80}
+                                            max={260}
+                                            value={ancestorBoxWidth}
+                                            onChange={(e) => setAncestorBoxWidth(Math.max(80, Math.min(260, parseInt(e.target.value) || 140)))}
+                                            style={{ width: 64, padding: '4px 8px', borderRadius: 4, border: '1px solid #ccc' }}
+                                        />
+                                    </label>
+                                    <label style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                                        <span style={{ fontSize: 13, color: '#666' }}>Fam→Parent:</span>
+                                        <input
+                                            type="number"
+                                            min={10}
+                                            max={120}
+                                            value={familyToParentDistance}
+                                            onChange={(e) => setFamilyToParentDistance(Math.max(10, Math.min(120, parseInt(e.target.value) || 40)))}
+                                            style={{ width: 64, padding: '4px 8px', borderRadius: 4, border: '1px solid #ccc' }}
+                                        />
+                                    </label>
+                                    <label style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                                        <span style={{ fontSize: 13, color: '#666' }}>Fam→Children:</span>
+                                        <input
+                                            type="number"
+                                            min={10}
+                                            max={120}
+                                            value={familyToChildrenDistance}
+                                            onChange={(e) => setFamilyToChildrenDistance(Math.max(10, Math.min(120, parseInt(e.target.value) || 40)))}
+                                            style={{ width: 64, padding: '4px 8px', borderRadius: 4, border: '1px solid #ccc' }}
+                                        />
+                                    </label>
                                 </div>
                             )}
                             {layoutType === 'ancestor' && (
@@ -640,37 +694,36 @@ const App: React.FC = () => {
                         style={{ border: '1px solid #ddd', background: '#fafafa', overflow: 'hidden', cursor: isPanning ? 'grabbing' : 'grab', height: 'calc(100vh - 320px)', minHeight: 600, width: '100%', touchAction: 'none' as const }}
                     >
                         <div style={{ transform: `translate(${offset.x}px, ${offset.y}px) scale(${scale})`, transformOrigin: '0 0', position: 'relative' }}>
-                            {layoutType === 'vertical' ? (
-                                <VerticalTreeView
-                                    individuals={familyTree.individuals}
-                                    families={familyTree.families}
-                                    selectedId={selectedId}
-                                    maxGenerationsForward={maxGenerationsForward}
-                                    maxGenerationsBackward={maxGenerationsBackward}
-                                    onSelectPerson={(id: string) => {
-                                        setSelectedId(id);
-                                    }}
-                                    onSelectFamily={(fid: string) => {
-                                        setSelectedFamilyId(fid);
-                                    }}
-                                    onBounds={(w, h) => setContentBounds({ width: w, height: h })}
-                                />
-                            ) : (
-                                <AncestorTreeView
-                                    individuals={familyTree.individuals}
-                                    families={familyTree.families}
-                                    selectedId={selectedId}
-                                    maxAncestors={maxAncestors}
-                                    horizontalGap={horizontalGap}
-                                    verticalGap={ancestorVerticalGap}
-                                    boxWidth={ancestorBoxWidth}
-                                    boxHeight={ancestorBoxHeight}
-                                    onSelectPerson={(id: string) => {
-                                        setSelectedId(id);
-                                    }}
-                                    onBounds={(w, h) => setContentBounds({ width: w, height: h })}
-                                />
-                            )}
+                            {(() => {
+                                const commonProps = {
+                                    individuals: familyTree.individuals,
+                                    families: familyTree.families,
+                                    selectedId,
+                                    onSelectPerson: (id: string) => setSelectedId(id),
+                                    onBounds: (w: number, h: number) => setContentBounds({ width: w, height: h }),
+                                    boxWidth: ancestorBoxWidth,
+                                    boxHeight: ancestorBoxHeight,
+                                    familyToParentDistance,
+                                    familyToChildrenDistance
+                                };
+                                return layoutType === 'vertical' ? (
+                                    <VerticalTreeView
+                                        {...commonProps}
+                                        maxGenerationsForward={maxGenerationsForward}
+                                        maxGenerationsBackward={maxGenerationsBackward}
+                                        onSelectFamily={(fid: string) => setSelectedFamilyId(fid)}
+                                    />
+                                ) : (
+                                    <AncestorTreeView
+                                        {...commonProps}
+                                        maxAncestors={maxAncestors}
+                                        horizontalGap={horizontalGap}
+                                        verticalGap={ancestorVerticalGap}
+                                        boxWidth={ancestorBoxWidth}
+                                        boxHeight={ancestorBoxHeight}
+                                    />
+                                );
+                            })()}
                         </div>
                         </div>
                     </div>

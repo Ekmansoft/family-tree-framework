@@ -1,18 +1,11 @@
 import React, { useRef } from 'react';
-import type { Individual, Family } from './types';
+import type { Individual, Family, TreeViewCommonProps } from './types';
 import { computeAncestorLayout } from './layouts/AncestorTreeLayout';
 
-interface AncestorTreeViewProps {
-    individuals: Individual[];
-    families?: Family[];
-    selectedId?: string | null;
-    onSelectPerson?: (id: string) => void;
+interface AncestorTreeViewProps extends TreeViewCommonProps {
     maxAncestors?: number;
     horizontalGap?: number;
     verticalGap?: number;
-    boxWidth?: number;
-    boxHeight?: number;
-    onBounds?: (width: number, height: number) => void;
 }
 
 export const AncestorTreeView: React.FC<AncestorTreeViewProps> = ({

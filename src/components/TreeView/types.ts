@@ -22,3 +22,16 @@ export interface Position {
     x: number;
     y: number;
 }
+
+// Common props shared by tree views
+export interface TreeViewCommonProps {
+    individuals: Individual[];
+    families?: Family[];
+    selectedId?: string | null;
+    onSelectPerson?: (id: string) => void;
+    onBounds?: (width: number, height: number) => void;
+    boxWidth?: number;
+    boxHeight?: number;
+    familyToParentDistance?: number; // vertical distance from family box to parent boxes
+    familyToChildrenDistance?: number; // vertical distance from family box to children boxes
+}
