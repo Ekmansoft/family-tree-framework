@@ -1,12 +1,12 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import TreeView from '../src/components/TreeView/TreeView';
+import VerticalTreeView from '../src/components/TreeView/VerticalTreeView';
 import PersonEditor from '../src/components/Editor/PersonEditor';
 import RelationshipEditor from '../src/components/Editor/RelationshipEditor';
 
-describe('TreeView Component', () => {
-    test('renders TreeView correctly', () => {
-        const { container } = render(<TreeView individuals={[]} />);
+describe('VerticalTreeView Component', () => {
+    test('renders VerticalTreeView correctly', () => {
+        const { container } = render(<VerticalTreeView individuals={[]} />);
         expect(container.querySelector('.tree-view')).toBeInTheDocument();
     });
 
@@ -15,7 +15,7 @@ describe('TreeView Component', () => {
             { id: 'I1', name: 'John Doe', families: [] },
             { id: 'I2', name: 'Jane Doe', families: [] }
         ];
-        const { container } = render(<TreeView individuals={individuals} />);
+        const { container } = render(<VerticalTreeView individuals={individuals} />);
         expect(container.querySelector('.tree-view')).toBeInTheDocument();
     });
 
@@ -28,25 +28,25 @@ describe('TreeView Component', () => {
         const families = [
             { id: 'F1', parents: ['I1', 'I2'], children: ['I3'] }
         ];
-        const { container } = render(<TreeView individuals={individuals} families={families} />);
+        const { container } = render(<VerticalTreeView individuals={individuals} families={families} />);
         expect(container.querySelector('.tree-view')).toBeInTheDocument();
     });
 
     test('accepts maxGenerationsForward prop', () => {
         const individuals = [{ id: 'I1', name: 'John Doe', families: [] }];
-        const { container } = render(<TreeView individuals={individuals} maxGenerationsForward={5} />);
+        const { container } = render(<VerticalTreeView individuals={individuals} maxGenerationsForward={5} />);
         expect(container.querySelector('.tree-view')).toBeInTheDocument();
     });
 
     test('accepts maxGenerationsBackward prop', () => {
         const individuals = [{ id: 'I1', name: 'John Doe', families: [] }];
-        const { container } = render(<TreeView individuals={individuals} maxGenerationsBackward={10} />);
+        const { container } = render(<VerticalTreeView individuals={individuals} maxGenerationsBackward={10} />);
         expect(container.querySelector('.tree-view')).toBeInTheDocument();
     });
 
     test('accepts focusItem prop', () => {
         const individuals = [{ id: 'I1', name: 'John Doe', families: [] }];
-        const { container } = render(<TreeView individuals={individuals} focusItem="I1" />);
+        const { container } = render(<VerticalTreeView individuals={individuals} focusItem="I1" />);
         expect(container.querySelector('.tree-view')).toBeInTheDocument();
     });
 
@@ -59,7 +59,7 @@ describe('TreeView Component', () => {
         const families = [
             { id: 'F1', parents: ['I1', 'I2'], children: ['I3'] }
         ];
-        const { container } = render(<TreeView individuals={individuals} families={families} focusItem="F1" />);
+        const { container } = render(<VerticalTreeView individuals={individuals} families={families} focusItem="F1" />);
         expect(container.querySelector('.tree-view')).toBeInTheDocument();
         // Should render the family and its members
         expect(container.textContent).toContain('Parent1');
@@ -73,7 +73,7 @@ describe('TreeView Component', () => {
             { id: 'F1', parents: ['I1', 'INVALID'], children: ['I3'] } // I3 doesn't exist
         ];
         // TreeView should handle this gracefully without crashing
-        const { container } = render(<TreeView individuals={individuals} families={families} />);
+        const { container } = render(<VerticalTreeView individuals={individuals} families={families} />);
         expect(container.querySelector('.tree-view')).toBeInTheDocument();
     });
 
@@ -82,7 +82,7 @@ describe('TreeView Component', () => {
             { id: 'I1', name: 'Person', families: [] }
         ];
         // focusItem doesn't exist, should fall back gracefully
-        const { container } = render(<TreeView individuals={individuals} focusItem="NONEXISTENT" />);
+        const { container } = render(<VerticalTreeView individuals={individuals} focusItem="NONEXISTENT" />);
         expect(container.querySelector('.tree-view')).toBeInTheDocument();
     });
 });

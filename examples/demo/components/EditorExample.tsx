@@ -5,7 +5,7 @@
  */
 
 import React, { lazy, Suspense, useState } from 'react';
-import { TreeView } from '../../../src/components/TreeView/TreeView';
+import { TreeView } from '../../../src/components/TreeView/VerticalTreeView';
 import { EditorModal } from './EditorModal';
 import type { Individual } from '../../../src/components/TreeView/types';
 

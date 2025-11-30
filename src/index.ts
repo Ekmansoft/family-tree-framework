@@ -4,9 +4,10 @@ import './styles/index.css';
 // ============================================================================
 // Core Components
 // ============================================================================
-export { TreeView } from './components/TreeView/TreeView';
 export { VerticalTreeView } from './components/TreeView/VerticalTreeView';
 export { AncestorTreeView } from './components/TreeView/AncestorTreeView';
+// Backward compatibility: TreeView is an alias for VerticalTreeView
+export { VerticalTreeView as TreeView } from './components/TreeView/VerticalTreeView';
 export { PersonBox } from './components/TreeView/PersonBox';
 export { FamilyBox } from './components/TreeView/FamilyBox';
 export { ErrorBoundary } from './components/ErrorBoundary';
