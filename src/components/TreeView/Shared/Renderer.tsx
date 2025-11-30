@@ -154,7 +154,7 @@ export const Renderer: React.FC<RendererProps> = ({
             <div
               key={ind.id}
               className={`person-box ${selectedId === ind.id ? 'selected' : ''} ${genderClass}`}
-              style={{ left: `${p.x}px`, top: p.y, transform: 'translate(-50%, -50%)', position: 'absolute', width: boxWidth }}
+              style={{ left: `${p.x}px`, top: p.y, transform: 'translate(-50%, -50%)', position: 'absolute', width: boxWidth, minHeight: boxHeight }}
               onClick={() => onSelectPerson?.(ind.id)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
