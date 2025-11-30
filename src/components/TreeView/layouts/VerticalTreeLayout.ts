@@ -307,8 +307,8 @@ export class VerticalTreeLayout implements TreeLayoutStrategy {
                             const parentAvgY = parentPositions.length > 0 ? (parentPositions.reduce((s, p) => s + p.y, 0) / parentPositions.length) : undefined;
                             let yLocal = y;
                             if (parentAvgY !== undefined) {
-                                // Both spouses and children are below their parents (positive Y direction)
-                                yLocal = parentAvgY + familyToParentDistance + familyToChildrenDistance;
+                                // Ancestors are placed ABOVE their children (negative direction)
+                                yLocal = parentAvgY - (familyToParentDistance + familyToChildrenDistance);
                             }
                             g.ids.forEach((pid, idx) => {
                                 const x = cursor + idx * (singleWidth + intraGap);
@@ -360,6 +360,8 @@ export class VerticalTreeLayout implements TreeLayoutStrategy {
             const childPos = kids.map((cid: string) => finalPos[cid]).filter(Boolean);
             
             if (parentPos.length === 0 && childPos.length === 0) return;
+            // If no visible parents, skip rendering this family box (do not draw toward invisible ancestors)
+            if (parentPos.length === 0) return;
             
             const avg = (arr: { x: number; y: number }[]) => ({
                 x: arr.reduce((s, a) => s + a.x, 0) / arr.length,
@@ -389,11 +391,6 @@ export class VerticalTreeLayout implements TreeLayoutStrategy {
                     // Single marriage: center between parents
                     familyX = pavg.x;
                 }
-            } else if (childPos.length > 0) {
-                const cavg = avg(childPos);
-                familyX = cavg.x;
-                // Position family box above children by familyToChildrenDistance
-                familyY = cavg.y - familyToChildrenDistance;
             }
             
             familyPositions.push({ id: fam.id, x: familyX, y: familyY, parents, children: kids });
