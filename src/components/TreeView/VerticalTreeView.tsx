@@ -10,7 +10,6 @@ interface VerticalTreeViewProps extends TreeViewCommonProps {
     ancestorFamilyGap?: number;
     descendantFamilyGap?: number;
     familyPadding?: number;
-    focusItem?: string | null;
     maxGenerationsForward?: number;
     maxGenerationsBackward?: number;
     selectedTreeIndex?: number;
