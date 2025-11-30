@@ -21,7 +21,7 @@ interface ConnectionLinesProps {
  * Renders SVG connection lines between persons and families
  * Handles fallback DOM measurements when positions aren't available
  */
-export const ConnectionLines: React.FC<ConnectionLinesProps> = ({
+export const VerticalConnectionLines: React.FC<ConnectionLinesProps> = ({
     familyPositions,
     pos,
     personEls,

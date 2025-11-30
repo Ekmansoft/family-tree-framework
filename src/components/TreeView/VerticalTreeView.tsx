@@ -2,7 +2,7 @@ import React, { useLayoutEffect, useRef, useState, useMemo, useCallback } from '
 import { assignGenerations } from './utils/generationAssignment';
 import { filterByMaxTrees, buildRelationshipMaps as buildPersonRelationshipMaps } from './utils/treeFiltering';
 import { buildRelationshipMaps as buildFamilyRelationshipMaps } from './utils/relationshipMaps';
-import { ConnectionLines } from './ConnectionLines';
+import { VerticalConnectionLines } from './VerticalConnectionLines';
 import type { Individual, Family } from './types';
 import { debounce } from '../../utils/helpers';
 import { VerticalTreeLayout } from './layouts/VerticalTreeLayout';
@@ -408,7 +408,7 @@ export const VerticalTreeView: React.FC<VerticalTreeViewProps> = ({
     return (
         <div className="tree-view" style={{ position: 'relative', width: '100%', minHeight: totalHeight, display: 'block' }}>
             <div ref={innerRef} style={{ position: 'relative', width: actualTreeWidth, height: totalHeight }}>
-            <ConnectionLines
+            <VerticalConnectionLines
                 familyPositions={familyPositions}
                 pos={finalPos}
                 personEls={personEls}
