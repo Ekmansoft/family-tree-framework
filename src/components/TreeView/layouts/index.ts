@@ -1,5 +1,5 @@
 import { AncestorTreeView } from '../AncestorTreeView';
-import TreeView from '../TreeView';
+import { VerticalTreeView } from '../VerticalTreeView';
 
 export interface LayoutMeta {
   id: string;
@@ -17,7 +17,7 @@ export const availableLayouts: LayoutMeta[] = [
     id: 'vertical',
     name: 'Vertical Tree',
     description: 'Top-to-bottom generations with lateral sibling grouping.',
-    component: TreeView,
+    component: VerticalTreeView,
     config: {
       maxGenerationsBackward: { label: 'Ancestors (back)', type: 'number', min: 0, max: 15 },
       maxGenerationsForward: { label: 'Descendants (forward)', type: 'number', min: 0, max: 15 }

@@ -2,7 +2,7 @@ import React, { useEffect, useState, lazy, Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
 // Ensure demo styles are loaded when running the demo directly
 import '../../src/styles/index.css';
-import { TreeView } from '../../src/components/TreeView/TreeView';
+import { VerticalTreeView } from '../../src/components/TreeView/VerticalTreeView';
 import { AncestorTreeView } from '../../src/components/TreeView/AncestorTreeView';
 import { availableLayouts } from '../../src/components/TreeView/layouts';
 import { parseGedcom } from '../../src/parser';
@@ -641,7 +641,7 @@ const App: React.FC = () => {
                     >
                         <div style={{ transform: `translate(${offset.x}px, ${offset.y}px) scale(${scale})`, transformOrigin: '0 0', position: 'relative' }}>
                             {layoutType === 'vertical' ? (
-                                <TreeView
+                                <VerticalTreeView
                                     individuals={familyTree.individuals}
                                     families={familyTree.families}
                                     selectedId={selectedId}
