@@ -71,6 +71,34 @@ h1, h2, h3 {
     font-size: 11px;
 }
 
+/* Gender-specific color accents */
+.person-box.male {
+    border-color: #3b82f6; /* blue-500 */
+    background: linear-gradient(180deg, #ffffff, #eef5ff);
+}
+.person-box.female {
+    border-color: #ec4899; /* pink-500 */
+    background: linear-gradient(180deg, #ffffff, #fff0f6);
+}
+.person-box.unknown {
+    border-color: #94a3b8; /* slate-400 */
+    background: linear-gradient(180deg, #ffffff, #f5f7fa);
+}
+
+/* Keep selected state prominent while preserving accent color */
+.person-box.male.selected {
+    border-color: #2563eb;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+}
+.person-box.female.selected {
+    border-color: #db2777;
+    box-shadow: 0 4px 12px rgba(219, 39, 119, 0.15);
+}
+.person-box.unknown.selected {
+    border-color: #64748b;
+    box-shadow: 0 4px 12px rgba(100, 116, 139, 0.15);
+}
+
 .person-box:focus {
     outline: 2px solid #007bff;
     outline-offset: 2px;

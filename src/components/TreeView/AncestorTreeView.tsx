@@ -1,115 +1,110 @@
-import React, { useRef } from 'react';
-import type { Individual, Family, TreeViewCommonProps } from './types';
-import { computeAncestorLayout } from './layouts/AncestorTreeLayout';
+import React, { useMemo } from 'react';
+import type { TreeViewCommonProps, Individual } from './types';
+import { AncestorTreeLayout } from './layouts/AncestorTreeLayout';
 
 interface AncestorTreeViewProps extends TreeViewCommonProps {
-    maxAncestors?: number;
-    horizontalGap?: number;
-    verticalGap?: number;
+	maxAncestors?: number;
+	horizontalGap?: number;
+	verticalGap?: number;
 }
 
 export const AncestorTreeView: React.FC<AncestorTreeViewProps> = ({
-    individuals,
-    families = [],
-    selectedId,
-    onSelectPerson,
-    maxAncestors = 5,
-    horizontalGap = 180,
-    verticalGap = 24,
-    boxWidth = 140,
-    boxHeight = 40,
-    onBounds
+	individuals,
+	families = [],
+	selectedId,
+	onSelectPerson,
+	onBounds,
+	boxWidth = 140,
+	boxHeight = 40,
+	maxAncestors = 5,
+	horizontalGap = 180,
+	verticalGap = 32,
 }) => {
-    const containerRef = useRef<HTMLDivElement | null>(null);
-    const personEls = useRef(new Map<string, HTMLDivElement>());
+	const layout = useMemo(() => {
+		const strategy = new AncestorTreeLayout();
+		const levelOf = new Map<string, number>();
+		if (selectedId) levelOf.set(selectedId, 0);
+		return strategy.computeLayout(individuals, families, levelOf, {
+			maxAncestors,
+			horizontalGap,
+			boxHeight,
+			verticalGap,
+		} as any);
+	}, [individuals, families, selectedId, maxAncestors, horizontalGap, boxHeight, verticalGap]);
 
-    if (!selectedId) {
-        return <div style={{ padding: 20, textAlign: 'center', color: '#666' }}>Select a person to view their ancestor tree</div>;
-    }
+	const { personPositions, bounds, connections } = layout as any;
 
-    const layout = computeAncestorLayout(individuals, families, selectedId, maxAncestors, horizontalGap, boxHeight, verticalGap);
-    const positions = layout.personPositions;
-    const totalWidth = layout.bounds.width;
-    const totalHeight = layout.bounds.height;
+	React.useEffect(() => {
+		try { onBounds && onBounds(bounds.width, bounds.height); } catch {}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [bounds?.width, bounds?.height]);
 
-    // Report bounds to parent
-    React.useEffect(() => {
-        try { onBounds && onBounds(totalWidth, totalHeight); } catch {}
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [totalWidth, totalHeight]);
+	function formatGedcomDateForDisplay(d: any) {
+		if (!d) return null;
+		return d.iso || d.approxIso || d.original || null;
+	}
 
-    // Prefer connections supplied by layout (includes placeholders)
-    const rawConnections: Array<{ from: string; to: string; genderHint?: 'M' | 'F' | 'U' }> = (layout as any).connections || [];
-    const connections: Array<{ fromPos: { x: number; y: number }; toPos: { x: number; y: number }; key: string; type: 'father' | 'mother' | 'unknown' }> = [];
-    rawConnections.forEach(c => {
-        const fromPos = positions[c.from];
-        const toPos = positions[c.to];
-        if (!fromPos || !toPos) return;
-        let type: 'father' | 'mother' | 'unknown';
-        if (c.genderHint === 'M') type = 'father'; else if (c.genderHint === 'F') type = 'mother'; else type = 'unknown';
-        connections.push({
-            fromPos: { x: fromPos.x + boxWidth, y: fromPos.y + boxHeight / 2 },
-            toPos: { x: toPos.x, y: toPos.y + boxHeight / 2 },
-            key: `${c.from}->${c.to}`,
-            type
-        });
-    });
+	const indById = new Map<string, Individual>(individuals.map(i => [i.id, i]));
 
-    const formatDate = (d: any) => {
-        if (!d) return null;
-        if (typeof d === 'string') return d;
-        return d.iso || d.approxIso || d.original || null;
-    };
+	return (
+		<div className="tree-view" style={{ position: 'relative', width: bounds.width, height: bounds.height }}>
+			<svg
+				className="family-connectors"
+				viewBox={`0 0 ${bounds.width} ${bounds.height}`}
+				style={{ position: 'absolute', left: 0, top: 0, width: '100%', height: `${bounds.height}px`, pointerEvents: 'none' }}
+			>
+				{(connections || []).map((c: any, idx: number) => {
+					const child = personPositions[c.from];
+					const parent = personPositions[c.to];
+					if (!child || !parent) return null;
+					return (
+						<line
+							key={`conn-${idx}`}
+							x1={`${child.x}`}
+							y1={`${child.y}`}
+							x2={`${parent.x}`}
+							y2={`${parent.y}`}
+							stroke="#666"
+							strokeWidth={0.8}
+						/>
+					);
+				})}
+			</svg>
 
-    return (
-        <div
-            ref={containerRef}
-            className="ancestor-tree-view"
-            style={{ position: 'relative', width: totalWidth, minHeight: totalHeight, display: 'block' }}
-        >
-            <svg style={{ position: 'absolute', top: 0, left: 0, width: totalWidth, height: totalHeight, pointerEvents: 'none', overflow: 'visible' }}>
-                {connections.map(c => (
-                    <path
-                        key={c.key}
-                        d={`M ${c.fromPos.x} ${c.fromPos.y} C ${c.fromPos.x + 40} ${c.fromPos.y}, ${c.toPos.x - 40} ${c.toPos.y}, ${c.toPos.x} ${c.toPos.y}`}
-                        stroke="#000"
-                        strokeWidth={2}
-                        fill="none"
-                    />
-                ))}
-            </svg>
-            {Object.keys(positions).map(pid => {
-                const person: any = individuals.find(i => i.id === pid);
-                const isPlaceholder = !person && pid.startsWith('placeholder_');
-                if (!person && !isPlaceholder) return null;
-                const p = positions[pid];
-                const birth = person ? formatDate(person.birthDate) : null;
-                const death = person ? formatDate(person.deathDate) : null;
-                const dateLine = person && (birth || death) ? `${birth ? `b. ${birth}` : ''}${birth && death ? ' — ' : ''}${death ? `d. ${death}` : ''}` : null;
-                const isSelected = pid === selectedId;
-                const gender = person?.gender || (pid.includes('_F_') ? 'M' : pid.includes('_M_') ? 'F' : undefined);
-                const genderColor = gender === 'M' ? '#e3f2fd' : gender === 'F' ? '#fce4ec' : '#f5f5f5';
-                const borderColor = isSelected ? '#667eea' : (gender === 'M' ? '#90caf9' : gender === 'F' ? '#f48fb1' : '#bdbdbd');
-                const label = isPlaceholder ? (gender === 'M' ? 'Unknown Father' : gender === 'F' ? 'Unknown Mother' : 'Unknown') : (person.name || pid);
-                return (
-                    <div
-                        key={pid}
-                        style={{ position: 'absolute', left: p.x, top: p.y, width: boxWidth, minHeight: boxHeight, background: isSelected ? '#667eea' : genderColor, color: isSelected ? 'white' : '#333', border: `2px solid ${borderColor}`, borderRadius: 8, padding: '8px 10px', cursor: isPlaceholder ? 'default' : 'pointer', boxShadow: isSelected ? '0 4px 12px rgba(102,126,234,0.4)' : '0 2px 6px rgba(0,0,0,0.1)', transition: 'all 0.2s ease', overflow: 'hidden', opacity: isPlaceholder ? 0.6 : 1 }}
-                        onClick={() => { if (!isPlaceholder) onSelectPerson?.(pid); }}
-                        onKeyDown={e => { if (!isPlaceholder && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); onSelectPerson?.(pid); } }}
-                        role={isPlaceholder ? undefined : 'button'}
-                        tabIndex={isPlaceholder ? -1 : 0}
-                        title={label + (dateLine ? ` (${dateLine})` : '')}
-                        ref={el => { if (el) personEls.current.set(pid, el); else personEls.current.delete(pid); }}
-                        data-person-id={pid}
-                    >
-                        <div style={{ fontWeight: 600, fontSize: 13, marginBottom: 4, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{label}</div>
-                        {dateLine && <div style={{ fontSize: 10, opacity: 0.8, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{dateLine}</div>}
-                    </div>
-                );
-            })}
-        </div>
-    );
+			{individuals.map(ind => {
+				const p = personPositions[ind.id];
+				if (!p) return null;
+				const birth = formatGedcomDateForDisplay((ind as any).birthDate);
+				const death = formatGedcomDateForDisplay((ind as any).deathDate);
+				const dateLine = birth || death ? `${birth ? `b. ${birth}` : ''}${birth && death ? ' — ' : ''}${death ? `d. ${death}` : ''}` : null;
+				const genderClass = ind.gender === 'M' ? 'male' : ind.gender === 'F' ? 'female' : 'unknown';
+				return (
+					<div
+						key={ind.id}
+						className={`person-box ${selectedId === ind.id ? 'selected' : ''} ${genderClass}`}
+						style={{ left: `${p.x}px`, top: p.y, transform: 'translate(-50%, -50%)', position: 'absolute', width: boxWidth }}
+						onClick={() => onSelectPerson?.(ind.id)}
+						onKeyDown={(e) => {
+							if (e.key === 'Enter' || e.key === ' ') {
+								e.preventDefault();
+								onSelectPerson?.(ind.id);
+							}
+						}}
+						role="button"
+						tabIndex={0}
+						aria-label={`${ind.name || ind.id}${dateLine ? `, ${dateLine}` : ''}`}
+						data-person-id={ind.id}
+						title={ind.name || ind.id}
+					>
+						<div className="person-name">{ind.name || ind.id}</div>
+						{dateLine && <div className="person-dates">{dateLine}</div>}
+						<div style={{ fontSize: 10, color: '#666' }}>{ind.id}</div>
+					</div>
+				);
+			})}
+		</div>
+	);
 };
 
 export default AncestorTreeView;
+
