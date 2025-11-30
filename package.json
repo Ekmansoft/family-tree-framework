@@ -1,6 +1,6 @@
 {
   "name": "family-tree-framework",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A modern web framework for visualizing and editing genealogy family trees from GEDCOM files.",
   "main": "src/index.ts",
   "scripts": {
