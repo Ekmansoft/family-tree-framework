@@ -5,218 +5,218 @@
 2 FORM LINEAGE-LINKED
 1 CHAR UTF-8
 0 @I0@ INDI
-1 NAME Root Gen0 /Ancestor/
+1 NAME Gen0 Root /Ancestor/
 1 SEX M
 1 BIRT
 2 DATE 1 JAN 1700
 0 @I0_S@ INDI
-1 NAME Spouse Gen0 /Ancestor/
+1 NAME Gen0 Spouse /Ancestor/
 1 SEX F
 1 BIRT
 2 DATE 1 JAN 1702
 0 @I1_0@ INDI
-1 NAME Child1 Gen1 /Person/
+1 NAME Gen1 Child1 /Person/
 1 SEX M
 0 @I1_0_S@ INDI
-1 NAME Child1Spouse Gen1 /Person/
+1 NAME Gen1 Child1Spouse /Person/
 1 SEX F
 0 @I1_1@ INDI
-1 NAME Child2 Gen1 /Person/
+1 NAME Gen1 Child2 /Person/
 1 SEX F
 0 @I1_1_S@ INDI
-1 NAME Child2Spouse Gen1 /Person/
+1 NAME Gen1 Child2Spouse /Person/
 1 SEX M
 0 @I2_0@ INDI
-1 NAME Child1 Gen2 /Person/
+1 NAME Gen2 Child1 /Person/
 1 SEX M
 0 @I2_0_S@ INDI
-1 NAME Child1Spouse Gen2 /Person/
+1 NAME Gen2 Child1Spouse /Person/
 1 SEX F
 0 @I2_1@ INDI
-1 NAME Child2 Gen2 /Person/
+1 NAME Gen2 Child2 /Person/
 1 SEX F
 0 @I2_1_S@ INDI
-1 NAME Child2Spouse Gen2 /Person/
+1 NAME Gen2 Child2Spouse /Person/
 1 SEX M
 0 @I2_2@ INDI
-1 NAME Child3 Gen2 /Person/
+1 NAME Gen2 Child3 /Person/
 1 SEX M
 0 @I2_2_S@ INDI
-1 NAME Child3Spouse Gen2 /Person/
+1 NAME Gen2 Child3Spouse /Person/
 1 SEX F
 0 @I2_3@ INDI
-1 NAME Child4 Gen2 /Person/
+1 NAME Gen2 Child4 /Person/
 1 SEX F
 0 @I2_3_S@ INDI
-1 NAME Child4Spouse Gen2 /Person/
+1 NAME Gen2 Child4Spouse /Person/
 1 SEX M
 0 @I3_0@ INDI
-1 NAME Child1 Gen3 /Person/
+1 NAME Gen3 Child1 /Person/
 1 SEX M
 0 @I3_0_S@ INDI
-1 NAME Child1Spouse Gen3 /Person/
+1 NAME Gen3 Child1Spouse /Person/
 1 SEX F
 0 @I3_1@ INDI
-1 NAME Child2 Gen3 /Person/
+1 NAME Gen3 Child2 /Person/
 1 SEX F
 0 @I3_1_S@ INDI
-1 NAME Child2Spouse Gen3 /Person/
+1 NAME Gen3 Child2Spouse /Person/
 1 SEX M
 0 @I3_2@ INDI
-1 NAME Child3 Gen3 /Person/
+1 NAME Gen3 Child3 /Person/
 1 SEX M
 0 @I3_2_S@ INDI
-1 NAME Child3Spouse Gen3 /Person/
+1 NAME Gen3 Child3Spouse /Person/
 1 SEX F
 0 @I3_3@ INDI
-1 NAME Child4 Gen3 /Person/
+1 NAME Gen3 Child4 /Person/
 1 SEX F
 0 @I3_3_S@ INDI
-1 NAME Child4Spouse Gen3 /Person/
+1 NAME Gen3 Child4Spouse /Person/
 1 SEX M
 0 @I3_4@ INDI
-1 NAME Child5 Gen3 /Person/
+1 NAME Gen3 Child5 /Person/
 1 SEX M
 0 @I3_4_S@ INDI
-1 NAME Child5Spouse Gen3 /Person/
+1 NAME Gen3 Child5Spouse /Person/
 1 SEX F
 0 @I3_5@ INDI
-1 NAME Child6 Gen3 /Person/
+1 NAME Gen3 Child6 /Person/
 1 SEX F
 0 @I3_5_S@ INDI
-1 NAME Child6Spouse Gen3 /Person/
+1 NAME Gen3 Child6Spouse /Person/
 1 SEX M
 0 @I3_6@ INDI
-1 NAME Child7 Gen3 /Person/
+1 NAME Gen3 Child7 /Person/
 1 SEX M
 0 @I3_6_S@ INDI
-1 NAME Child7Spouse Gen3 /Person/
+1 NAME Gen3 Child7Spouse /Person/
 1 SEX F
 0 @I3_7@ INDI
-1 NAME Child8 Gen3 /Person/
+1 NAME Gen3 Child8 /Person/
 1 SEX F
 0 @I3_7_S@ INDI
-1 NAME Child8Spouse Gen3 /Person/
+1 NAME Gen3 Child8Spouse /Person/
 1 SEX M
 0 @I4_0@ INDI
-1 NAME Child1 Gen4 /Person/
+1 NAME Gen4 Child1 /Person/
 1 SEX M
 0 @I4_0_S@ INDI
-1 NAME Child1Spouse Gen4 /Person/
+1 NAME Gen4 Child1Spouse /Person/
 1 SEX F
 0 @I4_1@ INDI
-1 NAME Child2 Gen4 /Person/
+1 NAME Gen4 Child2 /Person/
 1 SEX F
 0 @I4_1_S@ INDI
-1 NAME Child2Spouse Gen4 /Person/
+1 NAME Gen4 Child2Spouse /Person/
 1 SEX M
 0 @I4_2@ INDI
-1 NAME Child3 Gen4 /Person/
+1 NAME Gen4 Child3 /Person/
 1 SEX M
 0 @I4_2_S@ INDI
-1 NAME Child3Spouse Gen4 /Person/
+1 NAME Gen4 Child3Spouse /Person/
 1 SEX F
 0 @I4_3@ INDI
-1 NAME Child4 Gen4 /Person/
+1 NAME Gen4 Child4 /Person/
 1 SEX F
 0 @I4_3_S@ INDI
-1 NAME Child4Spouse Gen4 /Person/
+1 NAME Gen4 Child4Spouse /Person/
 1 SEX M
 0 @I4_4@ INDI
-1 NAME Child5 Gen4 /Person/
+1 NAME Gen4 Child5 /Person/
 1 SEX M
 0 @I4_4_S@ INDI
-1 NAME Child5Spouse Gen4 /Person/
+1 NAME Gen4 Child5Spouse /Person/
 1 SEX F
 0 @I4_5@ INDI
-1 NAME Child6 Gen4 /Person/
+1 NAME Gen4 Child6 /Person/
 1 SEX F
 0 @I4_5_S@ INDI
-1 NAME Child6Spouse Gen4 /Person/
+1 NAME Gen4 Child6Spouse /Person/
 1 SEX M
 0 @I4_6@ INDI
-1 NAME Child7 Gen4 /Person/
+1 NAME Gen4 Child7 /Person/
 1 SEX M
 0 @I4_6_S@ INDI
-1 NAME Child7Spouse Gen4 /Person/
+1 NAME Gen4 Child7Spouse /Person/
 1 SEX F
 0 @I4_7@ INDI
-1 NAME Child8 Gen4 /Person/
+1 NAME Gen4 Child8 /Person/
 1 SEX F
 0 @I4_7_S@ INDI
-1 NAME Child8Spouse Gen4 /Person/
+1 NAME Gen4 Child8Spouse /Person/
 1 SEX M
 0 @I5_0@ INDI
-1 NAME Child1 Gen5 /Person/
+1 NAME Gen5 Child1 /Person/
 1 SEX M
 0 @I5_0_S@ INDI
-1 NAME Child1Spouse Gen5 /Person/
+1 NAME Gen5 Child1Spouse /Person/
 1 SEX F
 0 @I5_1@ INDI
-1 NAME Child2 Gen5 /Person/
+1 NAME Gen5 Child2 /Person/
 1 SEX F
 0 @I5_1_S@ INDI
-1 NAME Child2Spouse Gen5 /Person/
+1 NAME Gen5 Child2Spouse /Person/
 1 SEX M
 0 @I5_2@ INDI
-1 NAME Child3 Gen5 /Person/
+1 NAME Gen5 Child3 /Person/
 1 SEX M
 0 @I5_2_S@ INDI
-1 NAME Child3Spouse Gen5 /Person/
+1 NAME Gen5 Child3Spouse /Person/
 1 SEX F
 0 @I5_3@ INDI
-1 NAME Child4 Gen5 /Person/
+1 NAME Gen5 Child4 /Person/
 1 SEX F
 0 @I5_3_S@ INDI
-1 NAME Child4Spouse Gen5 /Person/
+1 NAME Gen5 Child4Spouse /Person/
 1 SEX M
 0 @I5_4@ INDI
-1 NAME Child5 Gen5 /Person/
+1 NAME Gen5 Child5 /Person/
 1 SEX M
 0 @I5_4_S@ INDI
-1 NAME Child5Spouse Gen5 /Person/
+1 NAME Gen5 Child5Spouse /Person/
 1 SEX F
 0 @I5_5@ INDI
-1 NAME Child6 Gen5 /Person/
+1 NAME Gen5 Child6 /Person/
 1 SEX F
 0 @I5_5_S@ INDI
-1 NAME Child6Spouse Gen5 /Person/
+1 NAME Gen5 Child6Spouse /Person/
 1 SEX M
 0 @I5_6@ INDI
-1 NAME Child7 Gen5 /Person/
+1 NAME Gen5 Child7 /Person/
 1 SEX M
 0 @I5_6_S@ INDI
-1 NAME Child7Spouse Gen5 /Person/
+1 NAME Gen5 Child7Spouse /Person/
 1 SEX F
 0 @I5_7@ INDI
-1 NAME Child8 Gen5 /Person/
+1 NAME Gen5 Child8 /Person/
 1 SEX F
 0 @I5_7_S@ INDI
-1 NAME Child8Spouse Gen5 /Person/
+1 NAME Gen5 Child8Spouse /Person/
 1 SEX M
 0 @I6_0@ INDI
-1 NAME Child1 Gen6 /Person/
+1 NAME Gen6 Child1 /Person/
 1 SEX M
 0 @I6_0_S@ INDI
-1 NAME Child1Spouse Gen6 /Person/
+1 NAME Gen6 Child1Spouse /Person/
 1 SEX F
 0 @I6_1@ INDI
-1 NAME Child2 Gen6 /Person/
+1 NAME Gen6 Child2 /Person/
 1 SEX F
 0 @I6_1_S@ INDI
-1 NAME Child2Spouse Gen6 /Person/
+1 NAME Gen6 Child2Spouse /Person/
 1 SEX M
 0 @I7_0@ INDI
-1 NAME Child1 Gen7 /Person/
+1 NAME Gen7 Child1 /Person/
 1 SEX M
 0 @I7_0_S@ INDI
-1 NAME Child1Spouse Gen7 /Person/
+1 NAME Gen7 Child1Spouse /Person/
 1 SEX F
 0 @I7_1@ INDI
-1 NAME Child2 Gen7 /Person/
+1 NAME Gen7 Child2 /Person/
 1 SEX F
 0 @I7_1_S@ INDI
-1 NAME Child2Spouse Gen7 /Person/
+1 NAME Gen7 Child2Spouse /Person/
 1 SEX M
 0 @F0@ FAM
 1 HUSB @I0@
