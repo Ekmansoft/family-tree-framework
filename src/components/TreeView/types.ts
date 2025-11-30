@@ -34,4 +34,7 @@ export interface TreeViewCommonProps {
     boxHeight?: number;
     familyToParentDistance?: number; // vertical distance from family box to parent boxes
     familyToChildrenDistance?: number; // vertical distance from family box to children boxes
+    // Common generation window controls (used by vertical view; accepted by ancestor view for consistency)
+    maxGenerationsForward?: number;
+    maxGenerationsBackward?: number;
 }
