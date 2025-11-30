@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import type { TreeViewCommonProps } from './types';
 import { assignGenerations } from './utils/generationAssignment';
-import { buildRelationshipMaps as buildChildParentMaps } from './utils/treeFiltering';
+import { buildRelationshipMaps as buildChildParentMaps, filterByMaxTrees } from './utils/treeFiltering';
 import { Renderer } from './Shared/Renderer';
 import { VerticalTreeLayout } from './layouts/VerticalTreeLayout';
 import { AncestorTreeLayout, computeAncestorLayout } from './layouts/AncestorTreeLayout';
@@ -42,8 +42,14 @@ export const TreeView: React.FC<UnifiedTreeViewProps> = ({
   horizontalGap = 180,
   verticalGap = 16,
 }) => {
-  const individualsLocal = individuals;
-  const familiesLocal = families;
+  // First, restrict to the connected component containing the focus item (if any)
+  const { individualsLocal: individualsLocalPre, familiesLocal: familiesLocalPre } = filterByMaxTrees({
+    individuals,
+    families,
+    focusItemId: selectedId ?? undefined,
+  });
+  let individualsLocal = individualsLocalPre;
+  let familiesLocal = familiesLocalPre;
   const individualsById = useMemo(() => new Map(individualsLocal.map(i => [i.id, i])), [individualsLocal]);
 
   const { childrenOf, parentsOf } = buildChildParentMaps(familiesLocal);
@@ -59,6 +65,22 @@ export const TreeView: React.FC<UnifiedTreeViewProps> = ({
 
   const effectiveFamilyToParentDistance = familyToParentDistance ?? boxHeight;
   const effectiveFamilyToChildrenDistance = familyToChildrenDistance ?? boxHeight;
+
+  // Further restrict to only individuals within the requested generation window around the focus
+  if (selectedId) {
+    const visibleIds = new Set<string>();
+    individualsLocal.forEach(i => {
+      const lvl = levelOf.get(i.id);
+      if (typeof lvl === 'number' && lvl <= maxGenerationsForward && lvl >= -maxGenerationsBackward) {
+        visibleIds.add(i.id);
+      }
+    });
+    individualsLocal = individualsLocal.filter(i => visibleIds.has(i.id));
+    familiesLocal = familiesLocal.filter(f => (
+      (f.parents || []).some((pid: string) => visibleIds.has(pid)) ||
+      (f.children || []).some((cid: string) => visibleIds.has(cid))
+    ));
+  }
 
   const layout = useMemo(() => {
     if (layoutId === 'ancestor') {
