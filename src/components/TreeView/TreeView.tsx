@@ -40,6 +40,11 @@ export const TreeView: React.FC<UnifiedTreeViewProps> = ({
   horizontalGenerationGap = 180,
   verticalGap = 16,
 }) => {
+  // Hard requirement: a selectedId (focus person) must be provided to render the tree.
+  // If absent or not found among individuals, render a minimal placeholder instead of attempting layout.
+  if (!selectedId || !individuals.some(i => i.id === selectedId)) {
+    return <div className="tree-view no-focus">No focus person selected</div>;
+  }
   // First, restrict to the connected component containing the focus item (if any)
   const { individualsLocal: individualsLocalPre, familiesLocal: familiesLocalPre } = filterByMaxTrees({
     individuals,

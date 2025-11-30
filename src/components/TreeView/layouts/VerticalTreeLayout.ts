@@ -75,10 +75,22 @@ export class VerticalTreeLayout implements TreeLayoutStrategy {
         families.forEach((f: any) => {
             (f.children || []).forEach((c: string) => childParentFamily.set(c, f.id));
         });
-        const rootFamilies = families.filter((f: any) => {
+        let rootFamilies = families.filter((f: any) => {
             const parents: string[] = (f.parents || []).slice();
             return !parents.some((p: string) => childParentFamily.has(p));
         });
+
+        // Ancestor-only scenario: start traversal from the focus person's immediate parent family instead
+        const focusIdForAncestorStart = (config as any).selectedId as string | undefined;
+        if (focusIdForAncestorStart && maxGenerationsForward === 0) {
+            const directParentFamilyId = childParentFamily.get(focusIdForAncestorStart);
+            if (directParentFamilyId) {
+                const directParentFamily = families.find(f => f.id === directParentFamilyId);
+                if (directParentFamily) {
+                    rootFamilies = [directParentFamily];
+                }
+            }
+        }
 
         // Create layout function
         const { layoutFamily, pos } = createFamilyLayouter({
@@ -106,6 +118,16 @@ export class VerticalTreeLayout implements TreeLayoutStrategy {
             layoutFamily(fam.id, famCenter, familiesProcessed);
             cursor += w;
         });
+
+        // Ensure focus/selected person is represented even if only ancestor generations were traversed
+        const selectedId = (config as any).selectedId as string | undefined;
+        if (selectedId && !pos[selectedId]) {
+            const level = levelOf.get(selectedId) ?? 0;
+            const row = level * 2;
+            const fallbackX = (rootWidths.reduce((s: number, w: number) => s + w, 0) || 200) / 2;
+            const fallbackY = row * rowHeight + rowHeight / 2 + yOffset;
+            pos[selectedId] = { x: fallbackX, y: fallbackY };
+        }
         
         // Apply X offset to ensure positive space
         let { pos: finalPos, minX, maxX } = applyXOffset(pos, 100);
@@ -302,27 +324,58 @@ export class VerticalTreeLayout implements TreeLayoutStrategy {
                         console.log(`=== End Lower Generation (DESCENDANT PACKED + CHILD ALIGNED) ===\n`);
                     } else {
                         // Ancestor lower levels (negative): position relative to children's Y (symmetric with descendants)
-                        groupData.forEach(({ g, intraGap, w, centerX, relativePositions, groupIdx }) => {
-                            console.log(`Group ${groupIdx}: [${g.ids.join(', ')}] kind=${g.kind}`);
-                            console.log(`  CenterX=${centerX.toFixed(2)} children=[${relativePositions.map(p => p.x.toFixed(2)).join(', ')}]`);
-                            let cursor = centerX - w / 2 + singleWidth / 2;
-                            // For ancestors, compute Y going upward from children (opposite of descendants)
-                            // relativePositions here are the CHILDREN of these ancestors
+                        // Prevent horizontal overlap: pack ancestor groups side-by-side with siblingGap spacing.
+                        // Sort by desired centerX to maintain visual alignment above children.
+                        const sortedAncestorGroups = [...groupData].sort((a, b) => a.centerX - b.centerX || a.groupIdx - b.groupIdx);
+                        // Compute total width if packed strictly side-by-side ignoring original centers
+                        const groupGap = Math.max(siblingGap, 20);
+                        const packedTotalWidth = sortedAncestorGroups.reduce((sum, gd) => sum + gd.w, 0) + Math.max(0, sortedAncestorGroups.length - 1) * groupGap;
+                        const avgCenter = sortedAncestorGroups.length > 0 ? sortedAncestorGroups.reduce((s, gd) => s + gd.centerX, 0) / sortedAncestorGroups.length : 0;
+                        let packCursor = avgCenter - packedTotalWidth / 2;
+                        sortedAncestorGroups.forEach(({ g, intraGap, w, centerX, relativePositions, groupIdx }, packedIdx) => {
+                            console.log(`Ancestor Group ${groupIdx}: [${g.ids.join(', ')}]`);
+                            console.log(`  DesiredCenter=${centerX.toFixed(2)} packedStart=${packCursor.toFixed(2)} width=${w}`);
+                            // Compute Y going upward from children
                             const yAncestor = relativePositions.length > 0
                                 ? (relativePositions.reduce((s, p) => s + p.y, 0) / relativePositions.length) - (familyToParentDistance + familyToChildrenDistance)
-                                : y; // fallback to generation center when children unknown
+                                : y;
+                            let cursor = packCursor + singleWidth / 2;
                             g.ids.forEach((pid, idx) => {
                                 const x = cursor + idx * (singleWidth + intraGap);
                                 finalPos[pid] = { x, y: yAncestor };
-                                console.log(`    ${pid}: x=${x.toFixed(2)} y=${yAncestor.toFixed(2)}`);
+                                console.log(`    ${pid}: x=${x.toFixed(2)} y=${yAncestor.toFixed(2)} packedIdx=${packedIdx}`);
                             });
+                            packCursor += w + groupGap;
                         });
                         console.log(`=== End Lower Generation (ANCESTOR) ===\n`);
                     }
                 }
             });
-            // Recompute bounds after repacking
+            // Recompute bounds after initial repacking
             ({ pos: finalPos, minX, maxX } = applyXOffset(finalPos, 100));
+
+            // Ancestor refinement pass: adjust negative generation Y positions after children have definitive placement
+            const negativeLevels = levels.filter(l => l < 0).sort((a, b) => b - a); // -1, -2, -3...
+            if (negativeLevels.length > 0) {
+                console.log('🔧 Ancestor refinement pass (levels descending from root):', negativeLevels);
+                negativeLevels.forEach(lvl => {
+                    const idsAtLevel = Object.keys(finalPos).filter(pid => (levelOf.get(pid) ?? 0) === lvl);
+                    if (idsAtLevel.length === 0) return;
+                    idsAtLevel.forEach(pid => {
+                        const childIds = childrenOf.get(pid) || [];
+                        const childPositions = childIds.map(cid => finalPos[cid]).filter(Boolean);
+                        if (childPositions.length === 0) return; // cannot refine without children positions
+                        const avgChildY = childPositions.reduce((s, p) => s + p.y, 0) / childPositions.length;
+                        const refinedY = avgChildY - (familyToParentDistance + familyToChildrenDistance);
+                        // Only adjust if refinement produces a smaller (higher on screen) Y to preserve ancestor-above-child ordering
+                        if (refinedY < finalPos[pid].y - 1) {
+                            finalPos[pid].y = refinedY;
+                        }
+                    });
+                });
+                // Re-offset after refinement
+                ({ pos: finalPos, minX, maxX } = applyXOffset(finalPos, 100));
+            }
         } else {
             console.log('🔧 VERTICAL LAYOUT: Simple packing mode DISABLED');
         }
@@ -396,6 +449,41 @@ export class VerticalTreeLayout implements TreeLayoutStrategy {
             
             familyPositions.push({ id: fam.id, x: familyX, y: familyY, parents, children: kids });
         });
+
+        // Optional ancestor-only generation centering: align each negative generation's horizontal span to focus X
+        if (selectedId && maxGenerationsForward === 0 && finalPos[selectedId]) {
+            const focusX = finalPos[selectedId].x;
+            // Collect distinct negative levels present
+            const negativeLevels = new Set<number>();
+            Object.keys(finalPos).forEach(pid => {
+                const lvl = levelOf.get(pid);
+                if (typeof lvl === 'number' && lvl < 0) negativeLevels.add(lvl);
+            });
+            const sortedNegLevels = Array.from(negativeLevels).sort((a, b) => a - b); // e.g. -8 .. -1
+            sortedNegLevels.forEach(lvl => {
+                const idsAtLevel = Object.keys(finalPos).filter(pid => levelOf.get(pid) === lvl);
+                if (idsAtLevel.length === 0) return;
+                const minXGen = Math.min(...idsAtLevel.map(pid => finalPos[pid].x));
+                const maxXGen = Math.max(...idsAtLevel.map(pid => finalPos[pid].x));
+                const centerGen = (minXGen + maxXGen) / 2;
+                const delta = focusX - centerGen;
+                // Shift persons
+                idsAtLevel.forEach(pid => { finalPos[pid].x += delta; });
+                // Shift families whose parents lie exactly on this level
+                familyPositions.forEach(famPos => {
+                    const parentLevels = famPos.parents.map(pid => levelOf.get(pid)).filter((v): v is number => typeof v === 'number');
+                    if (parentLevels.length > 0) {
+                        // Parents should share same level after generation assignment adjustments
+                        const parentLevel = parentLevels[0];
+                        if (parentLevels.every(pl => pl === parentLevel) && parentLevel === lvl) {
+                            famPos.x += delta;
+                        }
+                    }
+                });
+            });
+            // Recompute bounds after centering
+            ({ pos: finalPos, minX, maxX } = applyXOffset(finalPos, 100));
+        }
 
         const actualTreeWidth = maxX + 100;
         

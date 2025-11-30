@@ -21,6 +21,8 @@ export interface LayoutConfig {
     familyToChildrenDistance?: number;
     /** Generic vertical gap used by ancestor layouts */
     verticalGap?: number;
+    /** Focus person id used for centering and fallback placement */
+    selectedId?: string;
 }
 
 export interface LayoutResult {

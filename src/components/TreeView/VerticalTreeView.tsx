@@ -36,6 +36,11 @@ export const VerticalTreeView: React.FC<VerticalTreeViewProps> = (props) => {
         onBounds
     } = props;
 
+    // Enforce presence of selectedId before rendering the unified TreeView
+    if (!selectedId) {
+        return <div className="tree-view no-focus">Select a person to view tree</div>;
+    }
+
     return (
         <UnifiedTreeView
             layoutId="vertical"
